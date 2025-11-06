@@ -1,0 +1,17 @@
+{
+    "name": "antimateri/btikp-kalsel",
+    "autoload": {
+        "psr-4": {
+            "Antimateri\\BtikpKalsel\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Lycorisme",
+            "email": "haldi0230@gmail.com"
+        }
+    ],
+    "require": {
+        "mpdf/mpdf": "^8.2"
+    }
+}

@@ -218,52 +218,34 @@ class User extends Model {
     }
 
     /**
-     * Soft delete user WITH EMAIL MODIFICATION and DEACTIVATION
-     * Changes email to prevent duplicate issues
-     * Sets is_active to 0 to deactivate user
-     * Format: originalname_deletedXXXXXXXXXX@domain.com
-     * 
+     * =======================================================
+     * PERBAIKAN DI FUNGSI BERIKUT INI
+     * =======================================================
+     *
+     * Soft delete user (HANYA set is_active = 0 dan deleted_at)
+     * Logika modifikasi email dihapus sesuai permintaan.
+     *
      * @param int $id User ID to delete
      * @return bool Success status
      */
     public function softDelete($id) {
         try {
-            // Get user data first
-            $user = $this->find($id);
-            
-            if (!$user) {
-                error_log("User ID {$id} not found for deletion");
-                return false;
-            }
-            
-            // Generate new email with timestamp
-            $email = $user['email'];
-            $timestamp = time();
-            
-            // Split email into name and domain
-            if (strpos($email, '@') !== false) {
-                list($emailName, $emailDomain) = explode('@', $email, 2);
-                $newEmail = $emailName . '_deleted' . $timestamp . '@' . $emailDomain;
-            } else {
-                // Fallback if no @ found (shouldn't happen with email validation)
-                $newEmail = $email . '_deleted' . $timestamp;
-            }
-            
-            // ✅ UPDATE: Set is_active = 0, email, and deleted_at
+            // ✅ UPDATE: Set is_active = 0 and deleted_at
+            // Modifikasi email sudah dihapus.
             $sql = "UPDATE {$this->table} 
-                    SET email = ?, 
+                    SET 
                         is_active = 0,
                         deleted_at = NOW(),
                         updated_at = NOW()
                     WHERE id = ? AND deleted_at IS NULL";
             
             $stmt = $this->db->prepare($sql);
-            $result = $stmt->execute([$newEmail, $id]);
+            $result = $stmt->execute([$id]); // Hanya teruskan $id
             
             $rowCount = $stmt->rowCount();
             
             // Debug log
-            error_log("Soft delete user ID {$id}: Changed email from '{$email}' to '{$newEmail}', set is_active=0, {$rowCount} rows affected");
+            error_log("Soft delete user ID {$id}: set is_active=0, {$rowCount} rows affected");
             
             return $rowCount > 0;
             
@@ -272,6 +254,9 @@ class User extends Model {
             throw $e;
         }
     }
+    // =======================================================
+    // BATAS PERBAIKAN
+    // =======================================================
 
     /**
      * Hard delete user (permanent delete)

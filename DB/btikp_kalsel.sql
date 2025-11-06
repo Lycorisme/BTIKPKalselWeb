@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 05, 2025 at 01:31 AM
+-- Generation Time: Nov 06, 2025 at 03:01 AM
 -- Server version: 5.7.39
 -- PHP Version: 8.2.29
 
@@ -192,7 +192,86 @@ INSERT INTO `activity_logs` (`id`, `user_id`, `action`, `user_name`, `action_typ
 (117, 1, NULL, 'Super Administrator', 'DELETE', 'Menghapus layanan: Pengembangan Website', 'services', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 01:17:01'),
 (118, 1, NULL, 'Super Administrator', 'LOGOUT', 'User melakukan logout', NULL, NULL, '::1', NULL, '2025-11-05 01:17:43'),
 (119, 1, NULL, 'Super Administrator', 'LOGIN', 'User login ke sistem', 'users', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 01:18:16'),
-(120, 1, NULL, 'Super Administrator', 'CREATE', 'Menambah kategori: Perhatian', 'post_categories', 6, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 01:19:39');
+(120, 1, NULL, 'Super Administrator', 'CREATE', 'Menambah kategori: Perhatian', 'post_categories', 6, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 01:19:39'),
+(121, 1, NULL, 'Super Administrator', 'CREATE', 'Menambah tag: test', 'tags', 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 02:32:17'),
+(122, 1, NULL, 'Super Administrator', 'CREATE', 'Menambah tag: test2', 'tags', 9, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 02:32:28'),
+(123, 1, NULL, 'Super Administrator', 'DELETE', 'Menghapus tag: test2', 'tags', 9, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 02:32:40'),
+(124, 1, NULL, 'Super Administrator', 'UPDATE', 'Mengupdate tag: test ed', 'tags', 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 02:32:53'),
+(125, 1, NULL, 'Super Administrator', 'UPDATE', 'Mengupdate tag: test ed', 'tags', 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 02:33:05'),
+(126, 1, NULL, 'Super Administrator', 'DELETE', 'Menghapus tag: test ed', 'tags', 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 02:33:08'),
+(127, 1, NULL, 'Super Administrator', 'CREATE', 'Menambah kategori: test', 'post_categories', 7, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 02:34:31'),
+(128, 1, NULL, 'Super Administrator', 'LOGIN', 'User login ke sistem', 'users', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 13:21:11'),
+(129, 1, NULL, 'Super Administrator', 'LOGOUT', 'User melakukan logout', NULL, NULL, '::1', NULL, '2025-11-05 13:32:40'),
+(130, 1, NULL, 'Super Administrator', 'LOGIN', 'User login ke sistem', 'users', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 13:32:43'),
+(131, 1, NULL, 'Super Administrator', 'LOGOUT', 'User melakukan logout', NULL, NULL, '::1', NULL, '2025-11-05 13:33:24'),
+(132, 1, NULL, 'Super Administrator', 'LOGIN', 'User login ke sistem', 'users', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 13:33:26'),
+(133, 1, NULL, 'Super Administrator', 'UPDATE', 'Mengupdate tag: teknologi x', 'tags', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 13:43:13'),
+(134, 1, NULL, 'Super Administrator', 'CREATE', 'Menambah tag: test', 'tags', 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 13:43:21'),
+(135, 1, NULL, 'Super Administrator', 'DELETE', 'Menghapus tag: test', 'tags', 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 13:43:25'),
+(136, 1, NULL, 'Super Administrator', 'LOGOUT', 'User melakukan logout', NULL, NULL, '::1', NULL, '2025-11-05 14:22:31'),
+(137, 1, NULL, 'Super Administrator', 'LOGIN', 'User login ke sistem', 'users', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 14:22:35'),
+(138, 1, NULL, 'Super Administrator', 'UPDATE', 'Mengupdate tag: teknologi', 'tags', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 14:23:24'),
+(139, 1, NULL, 'Super Administrator', 'UPDATE', 'Mengupdate kategori: Perhatian x', 'post_categories', 6, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 14:34:10'),
+(140, 1, NULL, 'Super Administrator', 'DELETE', 'Menghapus kategori: test', 'post_categories', 7, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 14:34:45'),
+(141, 1, NULL, 'Super Administrator', 'UPDATE', 'Mengupdate kategori: test1', 'post_categories', 7, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 14:35:21'),
+(142, 1, NULL, 'Super Administrator', 'UPDATE', 'Mengupdate kategori: test1', 'post_categories', 7, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 14:35:26'),
+(143, 1, NULL, 'Super Administrator', 'DELETE', 'Menghapus kategori: test1', 'post_categories', 7, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 14:35:29'),
+(144, 1, NULL, 'Super Administrator', 'CREATE', 'Menambah tag: testtt', 'tags', 4, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 14:36:24'),
+(145, 1, NULL, 'Super Administrator', 'UPDATE', 'Mengupdate tag: testttxx', 'tags', 4, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 14:42:11'),
+(146, 1, NULL, 'Super Administrator', 'CREATE', 'Menambah post: test pakai tag', 'posts', 5, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 14:43:39'),
+(147, 1, NULL, 'Super Administrator', 'UPDATE', 'Mengupdate settings website (19 items)', 'settings', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 15:00:24'),
+(148, 1, NULL, 'Super Administrator', 'UPDATE', 'Mengupdate post: test 4', 'posts', 4, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 15:05:53'),
+(149, 1, NULL, 'Super Administrator', 'UPDATE', 'Mengupdate post: test 2', 'posts', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 15:08:21'),
+(150, 1, NULL, 'Super Administrator', 'UPDATE', 'Mengupdate post: test pakai tag', 'posts', 5, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 15:09:43'),
+(151, 1, NULL, 'Super Administrator', 'UPDATE', 'Mengupdate post: test 4', 'posts', 4, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 15:11:20'),
+(152, 1, NULL, 'Super Administrator', 'UPDATE', 'Mengupdate post: test 4', 'posts', 4, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 15:11:43'),
+(153, 1, NULL, 'Super Administrator', 'UPDATE', 'Mengupdate post: test3', 'posts', 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 15:11:58'),
+(154, 1, NULL, 'Super Administrator', 'UPDATE', 'Mengupdate post: test pakai tag', 'posts', 5, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 15:32:52'),
+(155, 1, NULL, 'Super Administrator', 'CREATE', 'Menambah post: test 3', 'posts', 6, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 18:39:20'),
+(156, 1, NULL, 'Super Administrator', 'DELETE', 'Menghapus post: test 3', 'posts', 6, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 18:40:13'),
+(157, 1, NULL, 'Super Administrator', 'DELETE', 'Menghapus post: test pakai tag', 'posts', 5, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 18:40:17'),
+(158, 1, NULL, 'Super Administrator', 'DELETE', 'Menghapus post: test 4', 'posts', 4, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 18:40:20'),
+(159, 1, NULL, 'Super Administrator', 'DELETE', 'Menghapus post: test3', 'posts', 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 18:40:24'),
+(160, 1, NULL, 'Super Administrator', 'UPDATE', 'Mengupdate post: test 2', 'posts', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 18:40:35'),
+(161, 1, NULL, 'Super Administrator', 'UPDATE', 'Mengupdate post: test 2', 'posts', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 18:41:52'),
+(162, 1, NULL, 'Super Administrator', 'CREATE', 'Menambah post: test4', 'posts', 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 18:55:03'),
+(163, 1, NULL, 'Super Administrator', 'DELETE', 'Menghapus kategori: Perhatian x', 'post_categories', 6, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 18:57:32'),
+(164, 1, NULL, 'Super Administrator', 'DELETE', 'Menghapus kategori: Perhatian x', 'post_categories', 6, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 18:57:38'),
+(165, 1, NULL, 'Super Administrator', 'CREATE', 'Menambah post: test 5', 'posts', 9, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 18:58:44'),
+(166, 1, NULL, 'Super Administrator', 'CREATE', 'Menambah post: test6', 'posts', 10, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 19:01:48'),
+(167, 1, NULL, 'Super Administrator', 'CREATE', 'Menambah post: test 7', 'posts', 11, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 19:17:41'),
+(168, 1, NULL, 'Super Administrator', 'CREATE', 'Menambah tag: test3', 'tags', 31, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 19:24:20'),
+(169, 1, NULL, 'Super Administrator', 'UPDATE', 'Mengupdate tag: test3 edit', 'tags', 31, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 19:24:37'),
+(170, 1, NULL, 'Super Administrator', 'DELETE', 'Menghapus tag: test3 edit', 'tags', 31, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 19:24:41'),
+(171, 1, NULL, 'Super Administrator', 'UPDATE', 'Mengupdate post: test 7', 'posts', 11, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 19:25:49'),
+(172, 1, NULL, 'Super Administrator', 'DELETE', 'Menghapus post: test 7', 'posts', 11, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 19:25:58'),
+(173, 1, NULL, 'Super Administrator', 'DELETE', 'Menghapus post: test6', 'posts', 10, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 19:28:29'),
+(174, 1, NULL, 'Super Administrator', 'CREATE', 'Menambah tag: test5', 'tags', 32, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 19:29:02'),
+(175, 1, NULL, 'Super Administrator', 'UPDATE', 'Mengupdate tag: test4', 'tags', 32, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 19:29:08'),
+(176, 1, NULL, 'Super Administrator', 'DELETE', 'Menghapus tag: test4', 'tags', 32, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 19:29:12'),
+(177, 1, NULL, 'Super Administrator', 'DELETE', 'Menghapus kategori: Perhatian x', 'post_categories', 6, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 19:33:31'),
+(178, 1, NULL, 'Super Administrator', 'DELETE', 'Menghapus kategori: Perhatian x', 'post_categories', 6, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 19:34:16'),
+(179, 1, NULL, 'Super Administrator', 'UPDATE', 'Mengupdate kategori: test1', 'post_categories', 7, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 19:34:22'),
+(180, 1, NULL, 'Super Administrator', 'DELETE', 'Menghapus kategori: test1', 'post_categories', 7, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 19:34:31'),
+(181, 1, NULL, 'Super Administrator', 'CREATE', 'Menambah kategori: test4', 'post_categories', 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 19:34:39'),
+(182, 1, NULL, 'Super Administrator', 'UPDATE', 'Mengupdate post: test4', 'posts', 8, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 19:37:24'),
+(183, 1, NULL, 'Lycoris', 'UPDATE', 'Mengupdate profil', 'users', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 21:49:43'),
+(184, 1, NULL, 'Lycoris', 'CREATE', 'Menambah tag: test 3', 'tags', 33, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 22:13:34'),
+(185, 1, NULL, 'Lycoris', 'UPDATE', 'Mengupdate tag: test 3 x', 'tags', 33, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 22:13:39'),
+(186, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus tag: test 3 x', 'tags', 33, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 22:13:42'),
+(187, 1, NULL, 'Lycoris', 'UPDATE', 'Mengupdate settings website (19 items)', 'settings', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 23:00:49'),
+(188, 1, NULL, 'Lycoris', 'UPDATE', 'Mengupdate settings website (19 items)', 'settings', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 23:24:43'),
+(189, 1, NULL, 'Lycoris', 'DELETE', 'Cleanup activity logs (0 records older than 30 days)', 'activity_logs', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 23:29:51'),
+(190, 1, NULL, 'Lycoris', 'CREATE', 'Menambah post: test 5', 'posts', 12, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 23:36:08'),
+(191, 1, NULL, 'Lycoris', 'UPDATE', 'Mengupdate profil', 'users', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 23:37:00'),
+(192, 1, NULL, 'Lycoris', 'UPDATE', 'Mengupdate profil', 'users', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 23:37:15'),
+(193, 1, NULL, 'Lycoris', 'CREATE', 'Menambah pengguna baru: admin1', 'users', 26, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 00:33:09'),
+(194, 1, NULL, 'Lycoris', 'LOGOUT', 'User melakukan logout', NULL, NULL, '::1', NULL, '2025-11-06 00:33:13'),
+(195, 26, NULL, 'admin1', 'LOGIN', 'User login ke sistem', 'users', 26, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 00:33:17'),
+(196, 26, NULL, 'admin1', 'UPDATE', 'Mengupdate pengguna: admin1', 'users', 26, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 00:34:25'),
+(197, 26, NULL, 'admin1', 'LOGOUT', 'User melakukan logout', NULL, NULL, '::1', NULL, '2025-11-06 00:37:29'),
+(198, 1, NULL, 'Lycoris', 'LOGIN', 'User login ke sistem', 'users', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 00:43:34'),
+(199, 1, NULL, 'Lycoris', 'LOGIN', 'User login ke sistem', 'users', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 02:49:45');
 
 --
 -- Triggers `activity_logs`
@@ -271,6 +350,34 @@ CREATE TABLE `banners` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `categories`
+--
+
+CREATE TABLE `categories` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `parent_id` int(10) UNSIGNED DEFAULT NULL,
+  `order` int(11) DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `categories`
+--
+
+INSERT INTO `categories` (`id`, `name`, `slug`, `description`, `parent_id`, `order`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 'Berita', 'berita', 'Berita terkini seputar organisasi', NULL, 1, '2025-11-05 01:31:24', '2025-11-05 01:31:24', NULL),
+(2, 'Kegiatan', 'kegiatan', 'Dokumentasi kegiatan organisasi', NULL, 2, '2025-11-05 01:31:24', '2025-11-05 01:31:24', NULL),
+(3, 'Pengumuman', 'pengumuman', 'Pengumuman resmi', NULL, 3, '2025-11-05 01:31:24', '2025-11-05 01:31:24', NULL),
+(4, 'Artikel', 'artikel', 'Artikel dan tulisan edukatif', NULL, 4, '2025-11-05 01:31:24', '2025-11-05 01:31:24', NULL);
 
 -- --------------------------------------------------------
 
@@ -366,6 +473,23 @@ CREATE TABLE `galleries` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gallery_albums`
+--
+
+CREATE TABLE `gallery_albums` (
+  `id` int(11) NOT NULL,
+  `name` varchar(200) NOT NULL,
+  `slug` varchar(200) NOT NULL,
+  `description` text,
+  `cover_photo` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -538,7 +662,9 @@ CREATE TABLE `posts` (
   `author_id` int(10) UNSIGNED NOT NULL,
   `view_count` int(10) UNSIGNED DEFAULT '0',
   `is_featured` tinyint(1) DEFAULT '0',
+  `meta_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `meta_description` varchar(160) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `meta_keywords` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `published_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -549,11 +675,18 @@ CREATE TABLE `posts` (
 -- Dumping data for table `posts`
 --
 
-INSERT INTO `posts` (`id`, `title`, `slug`, `content`, `excerpt`, `featured_image`, `status`, `category_id`, `author_id`, `view_count`, `is_featured`, `meta_description`, `published_at`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'test1', 'test1', '<p>test buat artikel test edit</p>', 'test ringkas', 'posts/2025/11/1762220508_690959dc1eded.png', 'published', 2, 1, 0, 1, 'test seo', '2025-11-04 02:42:41', '2025-11-04 01:41:48', '2025-11-04 01:42:51', '2025-11-04 01:42:51'),
-(2, 'test 2', 'test-2', '<p>cdsccdcsdcfdv</p>', 'test', 'posts/images_1762288353_b54f615e.png', 'published', 2, 1, 13, 1, 'test', '2025-11-04 03:32:00', '2025-11-04 02:32:56', '2025-11-04 20:32:39', NULL),
-(3, 'test3', 'test3', '<blockquote><p>testting 3</p></blockquote>', 'testting 3', 'posts/bg_1762288480_b909a4e7.jpg', 'published', 1, 1, 1, 1, '', '2025-11-04 19:20:00', '2025-11-04 02:43:27', '2025-11-04 20:34:40', NULL),
-(4, 'test 4', 'test-4', '<p>oinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndf</p>', 'oinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfu...', 'posts/logo_1762291287_1b6ace41.png', 'published', 3, 1, 0, 0, '', '2025-11-04 22:21:00', '2025-11-04 21:21:27', '2025-11-04 21:21:27', NULL);
+INSERT INTO `posts` (`id`, `title`, `slug`, `content`, `excerpt`, `featured_image`, `status`, `category_id`, `author_id`, `view_count`, `is_featured`, `meta_title`, `meta_description`, `meta_keywords`, `published_at`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 'test1', 'test1', '<p>test buat artikel test edit</p>', 'test ringkas', 'posts/2025/11/1762220508_690959dc1eded.png', 'published', 2, 1, 0, 1, NULL, 'test seo', NULL, '2025-11-04 02:42:41', '2025-11-04 01:41:48', '2025-11-04 01:42:51', '2025-11-04 01:42:51'),
+(2, 'test 2', 'test-2', '<p>cdsccdcsdcfdv</p>', 'test', 'posts/images_1762288353_b54f615e.png', 'published', 2, 1, 13, 1, '', 'test', '', '2025-11-04 03:32:00', '2025-11-04 02:32:56', '2025-11-05 19:41:52', NULL),
+(3, 'test3', 'test3_deleted1762368024', '<blockquote><p>testting 3</p></blockquote>', 'testting 3', 'posts/bg_1762288480_b909a4e7.jpg', 'archived', 1, 1, 1, 1, '', '', '', '2025-11-04 19:20:00', '2025-11-04 02:43:27', '2025-11-05 18:40:24', '2025-11-05 18:40:24'),
+(4, 'test 4', 'test-4_deleted1762368020', '<p>oinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndf</p>', 'oinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfu...', 'posts/logo_1762291287_1b6ace41.png', 'archived', 3, 1, 0, 1, '', '', '', '2025-11-04 22:21:00', '2025-11-04 21:21:27', '2025-11-05 18:40:20', '2025-11-05 18:40:20'),
+(5, 'test pakai tag', 'test-pakai-tag_deleted1762368017', '<p>testingg tag broooo</p>', 'testingg tag broooo', 'posts/avatar-1_1762353819_243f9761.png', 'archived', 1, 1, 0, 1, 'test update', '', '', '2025-11-05 15:42:00', '2025-11-05 14:43:39', '2025-11-05 18:40:17', '2025-11-05 18:40:17'),
+(6, 'test 3', 'test-3_deleted1762368013', '<p>cscsdc</p>', '', NULL, 'archived', 3, 1, 0, 1, '', '', '', '2025-11-05 18:39:00', '2025-11-05 18:39:20', '2025-11-05 18:40:13', '2025-11-05 18:40:13'),
+(8, 'test4', 'test4', '<p>csdcdcdsc</p>', '', 'posts/images_1762371444_fdb15d91.jpg', 'published', 3, 1, 0, 1, '', '', '', '2025-11-05 18:53:00', '2025-11-05 18:55:03', '2025-11-05 20:37:24', NULL),
+(9, 'test 5', 'test-5', '<p>ckscmds</p>', '', 'posts/133960034_p6_master1200_1762369124_44fc8dd2.jpg', 'published', 4, 1, 2, 1, '', '', '', '2025-11-05 18:58:00', '2025-11-05 18:58:44', '2025-11-06 00:30:48', NULL),
+(10, 'test6', 'test6_deleted1762370909', '<p>cancnksdcd</p>', '', 'posts/photo_6174834757762925565_y_1762369307_01075311.jpg', 'archived', 1, 1, 0, 1, '', '', '', '2025-11-05 19:01:00', '2025-11-05 19:01:47', '2025-11-05 19:28:29', '2025-11-05 19:28:29'),
+(11, 'test 7', 'test-7_deleted1762370758', '<p>csdcsvfsv</p>', 'cdsc', 'posts/photo_6217739526839847528_y_1762370261_4c0e509e.jpg', 'archived', 1, 1, 0, 1, '', '', '', '2025-11-05 19:17:00', '2025-11-05 19:17:41', '2025-11-05 19:25:58', '2025-11-05 19:25:58'),
+(12, 'test 5', 'test-5-1', '<p>fdvvdfv</p>', '', 'posts/photo_6217739526839847528_y_1762385767_1d2d8948.jpg', 'published', 2, 1, 1, 1, '', '', '', '2025-11-05 23:35:00', '2025-11-05 23:36:07', '2025-11-06 00:30:43', NULL);
 
 -- --------------------------------------------------------
 
@@ -583,7 +716,7 @@ INSERT INTO `post_categories` (`id`, `name`, `slug`, `description`, `icon`, `col
 (2, 'Artikel', 'artikel', 'Artikel edukatif dan best practice', 'fa-file-alt', '#10B981', 1, '2025-11-03 23:05:42', '2025-11-03 23:05:42', NULL),
 (3, 'Pengumuman', 'pengumuman', 'Pengumuman resmi BTIKP', 'fa-bullhorn', '#F59E0B', 1, '2025-11-03 23:05:42', '2025-11-03 23:05:42', NULL),
 (4, 'Kegiatan', 'kegiatan', 'Liputan kegiatan dan acara', 'fa-calendar-check', '#8B5CF6', 1, '2025-11-03 23:05:42', '2025-11-03 23:05:42', NULL),
-(6, 'Perhatian', 'perhatian', 'perhatian perhatian', NULL, NULL, 1, '2025-11-05 02:19:39', '2025-11-05 01:19:39', NULL);
+(8, 'test4', 'test4', '', NULL, NULL, 1, '2025-11-05 20:34:39', '2025-11-05 19:34:39', NULL);
 
 -- --------------------------------------------------------
 
@@ -602,8 +735,18 @@ CREATE TABLE `post_tags` (
 --
 
 INSERT INTO `post_tags` (`post_id`, `tag_id`, `created_at`) VALUES
-(1, 2, '2025-11-04 01:42:41'),
-(2, 2, '2025-11-04 20:32:33');
+(2, 22, '2025-11-05 18:41:52'),
+(2, 24, '2025-11-05 18:41:52'),
+(8, 22, '2025-11-05 19:37:24'),
+(8, 24, '2025-11-05 19:37:24'),
+(9, 22, '2025-11-05 18:58:44'),
+(9, 24, '2025-11-05 18:58:44'),
+(10, 22, '2025-11-05 19:01:48'),
+(10, 24, '2025-11-05 19:01:48'),
+(11, 22, '2025-11-05 19:25:49'),
+(11, 24, '2025-11-05 19:25:49'),
+(12, 22, '2025-11-05 23:36:07'),
+(12, 24, '2025-11-05 23:36:07');
 
 -- --------------------------------------------------------
 
@@ -780,28 +923,28 @@ CREATE TABLE `settings` (
 --
 
 INSERT INTO `settings` (`id`, `key`, `value`, `type`, `group`, `created_at`, `updated_at`) VALUES
-(1, 'site_name', 'BTIKP Kalimantan Selatan', 'text', 'general', '2025-11-04 18:55:37', '2025-11-05 01:07:20'),
-(2, 'site_tagline', 'Balai Teknologi Informasi dan Komunikasi Pendidikan', 'text', 'general', '2025-11-04 18:55:37', '2025-11-05 01:07:20'),
-(3, 'site_description', 'Portal resmi BTIKP Provinsi Kalimantan Selatan', 'textarea', 'general', '2025-11-04 18:55:37', '2025-11-05 01:07:20'),
-(4, 'site_keywords', 'btikp, kalsel, pendidikan, teknologi, informasi', 'text', 'general', '2025-11-04 18:55:37', '2025-11-05 01:07:20'),
+(1, 'site_name', 'BTIKP Kalimantan Selatan', 'text', 'general', '2025-11-04 18:55:37', '2025-11-05 23:24:42'),
+(2, 'site_tagline', 'Balai Teknologi Informasi dan Komunikasi Pendidikan', 'text', 'general', '2025-11-04 18:55:37', '2025-11-05 23:24:42'),
+(3, 'site_description', 'Portal resmi BTIKP Provinsi Kalimantan Selatan', 'textarea', 'general', '2025-11-04 18:55:37', '2025-11-05 23:24:42'),
+(4, 'site_keywords', 'btikp, kalsel, pendidikan, teknologi, informasi', 'text', 'general', '2025-11-04 18:55:37', '2025-11-05 23:24:42'),
 (5, 'site_logo', 'settings/logo_1761875034_1762288465_0ec046e1.png', 'file', 'general', '2025-11-04 18:55:37', '2025-11-04 20:34:25'),
 (6, 'site_favicon', 'settings/logo_1761875034_1762288409_65324299.png', 'file', 'general', '2025-11-04 18:55:37', '2025-11-04 20:33:29'),
-(7, 'contact_phone', '(0511) 1234567', 'text', 'contact', '2025-11-04 18:55:37', '2025-11-05 01:07:20'),
-(8, 'contact_email', 'info@btikp-kalsel.id', 'text', 'contact', '2025-11-04 18:55:37', '2025-11-05 01:07:20'),
-(9, 'contact_address', 'Jl. Pendidikan No. 123, Banjarmasin, Kalimantan Selatan', 'textarea', 'contact', '2025-11-04 18:55:37', '2025-11-05 01:07:20'),
-(10, 'contact_maps_embed', '', 'textarea', 'contact', '2025-11-04 18:55:37', '2025-11-05 01:07:20'),
-(11, 'social_facebook', '', 'text', 'social', '2025-11-04 18:55:37', '2025-11-05 01:07:20'),
-(12, 'social_instagram', '', 'text', 'social', '2025-11-04 18:55:37', '2025-11-05 01:07:20'),
-(13, 'social_youtube', '', 'text', 'social', '2025-11-04 18:55:37', '2025-11-05 01:07:20'),
-(14, 'social_twitter', '', 'text', 'social', '2025-11-04 18:55:37', '2025-11-05 01:07:20'),
-(15, 'upload_max_size', '7', 'number', 'upload', '2025-11-04 18:55:37', '2025-11-05 01:07:20'),
-(16, 'upload_allowed_images', 'jpg,jpeg,png,gif,webp', 'text', 'upload', '2025-11-04 18:55:37', '2025-11-05 01:07:20'),
-(17, 'upload_allowed_docs', 'pdf,doc,docx,xls,xlsx,ppt,pptx', 'text', 'upload', '2025-11-04 18:55:37', '2025-11-05 01:07:20'),
-(18, 'items_per_page', '10', 'number', 'general', '2025-11-04 18:55:37', '2025-11-05 01:07:20'),
+(7, 'contact_phone', '(0511) 1234567', 'text', 'contact', '2025-11-04 18:55:37', '2025-11-05 23:24:43'),
+(8, 'contact_email', 'info@btikp-kalsel.id', 'text', 'contact', '2025-11-04 18:55:37', '2025-11-05 23:24:43'),
+(9, 'contact_address', 'Jl. Pendidikan No. 123, Banjarmasin, Kalimantan Selatan', 'textarea', 'contact', '2025-11-04 18:55:37', '2025-11-05 23:24:43'),
+(10, 'contact_maps_embed', '', 'textarea', 'contact', '2025-11-04 18:55:37', '2025-11-05 23:24:43'),
+(11, 'social_facebook', '', 'text', 'social', '2025-11-04 18:55:37', '2025-11-05 23:24:43'),
+(12, 'social_instagram', '', 'text', 'social', '2025-11-04 18:55:37', '2025-11-05 23:24:43'),
+(13, 'social_youtube', '', 'text', 'social', '2025-11-04 18:55:37', '2025-11-05 23:24:43'),
+(14, 'social_twitter', '', 'text', 'social', '2025-11-04 18:55:37', '2025-11-05 23:24:43'),
+(15, 'upload_max_size', '5', 'number', 'upload', '2025-11-04 18:55:37', '2025-11-05 23:24:42'),
+(16, 'upload_allowed_images', 'jpg,jpeg,png,gif,webp', 'text', 'upload', '2025-11-04 18:55:37', '2025-11-05 23:24:42'),
+(17, 'upload_allowed_docs', 'pdf,doc,docx,xls,xlsx,ppt,pptx', 'text', 'upload', '2025-11-04 18:55:37', '2025-11-05 23:24:42'),
+(18, 'items_per_page', '10', 'number', 'general', '2025-11-04 18:55:37', '2025-11-05 23:24:42'),
 (19, 'posts_per_page_public', '12', 'number', 'general', '2025-11-04 18:55:37', NULL),
-(22, 'site_copyright', '© {year} BTIKP Kalimantan Selatan. All Rights Reserved.', 'text', 'general', '2025-11-04 19:30:44', '2025-11-05 01:07:20'),
-(23, 'site_logo_text', 'BTIKP KALSEL', 'text', 'general', '2025-11-04 19:30:44', '2025-11-05 01:07:20'),
-(24, 'site_logo_show_text', '1', 'boolean', 'general', '2025-11-04 19:30:44', '2025-11-05 01:07:20');
+(22, 'site_copyright', '© {year} BTIKP Kalimantan Selatan. All Rights Reserved.', 'text', 'general', '2025-11-04 19:30:44', '2025-11-05 23:24:42'),
+(23, 'site_logo_text', 'BTIKP KALSEL', 'text', 'general', '2025-11-04 19:30:44', '2025-11-05 23:24:42'),
+(24, 'site_logo_show_text', '1', 'boolean', 'general', '2025-11-04 19:30:44', '2025-11-05 23:24:42');
 
 -- --------------------------------------------------------
 
@@ -832,16 +975,17 @@ CREATE TABLE `tags` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `slug` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tags`
 --
 
-INSERT INTO `tags` (`id`, `name`, `slug`, `created_at`) VALUES
-(1, 'Test Tag', 'test-tag', '2025-11-04 00:21:05'),
-(2, 'teknologi', 'teknologi', '2025-11-04 01:41:48');
+INSERT INTO `tags` (`id`, `name`, `slug`, `created_at`, `deleted_at`) VALUES
+(22, 'teknologi', 'teknologi', '2025-11-05 19:40:35', NULL),
+(24, 'test 1', 'test-1', '2025-11-05 19:41:52', NULL);
 
 -- --------------------------------------------------------
 
@@ -876,10 +1020,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `phone`, `address`, `photo`, `password`, `role`, `last_login_at`, `created_by`, `updated_by`, `login_attempts`, `locked_until`, `two_factor_enabled`, `two_factor_secret`, `is_active`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'Super Administrator', 'admin@btikp-kalsel.id', '081234567891', 'Banjarmasin barat', 'users/avatar-3_1762292898_a63d422a.png', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'super_admin', '2025-11-05 01:18:16', NULL, 1, 0, NULL, 0, NULL, 1, '2025-11-03 23:05:42', '2025-11-05 01:18:16', NULL),
+(1, 'Lycoris', 'admin@btikp-kalsel.id', '081234567891', 'Banjarmasin barat', 'users/img_8248_1762385835_8fb6a730.PNG', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'super_admin', '2025-11-06 02:49:45', NULL, 1, 0, NULL, 0, NULL, 1, '2025-11-03 23:05:42', '2025-11-06 02:49:45', NULL),
 (23, 'admin1', 'admin1_deleted1762298032@gmail.com', '081234567892', 'cdcdsc', 'users/avatar-3_1762298023_a1ce8797.png', '$2y$10$72qIhq9lgdYLs0ZX3ljVuO/3cp.YJp9vtHoB1qiNSYfSm1Y6IY2ye', 'admin', NULL, 1, 1, 0, NULL, 0, NULL, 0, '2025-11-05 00:13:43', '2025-11-04 23:13:52', '2025-11-04 23:13:52'),
 (24, 'admin1', 'admin1_deleted1762298084@gmail.com', '081234567892', 'cdscdsc', 'users/avatar-1_1762298056_af4fc7bc.png', '$2y$10$v6jctD3.Vx99eZD1zUx05uNex1zd5BmeHtvnFnCnSdkGUjXeKux6.', 'admin', NULL, 1, 1, 0, NULL, 0, NULL, 1, '2025-11-05 00:14:16', '2025-11-04 23:14:44', '2025-11-04 23:14:44'),
-(25, 'admin1', 'admin1_deleted1762298735@gmail.com', '081234567892', 'cdscdc', 'users/avatar-3_1762298728_00a7d6a3.png', '$2y$10$8sbP6o9/XN3Zbf0qSdJWzOqmwDgIHSb02aKNSyEhrB3ieI.Rdp.R.', 'editor', NULL, 1, NULL, 0, NULL, 0, NULL, 0, '2025-11-05 00:25:29', '2025-11-04 23:25:35', '2025-11-04 23:25:35');
+(25, 'admin1', 'admin1_deleted1762298735@gmail.com', '081234567892', 'cdscdc', 'users/avatar-3_1762298728_00a7d6a3.png', '$2y$10$8sbP6o9/XN3Zbf0qSdJWzOqmwDgIHSb02aKNSyEhrB3ieI.Rdp.R.', 'editor', NULL, 1, NULL, 0, NULL, 0, NULL, 0, '2025-11-05 00:25:29', '2025-11-04 23:25:35', '2025-11-04 23:25:35'),
+(26, 'admin1', 'admin1@gmail.com', '081234567891', '', NULL, '$2y$10$J9HhDMrCTFt0aH16Ks2/SOeA6QLXhWsEiVuWLWV3sU9320eXOjngq', 'editor', '2025-11-06 00:33:17', 1, 26, 0, NULL, 0, NULL, 1, '2025-11-06 01:33:09', '2025-11-06 01:34:25', NULL);
 
 -- --------------------------------------------------------
 
@@ -959,6 +1104,15 @@ ALTER TABLE `banners`
   ADD KEY `idx_dates` (`start_date`,`end_date`);
 
 --
+-- Indexes for table `categories`
+--
+ALTER TABLE `categories`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `slug` (`slug`),
+  ADD KEY `idx_parent_id` (`parent_id`),
+  ADD KEY `idx_deleted_at` (`deleted_at`);
+
+--
 -- Indexes for table `comments`
 --
 ALTER TABLE `comments`
@@ -999,6 +1153,13 @@ ALTER TABLE `galleries`
   ADD KEY `idx_album` (`album`),
   ADD KEY `idx_is_active` (`is_active`),
   ADD KEY `idx_display_order` (`display_order`);
+
+--
+-- Indexes for table `gallery_albums`
+--
+ALTER TABLE `gallery_albums`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `slug` (`slug`);
 
 --
 -- Indexes for table `integration_logs`
@@ -1179,7 +1340,9 @@ ALTER TABLE `statistics_snapshots`
 ALTER TABLE `tags`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `slug` (`slug`),
-  ADD KEY `idx_slug` (`slug`);
+  ADD UNIQUE KEY `name_unique` (`name`),
+  ADD KEY `idx_slug` (`slug`),
+  ADD KEY `idx_deleted_at` (`deleted_at`);
 
 --
 -- Indexes for table `users`
@@ -1201,7 +1364,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `activity_logs`
 --
 ALTER TABLE `activity_logs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=121;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=200;
 
 --
 -- AUTO_INCREMENT for table `agendas`
@@ -1220,6 +1383,12 @@ ALTER TABLE `api_integrations`
 --
 ALTER TABLE `banners`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `categories`
+--
+ALTER TABLE `categories`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `comments`
@@ -1244,6 +1413,12 @@ ALTER TABLE `file_categories`
 --
 ALTER TABLE `galleries`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `gallery_albums`
+--
+ALTER TABLE `gallery_albums`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `integration_logs`
@@ -1285,13 +1460,13 @@ ALTER TABLE `page_views`
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `post_categories`
 --
 ALTER TABLE `post_categories`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `schools`
@@ -1315,7 +1490,7 @@ ALTER TABLE `services`
 -- AUTO_INCREMENT for table `settings`
 --
 ALTER TABLE `settings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=278;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
 
 --
 -- AUTO_INCREMENT for table `statistics_snapshots`
@@ -1327,13 +1502,13 @@ ALTER TABLE `statistics_snapshots`
 -- AUTO_INCREMENT for table `tags`
 --
 ALTER TABLE `tags`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 -- --------------------------------------------------------
 
@@ -1410,7 +1585,7 @@ ALTER TABLE `pages`
 -- Constraints for table `posts`
 --
 ALTER TABLE `posts`
-  ADD CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `post_categories` (`id`),
+  ADD CONSTRAINT `posts_category_fk` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `posts_ibfk_2` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`);
 
 --

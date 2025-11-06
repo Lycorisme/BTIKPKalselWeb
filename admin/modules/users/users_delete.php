@@ -47,9 +47,13 @@ if ($user['role'] == 'super_admin' && !hasRole('super_admin')) {
 // Delete user
 try {
     // Debug log
-    error_log("Attempting to delete user ID: {$userId}, Name: {$user['name']}");
+    error_log("Attempting to SOFT DELETE user ID: {$userId}, Name: {$user['name']}");
     
+    // ----- PERBAIKAN DI SINI -----
+    // Pastikan kita memanggil 'softDelete' (sesuai Model.php dan User.php)
+    // BUKAN 'delete'
     $result = $userModel->softDelete($userId);
+    // ----- BATAS PERBAIKAN -----
     
     // Debug result
     error_log("Delete result: " . var_export($result, true));

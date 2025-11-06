@@ -443,3 +443,24 @@ function refreshUserSession($userId) {
         }
     }
 }
+
+function publicFileUrl($path) {
+    if (empty($path)) {
+        return BASE_URL . 'assets/images/no-file.png'; // fallback
+    }
+    
+    // Normalisasi path: hilangkan public/, uploads\ atau uploads/
+    $filePath = str_replace(['public/', 'public\\', 'uploads\\'], '', $path);
+    
+    // Pastikan dimulai dengan uploads/
+    if (strpos($filePath, 'uploads/') !== 0) {
+        $filePath = 'uploads/' . ltrim($filePath, '/');
+    }
+    
+    return BASE_URL . $filePath;
+}
+
+function bannerImageUrl($image_path) {
+    $filename = basename($image_path);
+    return BASE_URL . 'uploads/banners/' . $filename;
+}
