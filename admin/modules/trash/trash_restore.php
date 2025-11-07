@@ -56,6 +56,11 @@ try {
             $stmt->execute([$id]);
             setAlert('success', 'Pesan kontak berhasil dipulihkan!');
             break;
+        case 'page':
+            $stmt = $db->prepare("UPDATE pages SET deleted_at=NULL WHERE id=?");
+            $stmt->execute([$id]);
+            setAlert('success', 'Halaman berhasil dipulihkan!');
+            break;
         default:
             setAlert('danger', 'Tipe data tidak dikenal.');
             break;

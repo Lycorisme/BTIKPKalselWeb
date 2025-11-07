@@ -21,12 +21,10 @@ $dateFrom = $_GET['date_from'] ?? '';
 $dateTo = $_GET['date_to'] ?? '';
 $exportPdf = $_GET['export_pdf'] ?? '';
 
-// Build query
+// Build query without join user (author_id tidak ada)
 $sql = "SELECT 
-            s.*,
-            u.name as author_name
+            s.*
         FROM services s
-        LEFT JOIN users u ON s.author_id = u.id
         WHERE s.deleted_at IS NULL";
 
 $params = [];
@@ -66,22 +64,7 @@ foreach ($services as $service) {
     }
 }
 
-// Get services by author
-$authorStatsStmt = $db->query("
-    SELECT 
-        u.name,
-        COUNT(s.id) as total
-    FROM users u
-    LEFT JOIN services s ON u.id = s.author_id AND s.deleted_at IS NULL
-    WHERE u.deleted_at IS NULL
-    GROUP BY u.id, u.name
-    HAVING total > 0
-    ORDER BY total DESC
-    LIMIT 10
-");
-$authorStats = $authorStatsStmt->fetchAll();
-
-// Get recent services
+// Recent services (limit 10)
 $recentStmt = $db->query("
     SELECT title, created_at
     FROM services
@@ -94,7 +77,6 @@ $recentServices = $recentStmt->fetchAll();
 // Export to PDF
 if ($exportPdf === '1') {
     try {
-        // Get site settings
         $siteName = getSetting('site_name', 'BTIKP Kalimantan Selatan');
         $siteTagline = getSetting('site_tagline', '');
         $contactPhone = getSetting('contact_phone', '');
@@ -102,7 +84,6 @@ if ($exportPdf === '1') {
         $contactAddress = getSetting('contact_address', '');
         $siteLogo = getSetting('site_logo', '');
         
-        // Initialize mPDF - Portrait A4
         $mpdf = new \Mpdf\Mpdf([
             'mode' => 'utf-8',
             'format' => 'A4',
@@ -113,34 +94,22 @@ if ($exportPdf === '1') {
             'margin_header' => 0,
             'margin_footer' => 10,
         ]);
-        
-        // Set default font
         $mpdf->SetDefaultFont('cambria');
         
-        // Footer HTML
         $footer = '
         <table width="100%" style="border-top: 1px solid #000; padding-top: 5px; font-size: 9pt;">
             <tr>
-                <td width="70%" style="text-align: left;">
-                    ' . htmlspecialchars($siteName) . '
-                </td>
-                <td width="30%" style="text-align: right;">
-                    Halaman {PAGENO} dari {nbpg}
-                </td>
+                <td width="70%" style="text-align: left;">' . htmlspecialchars($siteName) . '</td>
+                <td width="30%" style="text-align: right;">Halaman {PAGENO} dari {nbpg}</td>
             </tr>
         </table>';
-        
         $mpdf->SetHTMLFooter($footer);
         
-        // Load template
         ob_start();
         include __DIR__ . '/templates/laporan_services_pdf.php';
         $html = ob_get_clean();
         
-        // Write HTML to PDF
         $mpdf->WriteHTML($html);
-        
-        // Output PDF
         $mpdf->Output('Laporan_Layanan_' . date('Ymd_His') . '.pdf', 'I');
         exit;
         
@@ -175,9 +144,7 @@ include '../../includes/header.php';
         <!-- Filter Card -->
         <div class="card mb-3">
             <div class="card-header">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-funnel"></i> Filter Laporan
-                </h5>
+                <h5 class="card-title mb-0"><i class="bi bi-funnel"></i> Filter Laporan</h5>
             </div>
             <div class="card-body">
                 <form method="GET">
@@ -271,7 +238,6 @@ include '../../includes/header.php';
                                     <tr>
                                         <th>No</th>
                                         <th>Judul</th>
-                                        <th>Penulis</th>
                                         <th>Status</th>
                                         <th>Tanggal</th>
                                     </tr>
@@ -279,16 +245,15 @@ include '../../includes/header.php';
                                 <tbody>
                                     <?php if (empty($services)): ?>
                                         <tr>
-                                            <td colspan="5" class="text-center text-muted">Tidak ada data</td>
+                                            <td colspan="4" class="text-center text-muted">Tidak ada data</td>
                                         </tr>
                                     <?php else: ?>
                                         <?php $no = 1; foreach ($services as $service): ?>
                                             <tr>
                                                 <td><?= $no++ ?></td>
                                                 <td><?= htmlspecialchars($service['title']) ?></td>
-                                                <td><?= htmlspecialchars($service['author_name']) ?></td>
-                                                <td><?= getStatusBadge($service['status']) ?></td>
-                                                <td><?= formatTanggal($service['created_at'], 'd M Y') ?></td>
+                                                <td class="text-center"><?= ucfirst($service['status']) ?></td>
+                                                <td class="text-center"><?= formatTanggal($service['created_at'], 'd/m/Y') ?></td>
                                             </tr>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
@@ -301,33 +266,6 @@ include '../../includes/header.php';
             
             <!-- Side Stats -->
             <div class="col-lg-4">
-                <!-- Top Authors -->
-                <div class="card mb-3">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Top Penulis</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-sm">
-                                <tbody>
-                                    <?php if (empty($authorStats)): ?>
-                                        <tr>
-                                            <td colspan="2" class="text-center text-muted">Tidak ada data</td>
-                                        </tr>
-                                    <?php else: ?>
-                                        <?php foreach ($authorStats as $author): ?>
-                                            <tr>
-                                                <td><?= htmlspecialchars($author['name']) ?></td>
-                                                <td class="text-end"><strong><?= formatNumber($author['total']) ?></strong></td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                
                 <!-- Recent Services -->
                 <div class="card">
                     <div class="card-header">
@@ -344,10 +282,8 @@ include '../../includes/header.php';
                                     <?php else: ?>
                                         <?php foreach ($recentServices as $recent): ?>
                                             <tr>
-                                                <td><?= htmlspecialchars(truncateText($recent['title'], 35)) ?></td>
-                                                <td class="text-end text-muted" style="font-size: 0.85rem;">
-                                                    <?= formatTanggal($recent['created_at'], 'd M Y') ?>
-                                                </td>
+                                                <td><?= htmlspecialchars(truncateText($recent['title'], 30)) ?></td>
+                                                <td class="text-center"><?= formatTanggal($recent['created_at'], 'd/m/Y') ?></td>
                                             </tr>
                                         <?php endforeach; ?>
                                     <?php endif; ?>

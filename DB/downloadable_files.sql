@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 06, 2025 at 10:55 AM
+-- Generation Time: Nov 07, 2025 at 05:09 AM
 -- Server version: 5.7.39
 -- PHP Version: 8.2.29
 
@@ -46,6 +46,14 @@ CREATE TABLE `downloadable_files` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
+-- Dumping data for table `downloadable_files`
+--
+
+INSERT INTO `downloadable_files` (`id`, `title`, `description`, `file_path`, `file_type`, `file_size`, `mime_type`, `category_id`, `thumbnail_path`, `download_count`, `is_active`, `uploaded_by`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(8, 'test1', 'csdccdscd', 'uploads/files/1762434090-133960034_p3_master1200.jpg', 'jpg', 1003907, 'image/jpeg', NULL, NULL, 0, 1, 1, '2025-11-06 13:01:30', '2025-11-06 20:16:54', NULL),
+(9, 'test', 'cscdc', 'uploads/files/1762437390-6N-UTS.pdf', 'pdf', 95828, 'application/pdf', NULL, NULL, 0, 1, 1, '2025-11-06 13:56:30', '2025-11-06 21:21:13', NULL);
+
+--
 -- Indexes for dumped tables
 --
 
@@ -69,7 +77,7 @@ ALTER TABLE `downloadable_files` ADD FULLTEXT KEY `idx_search` (`title`,`descrip
 -- AUTO_INCREMENT for table `downloadable_files`
 --
 ALTER TABLE `downloadable_files`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Constraints for dumped tables

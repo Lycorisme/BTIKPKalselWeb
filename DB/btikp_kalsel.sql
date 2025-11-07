@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 06, 2025 at 03:01 AM
+-- Generation Time: Nov 07, 2025 at 08:45 AM
 -- Server version: 5.7.39
 -- PHP Version: 8.2.29
 
@@ -267,11 +267,79 @@ INSERT INTO `activity_logs` (`id`, `user_id`, `action`, `user_name`, `action_typ
 (192, 1, NULL, 'Lycoris', 'UPDATE', 'Mengupdate profil', 'users', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-05 23:37:15'),
 (193, 1, NULL, 'Lycoris', 'CREATE', 'Menambah pengguna baru: admin1', 'users', 26, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 00:33:09'),
 (194, 1, NULL, 'Lycoris', 'LOGOUT', 'User melakukan logout', NULL, NULL, '::1', NULL, '2025-11-06 00:33:13'),
-(195, 26, NULL, 'admin1', 'LOGIN', 'User login ke sistem', 'users', 26, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 00:33:17'),
-(196, 26, NULL, 'admin1', 'UPDATE', 'Mengupdate pengguna: admin1', 'users', 26, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 00:34:25'),
-(197, 26, NULL, 'admin1', 'LOGOUT', 'User melakukan logout', NULL, NULL, '::1', NULL, '2025-11-06 00:37:29'),
+(195, NULL, NULL, 'admin1', 'LOGIN', 'User login ke sistem', 'users', 26, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 00:33:17'),
+(196, NULL, NULL, 'admin1', 'UPDATE', 'Mengupdate pengguna: admin1', 'users', 26, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 00:34:25'),
+(197, NULL, NULL, 'admin1', 'LOGOUT', 'User melakukan logout', NULL, NULL, '::1', NULL, '2025-11-06 00:37:29'),
 (198, 1, NULL, 'Lycoris', 'LOGIN', 'User login ke sistem', 'users', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 00:43:34'),
-(199, 1, NULL, 'Lycoris', 'LOGIN', 'User login ke sistem', 'users', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 02:49:45');
+(199, 1, NULL, 'Lycoris', 'LOGIN', 'User login ke sistem', 'users', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 02:49:45'),
+(200, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus album gallery: Pelatihan Guru 2024', 'gallery_albums', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 03:22:13'),
+(201, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus album gallery: Workshop TIK', 'gallery_albums', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 03:22:17'),
+(202, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus album gallery: Kunjungan Sekolah', 'gallery_albums', 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 03:22:21'),
+(203, 1, NULL, 'Lycoris', 'CREATE', 'Membuat album gallery: test album', 'gallery_albums', 4, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 03:22:47'),
+(204, 1, NULL, 'Lycoris', 'CREATE', 'Upload 2 foto ke album: test album', 'gallery_photos', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 03:23:15'),
+(205, 1, NULL, 'Lycoris', 'UPDATE', 'Reorder foto di album ID: 4', 'gallery_photos', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 03:31:09'),
+(206, 1, NULL, 'Lycoris', 'UPDATE', 'Reorder foto di album ID: 4', 'gallery_photos', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 03:31:26'),
+(207, 1, NULL, 'Lycoris', 'UPDATE', 'Reorder foto di album ID: 4', 'gallery_photos', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 03:31:29'),
+(208, 1, NULL, 'Lycoris', 'UPDATE', 'Reorder foto di album ID: 4', 'gallery_photos', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 03:31:53'),
+(209, 1, NULL, 'Lycoris', 'CREATE', 'Upload 1 foto ke album: test album', 'gallery_photos', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 03:32:23'),
+(210, 1, NULL, 'Lycoris', 'UPDATE', 'Reorder foto di album ID: 4', 'gallery_photos', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 03:32:26'),
+(211, 1, NULL, 'Lycoris', 'UPDATE', 'Reorder foto di album ID: 4', 'gallery_photos', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 03:32:28'),
+(212, 1, NULL, 'Lycoris', 'UPDATE', 'Mengupdate album gallery: test album edit', 'gallery_albums', 4, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 03:33:25'),
+(213, 1, NULL, 'Lycoris', 'UPDATE', 'Mengupdate album gallery: test album edit', 'gallery_albums', 4, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 03:33:42'),
+(214, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus pesan dari: John Doe (john@example.com)', 'contact_messages', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 04:35:08'),
+(215, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus pesan dari: xsdcdsc (csdcdsc@gmail.com)', 'contact_messages', 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 04:54:39'),
+(216, 1, NULL, 'Lycoris', 'UPDATE', 'Mengupdate settings website (19 items)', 'settings', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 05:16:59'),
+(217, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus layanan: Pengembangan Website', 'services', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 05:41:59'),
+(218, 1, NULL, 'Lycoris', 'CREATE', 'Menambah post: test6', 'posts', 13, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 10:27:30'),
+(219, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus post: test 2', 'posts', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 10:27:59'),
+(220, 1, NULL, 'Lycoris', 'UPDATE', 'Reorder foto di album ID: 4', 'gallery_photos', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 12:29:49'),
+(221, 1, NULL, 'Lycoris', 'CREATE', 'Membuat album gallery: test', 'gallery_albums', 5, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 20:34:03'),
+(222, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus album gallery: test', 'gallery_albums', 5, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 20:34:27'),
+(223, 1, NULL, 'Lycoris', 'UPDATE', 'Mengupdate album gallery: test album edit', 'gallery_albums', 4, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 20:40:06'),
+(224, 1, NULL, 'Lycoris', 'UPDATE', 'Mengupdate album gallery: test album edit', 'gallery_albums', 4, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 20:40:51');
+INSERT INTO `activity_logs` (`id`, `user_id`, `action`, `user_name`, `action_type`, `description`, `model_type`, `model_id`, `ip_address`, `user_agent`, `created_at`) VALUES
+(225, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus pesan dari: Jane Smith (jane@example.com)', 'contact_messages', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 20:47:05'),
+(226, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus pesan dari: test (test@gmail.com)', 'contact_messages', 4, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 20:51:28'),
+(227, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus pesan dari: cscd (cdscd@gmail.com)', 'contact_messages', 5, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 21:04:24'),
+(228, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus pesan dari: cdscdsc (vdfvdfv)', 'contact_messages', 6, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 21:15:40'),
+(229, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus pesan dari: cdscdsc (vdfvdfv)', 'contact_messages', 6, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 21:15:55'),
+(230, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus post: test 5', 'posts', 12, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 21:16:33'),
+(231, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus kategori: Artikel', 'post_categories', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 21:19:00'),
+(232, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus layanan: Pengembangan Website', 'services', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 21:20:05'),
+(233, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus album gallery: test album edit', 'gallery_albums', 4, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 21:20:12'),
+(234, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus post: test 5', 'posts', 12, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 21:20:28'),
+(235, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus pengguna: admin1', 'users', 26, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 21:36:57'),
+(236, 1, NULL, 'Lycoris', 'CREATE', 'Menambah pengguna baru: admin1', 'users', 27, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 21:46:13'),
+(237, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus pengguna: admin1', 'users', 27, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 21:46:19'),
+(238, 1, NULL, 'Lycoris', 'CREATE', 'Menambah pengguna baru: admin1', 'users', 28, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 21:46:52'),
+(239, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus pengguna: admin1', 'users', 27, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 21:53:13'),
+(240, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus pengguna: admin1', 'users', 28, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 21:53:28'),
+(241, 1, NULL, 'Lycoris', 'CREATE', 'Menambah pengguna baru: admin1', 'users', 29, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 21:53:48'),
+(242, 1, NULL, 'Lycoris', 'UPDATE', 'Mengubah halaman: testing', 'pages', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 23:22:08'),
+(243, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus halaman: testing', 'pages', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 23:29:09'),
+(244, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus halaman: test halaman', 'pages', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 23:30:49'),
+(245, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus halaman (soft delete): test halaman', 'pages', 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 23:33:50'),
+(246, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus halaman (soft delete): test halaman', 'pages', 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 23:33:58'),
+(247, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus halaman (soft delete): test halaman', 'pages', 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 23:38:03'),
+(248, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus halaman (soft delete): test halaman', 'pages', 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 23:39:55'),
+(249, 1, NULL, 'Lycoris', 'DELETE', 'Menghapus halaman (soft delete): test halaman', 'pages', 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 23:43:15'),
+(250, 1, NULL, 'Lycoris', 'DELETE', 'Soft delete halaman: test halaman', 'pages', 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 23:45:36'),
+(251, 1, NULL, 'Lycoris', 'DELETE', 'Soft delete halaman: test halaman', 'pages', 3, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 23:45:42'),
+(252, 1, NULL, 'Lycoris', 'DELETE', 'Soft delete halaman: test halaman', 'pages', 4, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 23:46:23'),
+(253, 1, NULL, 'Lycoris', 'DELETE', 'Soft delete halaman: test halaman', 'pages', 4, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 23:47:13'),
+(254, 1, NULL, 'Lycoris', 'UPDATE', 'Mengubah halaman: test halaman lagi edit', 'pages', 5, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-06 23:52:17'),
+(255, 1, NULL, 'Lycorismeeee', 'UPDATE', 'Mengupdate profil', 'users', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-07 00:01:43'),
+(256, 1, NULL, 'Lycorismeeee', 'DELETE', 'Menghapus layanan: Pengembangan Website', 'services', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-07 00:45:28'),
+(257, 1, NULL, 'Lycorismeeee', 'UPDATE', 'Mengubah layanan: test layanan', 'services', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-07 01:30:33'),
+(258, 1, NULL, 'Lycorismeeee', 'DELETE', 'Soft delete layanan: test layanan', 'services', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-07 01:30:43'),
+(259, 1, NULL, 'Lycorismeeee', 'DELETE', 'Soft delete layanan: test layanan', 'services', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-07 01:58:14'),
+(260, 1, NULL, 'Lycorismeeee', 'DELETE', 'Soft delete layanan: test layanan', 'services', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-07 02:10:30'),
+(261, 1, NULL, 'Lycorismeeee', 'UPDATE', 'Mengupdate settings website (19 items)', 'settings', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-07 02:43:20'),
+(262, 1, NULL, 'Lycorismeeee', 'UPDATE', 'Mengupdate settings website (19 items)', 'settings', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-07 02:43:33'),
+(263, 1, NULL, 'Lycorismeeee', 'CREATE', 'Upload 1 foto ke album: test album edit', 'gallery_photos', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-07 03:41:27'),
+(264, 29, NULL, 'admin1', 'LOGIN', 'User login ke sistem', 'users', 29, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-07 04:58:12'),
+(265, 29, NULL, 'admin1', 'LOGOUT', 'User melakukan logout', NULL, NULL, '::1', NULL, '2025-11-07 04:58:18'),
+(266, 1, NULL, 'Lycorismeeee', 'LOGIN', 'User login ke sistem', 'users', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', '2025-11-07 04:58:20');
 
 --
 -- Triggers `activity_logs`
@@ -348,8 +416,18 @@ CREATE TABLE `banners` (
   `start_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `ordering` int(10) UNSIGNED NOT NULL DEFAULT '0',
+  `caption` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `banners`
+--
+
+INSERT INTO `banners` (`id`, `title`, `image_path`, `link_url`, `description`, `button_text`, `position`, `is_active`, `start_date`, `end_date`, `created_at`, `updated_at`, `deleted_at`, `ordering`, `caption`) VALUES
+(4, 'test', 'uploads/banners/1762466543-kalimantanselatan__1_.png', 'https://github.com/zuramai/mazer?tab=readme-ov-file', NULL, NULL, 0, 1, NULL, NULL, '2025-11-06 22:02:23', '2025-11-06 22:02:23', NULL, 1, 'test banner caption');
 
 -- --------------------------------------------------------
 
@@ -403,6 +481,28 @@ CREATE TABLE `comments` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `contact_messages`
+--
+
+CREATE TABLE `contact_messages` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `subject` varchar(200) DEFAULT NULL,
+  `message` text,
+  `status` enum('unread','read','replied') DEFAULT 'unread',
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` text,
+  `replied_at` timestamp NULL DEFAULT NULL,
+  `replied_by` int(11) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `deleted_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `downloadable_files`
 --
 
@@ -423,6 +523,14 @@ CREATE TABLE `downloadable_files` (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `downloadable_files`
+--
+
+INSERT INTO `downloadable_files` (`id`, `title`, `description`, `file_path`, `file_type`, `file_size`, `mime_type`, `category_id`, `thumbnail_path`, `download_count`, `is_active`, `uploaded_by`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(8, 'test1', 'csdccdscd', 'uploads/files/1762434090-133960034_p3_master1200.jpg', 'jpg', 1003907, 'image/jpeg', NULL, NULL, 0, 1, 1, '2025-11-06 13:01:30', '2025-11-06 20:16:54', NULL),
+(9, 'test', 'cscdc', 'uploads/files/1762437390-6N-UTS.pdf', 'pdf', 95828, 'application/pdf', NULL, NULL, 0, 1, 1, '2025-11-06 13:56:30', '2025-11-06 21:21:13', NULL);
 
 -- --------------------------------------------------------
 
@@ -481,15 +589,83 @@ CREATE TABLE `galleries` (
 --
 
 CREATE TABLE `gallery_albums` (
-  `id` int(11) NOT NULL,
-  `name` varchar(200) NOT NULL,
-  `slug` varchar(200) NOT NULL,
-  `description` text,
-  `cover_photo` varchar(255) DEFAULT NULL,
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `cover_photo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Path to cover image',
+  `photo_count` int(10) UNSIGNED DEFAULT '0' COMMENT 'Cache count photos',
+  `display_order` int(10) UNSIGNED DEFAULT '0',
+  `is_active` tinyint(1) DEFAULT '1',
+  `created_by` int(10) UNSIGNED DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `gallery_albums`
+--
+
+INSERT INTO `gallery_albums` (`id`, `name`, `slug`, `description`, `cover_photo`, `photo_count`, `display_order`, `is_active`, `created_by`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(4, 'test album edit', 'test-album-edit', 'testinggg brooooo', 'gallery/albums/cover_1762400022_690c1716734eb.JPG', 4, 6, 1, 1, '2025-11-06 03:22:47', '2025-11-07 03:41:27', NULL),
+(5, 'test', 'test', '', 'gallery/albums/cover_1762461243_690d063bc6164.JPEG', 0, 1, 1, 1, '2025-11-06 20:34:03', '2025-11-06 20:34:27', '2025-11-06 20:34:27');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gallery_photos`
+--
+
+CREATE TABLE `gallery_photos` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `album_id` int(10) UNSIGNED NOT NULL,
+  `title` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `filename` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Path to photo',
+  `thumbnail` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Auto-generated thumbnail',
+  `caption` text COLLATE utf8mb4_unicode_ci,
+  `file_size` bigint(20) UNSIGNED DEFAULT NULL COMMENT 'Size in bytes',
+  `width` int(10) UNSIGNED DEFAULT NULL,
+  `height` int(10) UNSIGNED DEFAULT NULL,
+  `uploaded_by` int(10) UNSIGNED DEFAULT NULL,
+  `taken_at` date DEFAULT NULL COMMENT 'Photo taken date',
+  `display_order` int(10) UNSIGNED DEFAULT '0',
+  `view_count` int(10) UNSIGNED DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `gallery_photos`
+--
+
+INSERT INTO `gallery_photos` (`id`, `album_id`, `title`, `description`, `filename`, `thumbnail`, `caption`, `file_size`, `width`, `height`, `uploaded_by`, `taken_at`, `display_order`, `view_count`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 4, NULL, NULL, 'gallery/photos/photo_1762399394_690c14a2d4308_0.jpg', 'gallery/thumbnails/thumb_photo_1762399394_690c14a2d4308_0.jpg', NULL, 1003907, 1200, 675, 1, NULL, 0, 0, '2025-11-06 03:23:15', '2025-11-06 21:32:24', NULL),
+(2, 4, NULL, NULL, 'gallery/photos/photo_1762399395_690c14a323493_1.jpg', 'gallery/thumbnails/thumb_photo_1762399395_690c14a323493_1.jpg', NULL, 725744, 1200, 675, 1, NULL, 2, 0, '2025-11-06 03:23:15', '2025-11-06 21:20:12', '2025-11-06 21:20:12'),
+(3, 4, NULL, NULL, 'gallery/photos/photo_1762399942_690c16c6f4142_0.png', 'gallery/thumbnails/thumb_photo_1762399942_690c16c6f4142_0.png', NULL, 1811940, 1366, 768, 1, NULL, 1, 0, '2025-11-06 03:32:23', '2025-11-06 21:20:12', '2025-11-06 21:20:12'),
+(4, 4, NULL, NULL, 'gallery/photos/photo_1762486887_690d6a6765a57_0.jpg', 'gallery/thumbnails/thumb_photo_1762486887_690d6a6765a57_0.jpg', NULL, 1003907, 1200, 675, 1, NULL, 0, 0, '2025-11-07 03:41:27', '2025-11-07 03:41:27', NULL);
+
+--
+-- Triggers `gallery_photos`
+--
+DELIMITER $$
+CREATE TRIGGER `after_photo_delete` AFTER DELETE ON `gallery_photos` FOR EACH ROW BEGIN
+  UPDATE gallery_albums 
+  SET photo_count = photo_count - 1 
+  WHERE id = OLD.album_id;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `after_photo_insert` AFTER INSERT ON `gallery_photos` FOR EACH ROW BEGIN
+  UPDATE gallery_albums 
+  SET photo_count = photo_count + 1 
+  WHERE id = NEW.album_id;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -589,17 +765,29 @@ CREATE TABLE `menus` (
 --
 
 CREATE TABLE `pages` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `title` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `slug` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `content` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `meta_description` varchar(160) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `is_published` tinyint(1) DEFAULT '1',
-  `last_updated_by` int(10) UNSIGNED DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `id` int(11) NOT NULL,
+  `title` varchar(200) DEFAULT NULL,
+  `slug` varchar(200) DEFAULT NULL,
+  `content` longtext,
+  `featured_image` varchar(255) DEFAULT NULL,
+  `status` enum('published','draft') DEFAULT NULL,
+  `seo_title` varchar(200) DEFAULT NULL,
+  `seo_description` text,
+  `template` varchar(50) DEFAULT 'default',
+  `is_homepage` tinyint(1) DEFAULT '0',
+  `display_order` int(11) DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `pages`
+--
+
+INSERT INTO `pages` (`id`, `title`, `slug`, `content`, `featured_image`, `status`, `seo_title`, `seo_description`, `template`, `is_homepage`, `display_order`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(4, 'test halaman', 'cdscc', '<p>dsccdsc</p>', NULL, 'published', NULL, NULL, 'default', 0, 1, '2025-11-06 23:46:20', '2025-11-06 23:47:13', NULL),
+(5, 'test halaman lagi edit', 'vdvfdvfvdfvdv', '<p>vdvdfv</p>', NULL, 'published', NULL, NULL, 'default', 0, 1, '2025-11-06 23:52:10', '2025-11-06 23:52:17', NULL);
 
 -- --------------------------------------------------------
 
@@ -676,17 +864,10 @@ CREATE TABLE `posts` (
 --
 
 INSERT INTO `posts` (`id`, `title`, `slug`, `content`, `excerpt`, `featured_image`, `status`, `category_id`, `author_id`, `view_count`, `is_featured`, `meta_title`, `meta_description`, `meta_keywords`, `published_at`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'test1', 'test1', '<p>test buat artikel test edit</p>', 'test ringkas', 'posts/2025/11/1762220508_690959dc1eded.png', 'published', 2, 1, 0, 1, NULL, 'test seo', NULL, '2025-11-04 02:42:41', '2025-11-04 01:41:48', '2025-11-04 01:42:51', '2025-11-04 01:42:51'),
-(2, 'test 2', 'test-2', '<p>cdsccdcsdcfdv</p>', 'test', 'posts/images_1762288353_b54f615e.png', 'published', 2, 1, 13, 1, '', 'test', '', '2025-11-04 03:32:00', '2025-11-04 02:32:56', '2025-11-05 19:41:52', NULL),
-(3, 'test3', 'test3_deleted1762368024', '<blockquote><p>testting 3</p></blockquote>', 'testting 3', 'posts/bg_1762288480_b909a4e7.jpg', 'archived', 1, 1, 1, 1, '', '', '', '2025-11-04 19:20:00', '2025-11-04 02:43:27', '2025-11-05 18:40:24', '2025-11-05 18:40:24'),
-(4, 'test 4', 'test-4_deleted1762368020', '<p>oinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndf</p>', 'oinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfuvniudvndfoinvcidsfu...', 'posts/logo_1762291287_1b6ace41.png', 'archived', 3, 1, 0, 1, '', '', '', '2025-11-04 22:21:00', '2025-11-04 21:21:27', '2025-11-05 18:40:20', '2025-11-05 18:40:20'),
-(5, 'test pakai tag', 'test-pakai-tag_deleted1762368017', '<p>testingg tag broooo</p>', 'testingg tag broooo', 'posts/avatar-1_1762353819_243f9761.png', 'archived', 1, 1, 0, 1, 'test update', '', '', '2025-11-05 15:42:00', '2025-11-05 14:43:39', '2025-11-05 18:40:17', '2025-11-05 18:40:17'),
-(6, 'test 3', 'test-3_deleted1762368013', '<p>cscsdc</p>', '', NULL, 'archived', 3, 1, 0, 1, '', '', '', '2025-11-05 18:39:00', '2025-11-05 18:39:20', '2025-11-05 18:40:13', '2025-11-05 18:40:13'),
 (8, 'test4', 'test4', '<p>csdcdcdsc</p>', '', 'posts/images_1762371444_fdb15d91.jpg', 'published', 3, 1, 0, 1, '', '', '', '2025-11-05 18:53:00', '2025-11-05 18:55:03', '2025-11-05 20:37:24', NULL),
 (9, 'test 5', 'test-5', '<p>ckscmds</p>', '', 'posts/133960034_p6_master1200_1762369124_44fc8dd2.jpg', 'published', 4, 1, 2, 1, '', '', '', '2025-11-05 18:58:00', '2025-11-05 18:58:44', '2025-11-06 00:30:48', NULL),
-(10, 'test6', 'test6_deleted1762370909', '<p>cancnksdcd</p>', '', 'posts/photo_6174834757762925565_y_1762369307_01075311.jpg', 'archived', 1, 1, 0, 1, '', '', '', '2025-11-05 19:01:00', '2025-11-05 19:01:47', '2025-11-05 19:28:29', '2025-11-05 19:28:29'),
-(11, 'test 7', 'test-7_deleted1762370758', '<p>csdcsvfsv</p>', 'cdsc', 'posts/photo_6217739526839847528_y_1762370261_4c0e509e.jpg', 'archived', 1, 1, 0, 1, '', '', '', '2025-11-05 19:17:00', '2025-11-05 19:17:41', '2025-11-05 19:25:58', '2025-11-05 19:25:58'),
-(12, 'test 5', 'test-5-1', '<p>fdvvdfv</p>', '', 'posts/photo_6217739526839847528_y_1762385767_1d2d8948.jpg', 'published', 2, 1, 1, 1, '', '', '', '2025-11-05 23:35:00', '2025-11-05 23:36:07', '2025-11-06 00:30:43', NULL);
+(12, 'test 5', 'test-5-1_deleted1762463793_deleted1762464028', '<p>fdvvdfv</p>', '', 'posts/photo_6217739526839847528_y_1762385767_1d2d8948.jpg', 'archived', 2, 1, 1, 1, '', '', '', '2025-11-05 23:35:00', '2025-11-05 23:36:07', '2025-11-06 21:20:32', NULL),
+(13, 'test6', 'test6', '<p>ackdslcsdcsdcsddcd</p>', '', 'posts/img_2747_1762424850_ceabdff8.JPG', 'draft', 2, 1, 0, 1, '', '', '', NULL, '2025-11-06 10:27:30', '2025-11-06 10:27:30', NULL);
 
 -- --------------------------------------------------------
 
@@ -713,7 +894,6 @@ CREATE TABLE `post_categories` (
 
 INSERT INTO `post_categories` (`id`, `name`, `slug`, `description`, `icon`, `color`, `is_active`, `created_at`, `updated_at`, `deleted_at`) VALUES
 (1, 'Berita', 'berita', 'Berita terkini seputar BTIKP', 'fa-newspaper', '#3B82F6', 1, '2025-11-03 23:05:42', '2025-11-04 19:40:00', NULL),
-(2, 'Artikel', 'artikel', 'Artikel edukatif dan best practice', 'fa-file-alt', '#10B981', 1, '2025-11-03 23:05:42', '2025-11-03 23:05:42', NULL),
 (3, 'Pengumuman', 'pengumuman', 'Pengumuman resmi BTIKP', 'fa-bullhorn', '#F59E0B', 1, '2025-11-03 23:05:42', '2025-11-03 23:05:42', NULL),
 (4, 'Kegiatan', 'kegiatan', 'Liputan kegiatan dan acara', 'fa-calendar-check', '#8B5CF6', 1, '2025-11-03 23:05:42', '2025-11-03 23:05:42', NULL),
 (8, 'test4', 'test4', '', NULL, NULL, 1, '2025-11-05 20:34:39', '2025-11-05 19:34:39', NULL);
@@ -735,18 +915,14 @@ CREATE TABLE `post_tags` (
 --
 
 INSERT INTO `post_tags` (`post_id`, `tag_id`, `created_at`) VALUES
-(2, 22, '2025-11-05 18:41:52'),
-(2, 24, '2025-11-05 18:41:52'),
 (8, 22, '2025-11-05 19:37:24'),
 (8, 24, '2025-11-05 19:37:24'),
 (9, 22, '2025-11-05 18:58:44'),
 (9, 24, '2025-11-05 18:58:44'),
-(10, 22, '2025-11-05 19:01:48'),
-(10, 24, '2025-11-05 19:01:48'),
-(11, 22, '2025-11-05 19:25:49'),
-(11, 24, '2025-11-05 19:25:49'),
 (12, 22, '2025-11-05 23:36:07'),
-(12, 24, '2025-11-05 23:36:07');
+(12, 24, '2025-11-05 23:36:07'),
+(13, 22, '2025-11-06 10:27:30'),
+(13, 24, '2025-11-06 10:27:30');
 
 -- --------------------------------------------------------
 
@@ -857,20 +1033,13 @@ CREATE TABLE `school_galleries` (
 --
 
 CREATE TABLE `services` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` int(11) NOT NULL,
+  `title` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `description` text COLLATE utf8mb4_unicode_ci,
-  `content` longtext COLLATE utf8mb4_unicode_ci,
-  `icon` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Bootstrap icon class',
-  `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `featured` tinyint(1) DEFAULT '0',
-  `order` int(11) DEFAULT '0',
-  `status` enum('draft','published','archived') COLLATE utf8mb4_unicode_ci DEFAULT 'draft',
-  `meta_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `meta_description` text COLLATE utf8mb4_unicode_ci,
-  `meta_keywords` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `author_id` int(10) UNSIGNED DEFAULT NULL,
+  `service_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `image_path` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` enum('published','draft') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'draft',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL
@@ -880,12 +1049,8 @@ CREATE TABLE `services` (
 -- Dumping data for table `services`
 --
 
-INSERT INTO `services` (`id`, `title`, `slug`, `description`, `content`, `icon`, `image`, `featured`, `order`, `status`, `meta_title`, `meta_description`, `meta_keywords`, `author_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'Konsultasi IT', 'konsultasi-it_deleted1762300087', 'Layanan konsultasi teknologi informasi untuk meningkatkan efisiensi bisnis Anda', '<p>Kami menyediakan layanan konsultasi IT profesional untuk membantu bisnis Anda berkembang di era digital.</p>', 'bi-laptop', NULL, 1, 1, 'archived', NULL, NULL, NULL, 1, '2025-11-04 23:31:17', '2025-11-04 23:48:07', '2025-11-04 23:48:07'),
-(2, 'Pengembangan Website', 'pengembangan-website_deleted1762305421', 'Pembuatan website profesional dengan teknologi terkini', '<p>Dapatkan website profesional yang sesuai dengan kebutuhan bisnis Anda.</p>', 'bi-people', NULL, 1, 3, 'archived', 'Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\\laragon\\www\\btikp-kalsel\\admin\\modules\\services\\services_edit.php on line 191', 'Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\\laragon\\www\\btikp-kalsel\\admin\\modules\\services\\services_edit.php on line 196', 'Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\\laragon\\www\\btikp-kalsel\\admin\\modules\\services\\services_edit.php on line 202', 1, '2025-11-04 23:31:17', '2025-11-05 01:17:01', '2025-11-05 01:17:01'),
-(3, 'Pelatihan & Workshop', 'pelatihan-workshop', 'Program pelatihan dan workshop teknologi informasi', '<p>Tingkatkan skill tim Anda dengan program pelatihan berkualitas.</p>', 'bi-book', NULL, 1, 3, 'published', NULL, NULL, NULL, 1, '2025-11-04 23:31:17', '2025-11-04 23:31:17', NULL),
-(4, 'Maintenance & Support', 'maintenance-support', 'Layanan pemeliharaan dan dukungan teknis', '<p>Dukungan teknis 24/7 untuk sistem IT Anda.</p>', 'bi-tools', NULL, 0, 4, 'published', NULL, NULL, NULL, 1, '2025-11-04 23:31:17', '2025-11-04 23:31:17', NULL),
-(5, 'test layanan 2', 'test-layanan-2_deleted1762305055', 'testing layanan 2', '<p>Sistem ini dirancang untuk mempermudah proses pengelolaan data secara efisien dan terstruktur. Dengan antarmuka yang sederhana namun fungsional, pengguna dapat melakukan input, pembaruan, dan pemantauan informasi dengan cepat. Tujuannya adalah meningkatkan produktivitas serta meminimalkan kesalahan dalam pengolahan data.</p>', 'bi-display', NULL, 1, 1, 'archived', '', '', '', 1, '2025-11-05 02:08:17', '2025-11-05 01:10:55', '2025-11-05 01:10:55');
+INSERT INTO `services` (`id`, `title`, `slug`, `description`, `service_url`, `image_path`, `status`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(3, 'test layanan', 'scsdc', 'cdscdcdc', 'https://github.com/zuramai/mazer?tab=readme-ov-file', 'uploads/services/690d6e836d750.jpeg', 'published', '2025-11-07 03:58:59', '2025-11-07 03:58:59', NULL);
 
 -- --------------------------------------------------------
 
@@ -923,28 +1088,28 @@ CREATE TABLE `settings` (
 --
 
 INSERT INTO `settings` (`id`, `key`, `value`, `type`, `group`, `created_at`, `updated_at`) VALUES
-(1, 'site_name', 'BTIKP Kalimantan Selatan', 'text', 'general', '2025-11-04 18:55:37', '2025-11-05 23:24:42'),
-(2, 'site_tagline', 'Balai Teknologi Informasi dan Komunikasi Pendidikan', 'text', 'general', '2025-11-04 18:55:37', '2025-11-05 23:24:42'),
-(3, 'site_description', 'Portal resmi BTIKP Provinsi Kalimantan Selatan', 'textarea', 'general', '2025-11-04 18:55:37', '2025-11-05 23:24:42'),
-(4, 'site_keywords', 'btikp, kalsel, pendidikan, teknologi, informasi', 'text', 'general', '2025-11-04 18:55:37', '2025-11-05 23:24:42'),
+(1, 'site_name', 'BTIKP Kalimantan Selatan', 'text', 'general', '2025-11-04 18:55:37', '2025-11-07 02:43:32'),
+(2, 'site_tagline', 'Balai Teknologi Informasi dan Komunikasi Pendidikan', 'text', 'general', '2025-11-04 18:55:37', '2025-11-07 02:43:32'),
+(3, 'site_description', 'Portal resmi BTIKP Provinsi Kalimantan Selatan', 'textarea', 'general', '2025-11-04 18:55:37', '2025-11-07 02:43:32'),
+(4, 'site_keywords', 'btikp, kalsel, pendidikan, teknologi, informasi', 'text', 'general', '2025-11-04 18:55:37', '2025-11-07 02:43:32'),
 (5, 'site_logo', 'settings/logo_1761875034_1762288465_0ec046e1.png', 'file', 'general', '2025-11-04 18:55:37', '2025-11-04 20:34:25'),
 (6, 'site_favicon', 'settings/logo_1761875034_1762288409_65324299.png', 'file', 'general', '2025-11-04 18:55:37', '2025-11-04 20:33:29'),
-(7, 'contact_phone', '(0511) 1234567', 'text', 'contact', '2025-11-04 18:55:37', '2025-11-05 23:24:43'),
-(8, 'contact_email', 'info@btikp-kalsel.id', 'text', 'contact', '2025-11-04 18:55:37', '2025-11-05 23:24:43'),
-(9, 'contact_address', 'Jl. Pendidikan No. 123, Banjarmasin, Kalimantan Selatan', 'textarea', 'contact', '2025-11-04 18:55:37', '2025-11-05 23:24:43'),
-(10, 'contact_maps_embed', '', 'textarea', 'contact', '2025-11-04 18:55:37', '2025-11-05 23:24:43'),
-(11, 'social_facebook', '', 'text', 'social', '2025-11-04 18:55:37', '2025-11-05 23:24:43'),
-(12, 'social_instagram', '', 'text', 'social', '2025-11-04 18:55:37', '2025-11-05 23:24:43'),
-(13, 'social_youtube', '', 'text', 'social', '2025-11-04 18:55:37', '2025-11-05 23:24:43'),
-(14, 'social_twitter', '', 'text', 'social', '2025-11-04 18:55:37', '2025-11-05 23:24:43'),
-(15, 'upload_max_size', '5', 'number', 'upload', '2025-11-04 18:55:37', '2025-11-05 23:24:42'),
-(16, 'upload_allowed_images', 'jpg,jpeg,png,gif,webp', 'text', 'upload', '2025-11-04 18:55:37', '2025-11-05 23:24:42'),
-(17, 'upload_allowed_docs', 'pdf,doc,docx,xls,xlsx,ppt,pptx', 'text', 'upload', '2025-11-04 18:55:37', '2025-11-05 23:24:42'),
-(18, 'items_per_page', '10', 'number', 'general', '2025-11-04 18:55:37', '2025-11-05 23:24:42'),
+(7, 'contact_phone', '(0511) 1234567', 'text', 'contact', '2025-11-04 18:55:37', '2025-11-07 02:43:33'),
+(8, 'contact_email', 'haldi0230@gmail.com', 'text', 'contact', '2025-11-04 18:55:37', '2025-11-07 02:43:33'),
+(9, 'contact_address', 'Jl. Pendidikan No. 123, Banjarmasin, Kalimantan Selatan', 'textarea', 'contact', '2025-11-04 18:55:37', '2025-11-07 02:43:33'),
+(10, 'contact_maps_embed', '', 'textarea', 'contact', '2025-11-04 18:55:37', '2025-11-07 02:43:33'),
+(11, 'social_facebook', '', 'text', 'social', '2025-11-04 18:55:37', '2025-11-07 02:43:33'),
+(12, 'social_instagram', '', 'text', 'social', '2025-11-04 18:55:37', '2025-11-07 02:43:33'),
+(13, 'social_youtube', '', 'text', 'social', '2025-11-04 18:55:37', '2025-11-07 02:43:33'),
+(14, 'social_twitter', '', 'text', 'social', '2025-11-04 18:55:37', '2025-11-07 02:43:33'),
+(15, 'upload_max_size', '5', 'number', 'upload', '2025-11-04 18:55:37', '2025-11-07 02:43:32'),
+(16, 'upload_allowed_images', 'jpg,jpeg,png,gif,webp', 'text', 'upload', '2025-11-04 18:55:37', '2025-11-07 02:43:33'),
+(17, 'upload_allowed_docs', 'pdf,doc,docx,xls,xlsx,ppt,pptx', 'text', 'upload', '2025-11-04 18:55:37', '2025-11-07 02:43:33'),
+(18, 'items_per_page', '10', 'number', 'general', '2025-11-04 18:55:37', '2025-11-07 02:43:33'),
 (19, 'posts_per_page_public', '12', 'number', 'general', '2025-11-04 18:55:37', NULL),
-(22, 'site_copyright', '© {year} BTIKP Kalimantan Selatan. All Rights Reserved.', 'text', 'general', '2025-11-04 19:30:44', '2025-11-05 23:24:42'),
-(23, 'site_logo_text', 'BTIKP KALSEL', 'text', 'general', '2025-11-04 19:30:44', '2025-11-05 23:24:42'),
-(24, 'site_logo_show_text', '1', 'boolean', 'general', '2025-11-04 19:30:44', '2025-11-05 23:24:42');
+(22, 'site_copyright', '© {year} BTIKP Kalimantan Selatan. All Rights Reserved.', 'text', 'general', '2025-11-04 19:30:44', '2025-11-07 02:43:32'),
+(23, 'site_logo_text', 'BTIKP KALSEL', 'text', 'general', '2025-11-04 19:30:44', '2025-11-07 02:43:32'),
+(24, 'site_logo_show_text', '1', 'boolean', 'general', '2025-11-04 19:30:44', '2025-11-07 02:43:32');
 
 -- --------------------------------------------------------
 
@@ -1020,11 +1185,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `phone`, `address`, `photo`, `password`, `role`, `last_login_at`, `created_by`, `updated_by`, `login_attempts`, `locked_until`, `two_factor_enabled`, `two_factor_secret`, `is_active`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'Lycoris', 'admin@btikp-kalsel.id', '081234567891', 'Banjarmasin barat', 'users/img_8248_1762385835_8fb6a730.PNG', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'super_admin', '2025-11-06 02:49:45', NULL, 1, 0, NULL, 0, NULL, 1, '2025-11-03 23:05:42', '2025-11-06 02:49:45', NULL),
-(23, 'admin1', 'admin1_deleted1762298032@gmail.com', '081234567892', 'cdcdsc', 'users/avatar-3_1762298023_a1ce8797.png', '$2y$10$72qIhq9lgdYLs0ZX3ljVuO/3cp.YJp9vtHoB1qiNSYfSm1Y6IY2ye', 'admin', NULL, 1, 1, 0, NULL, 0, NULL, 0, '2025-11-05 00:13:43', '2025-11-04 23:13:52', '2025-11-04 23:13:52'),
-(24, 'admin1', 'admin1_deleted1762298084@gmail.com', '081234567892', 'cdscdsc', 'users/avatar-1_1762298056_af4fc7bc.png', '$2y$10$v6jctD3.Vx99eZD1zUx05uNex1zd5BmeHtvnFnCnSdkGUjXeKux6.', 'admin', NULL, 1, 1, 0, NULL, 0, NULL, 1, '2025-11-05 00:14:16', '2025-11-04 23:14:44', '2025-11-04 23:14:44'),
-(25, 'admin1', 'admin1_deleted1762298735@gmail.com', '081234567892', 'cdscdc', 'users/avatar-3_1762298728_00a7d6a3.png', '$2y$10$8sbP6o9/XN3Zbf0qSdJWzOqmwDgIHSb02aKNSyEhrB3ieI.Rdp.R.', 'editor', NULL, 1, NULL, 0, NULL, 0, NULL, 0, '2025-11-05 00:25:29', '2025-11-04 23:25:35', '2025-11-04 23:25:35'),
-(26, 'admin1', 'admin1@gmail.com', '081234567891', '', NULL, '$2y$10$J9HhDMrCTFt0aH16Ks2/SOeA6QLXhWsEiVuWLWV3sU9320eXOjngq', 'editor', '2025-11-06 00:33:17', 1, 26, 0, NULL, 0, NULL, 1, '2025-11-06 01:33:09', '2025-11-06 01:34:25', NULL);
+(1, 'Lycorismeeee', 'admin@btikp-kalsel.id', '081234567891', 'Banjarmasin barat', 'users/img_8248_1762385835_8fb6a730.PNG', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'super_admin', '2025-11-07 04:58:20', NULL, 1, 0, NULL, 0, NULL, 1, '2025-11-03 23:05:42', '2025-11-07 04:58:20', NULL),
+(28, 'admin1', 'admin1@gmail.com', '081234567892', '', 'users/photo_6217739526839847528_y_1762465612_429e90df.jpg', '$2y$10$P148vcVXQ3lqM6PhOfQcX.yzAwzlE0VhcX2iXkHyvCEmI6oyW4ZoS', 'editor', NULL, 1, NULL, 0, NULL, 0, NULL, 0, '2025-11-06 22:46:52', '2025-11-06 21:53:28', '2025-11-06 21:53:28'),
+(29, 'admin1', 'admin1@gmail.com', '', '', NULL, '$2y$10$FOf2jI0XlIkLAn8UqyHvcOJpFd8TUPZsLN8YTU9eyY1w3lS2nocg6', 'admin', '2025-11-07 04:58:12', 1, NULL, 0, NULL, 0, NULL, 1, '2025-11-06 22:53:48', '2025-11-07 04:58:12', NULL);
 
 -- --------------------------------------------------------
 
@@ -1123,6 +1286,13 @@ ALTER TABLE `comments`
   ADD KEY `idx_created_at` (`created_at`);
 
 --
+-- Indexes for table `contact_messages`
+--
+ALTER TABLE `contact_messages`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_status_created` (`status`,`created_at`);
+
+--
 -- Indexes for table `downloadable_files`
 --
 ALTER TABLE `downloadable_files`
@@ -1159,7 +1329,20 @@ ALTER TABLE `galleries`
 --
 ALTER TABLE `gallery_albums`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `slug` (`slug`);
+  ADD UNIQUE KEY `slug` (`slug`),
+  ADD KEY `created_by` (`created_by`),
+  ADD KEY `is_active` (`is_active`),
+  ADD KEY `idx_active_order` (`is_active`,`display_order`);
+
+--
+-- Indexes for table `gallery_photos`
+--
+ALTER TABLE `gallery_photos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `album_id` (`album_id`),
+  ADD KEY `uploaded_by` (`uploaded_by`),
+  ADD KEY `display_order` (`display_order`),
+  ADD KEY `idx_album_order` (`album_id`,`display_order`);
 
 --
 -- Indexes for table `integration_logs`
@@ -1202,11 +1385,7 @@ ALTER TABLE `menus`
 --
 ALTER TABLE `pages`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `slug` (`slug`),
-  ADD KEY `last_updated_by` (`last_updated_by`),
-  ADD KEY `idx_slug` (`slug`),
-  ADD KEY `idx_is_published` (`is_published`),
-  ADD KEY `idx_deleted_at` (`deleted_at`);
+  ADD UNIQUE KEY `slug` (`slug`);
 
 --
 -- Indexes for table `page_views`
@@ -1303,12 +1482,7 @@ ALTER TABLE `school_galleries`
 --
 ALTER TABLE `services`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `slug` (`slug`),
-  ADD KEY `idx_status` (`status`),
-  ADD KEY `idx_featured` (`featured`),
-  ADD KEY `idx_author` (`author_id`),
-  ADD KEY `idx_deleted_at` (`deleted_at`),
-  ADD KEY `idx_order` (`order`);
+  ADD UNIQUE KEY `slug` (`slug`);
 
 --
 -- Indexes for table `sessions`
@@ -1364,7 +1538,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `activity_logs`
 --
 ALTER TABLE `activity_logs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=200;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=267;
 
 --
 -- AUTO_INCREMENT for table `agendas`
@@ -1382,7 +1556,7 @@ ALTER TABLE `api_integrations`
 -- AUTO_INCREMENT for table `banners`
 --
 ALTER TABLE `banners`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -1397,10 +1571,16 @@ ALTER TABLE `comments`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `contact_messages`
+--
+ALTER TABLE `contact_messages`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `downloadable_files`
 --
 ALTER TABLE `downloadable_files`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `file_categories`
@@ -1418,7 +1598,13 @@ ALTER TABLE `galleries`
 -- AUTO_INCREMENT for table `gallery_albums`
 --
 ALTER TABLE `gallery_albums`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `gallery_photos`
+--
+ALTER TABLE `gallery_photos`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `integration_logs`
@@ -1448,7 +1634,7 @@ ALTER TABLE `menus`
 -- AUTO_INCREMENT for table `pages`
 --
 ALTER TABLE `pages`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `page_views`
@@ -1460,7 +1646,7 @@ ALTER TABLE `page_views`
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `post_categories`
@@ -1484,13 +1670,13 @@ ALTER TABLE `school_galleries`
 -- AUTO_INCREMENT for table `services`
 --
 ALTER TABLE `services`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `settings`
 --
 ALTER TABLE `settings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `statistics_snapshots`
@@ -1502,13 +1688,13 @@ ALTER TABLE `statistics_snapshots`
 -- AUTO_INCREMENT for table `tags`
 --
 ALTER TABLE `tags`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 -- --------------------------------------------------------
 
@@ -1558,6 +1744,19 @@ ALTER TABLE `file_categories`
   ADD CONSTRAINT `file_categories_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `file_categories` (`id`) ON DELETE CASCADE;
 
 --
+-- Constraints for table `gallery_albums`
+--
+ALTER TABLE `gallery_albums`
+  ADD CONSTRAINT `fk_albums_creator` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `gallery_photos`
+--
+ALTER TABLE `gallery_photos`
+  ADD CONSTRAINT `fk_photos_album` FOREIGN KEY (`album_id`) REFERENCES `gallery_albums` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_photos_uploader` FOREIGN KEY (`uploaded_by`) REFERENCES `users` (`id`) ON DELETE SET NULL;
+
+--
 -- Constraints for table `integration_logs`
 --
 ALTER TABLE `integration_logs`
@@ -1574,12 +1773,6 @@ ALTER TABLE `media`
 --
 ALTER TABLE `menus`
   ADD CONSTRAINT `menus_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `menus` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `pages`
---
-ALTER TABLE `pages`
-  ADD CONSTRAINT `pages_ibfk_1` FOREIGN KEY (`last_updated_by`) REFERENCES `users` (`id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `posts`

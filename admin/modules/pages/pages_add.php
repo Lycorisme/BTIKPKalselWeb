@@ -113,7 +113,11 @@ include '../../includes/header.php';
     </section>
 </div>
 <?php include '../../includes/footer.php'; ?>
-<script src="https://cdn.ckeditor.com/4.19.0/standard/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/classic/ckeditor.js"></script>
 <script>
-    CKEDITOR.replace('content');
+ClassicEditor
+    .create(document.querySelector('#content'))
+    .catch(error => {
+        console.error(error);
+    });
 </script>

@@ -32,9 +32,13 @@ function columnExists($db, $table, $column) {
     }
 }
 
+// =================================================================
+// STEP 1 - Dapatkan hitungan TOTAL untuk DROPDOWN
+// =================================================================
 $dropdownCounts = [
-    'posts' => 0, 'services' => 0, 'users' => 0, 'categories' => 0,
-    'files' => 0, 'albums' => 0, 'photos' => 0, 'banners' => 0, 'contacts' => 0,
+    'posts' => 0, 'services' => 0, 'users' => 0, 'pages' => 0, // 'pages' DITAMBAHKAN
+    'categories' => 0, 'files' => 0, 'albums' => 0, 'photos' => 0, 
+    'banners' => 0, 'contacts' => 0,
 ];
 $totalDropdownItems = 0;
 
@@ -52,6 +56,7 @@ function getTrashCount($db, $table) {
 $dropdownCounts['posts'] = getTrashCount($db, 'posts');
 $dropdownCounts['services'] = getTrashCount($db, 'services');
 $dropdownCounts['users'] = getTrashCount($db, 'users');
+$dropdownCounts['pages'] = getTrashCount($db, 'pages'); // 'pages' DITAMBAHKAN
 $dropdownCounts['categories'] = getTrashCount($db, 'categories');
 $dropdownCounts['files'] = getTrashCount($db, 'downloadable_files');
 $dropdownCounts['albums'] = getTrashCount($db, 'gallery_albums');
@@ -64,6 +69,9 @@ foreach ($dropdownCounts as $count) {
 }
 
 
+// =================================================================
+// STEP 2 - Kumpulkan item yang DI-FILTER untuk tampilan utama
+// =================================================================
 $deletedItems = [];
 
 // 1. Posts
@@ -99,7 +107,18 @@ if ($type === '' || $type === 'users') {
     }
 }
 
-// 4. Categories
+// 4. Pages (BARU DITAMBAHKAN)
+if ($type === '' || $type === 'pages') {
+    if (columnExists($db, 'pages', 'deleted_at')) {
+        $sql = "SELECT id, title as name, 'page' as type, 'Halaman' as type_label, deleted_at, created_at FROM pages WHERE deleted_at IS NOT NULL";
+        if ($search) $sql .= " AND (title LIKE ? OR slug LIKE ?)";
+        $stmt = $db->prepare($sql);
+        $search ? $stmt->execute(["%{$search}%", "%{$search}%"]) : $stmt->execute();
+        $deletedItems = array_merge($deletedItems, $stmt->fetchAll(PDO::FETCH_ASSOC));
+    }
+}
+
+// 5. Categories
 if ($type === '' || $type === 'categories') {
     if (columnExists($db, 'categories', 'deleted_at')) {
         $sql = "SELECT id, name, 'category' as type, 'Kategori' as type_label, deleted_at, created_at FROM categories WHERE deleted_at IS NOT NULL";
@@ -110,7 +129,7 @@ if ($type === '' || $type === 'categories') {
     }
 }
 
-// 5. Downloadable Files
+// 6. Downloadable Files
 if ($type === '' || $type === 'files') {
     if (columnExists($db, 'downloadable_files', 'deleted_at')) {
         $sql = "SELECT id, title as name, 'file' as type, 'File Download' as type_label, deleted_at, created_at FROM downloadable_files WHERE deleted_at IS NOT NULL";
@@ -121,8 +140,7 @@ if ($type === '' || $type === 'files') {
     }
 }
 
-// 6. Gallery Albums
-// Filter 'albums' HANYA akan memuat album DAN foto
+// 7. Gallery Albums
 if ($type === '' || $type === 'albums') {
     if (columnExists($db, 'gallery_albums', 'deleted_at')) {
         $sql = "SELECT id, name, 'album' as type, 'Album Gallery' as type_label, deleted_at, created_at FROM gallery_albums WHERE deleted_at IS NOT NULL";
@@ -133,8 +151,7 @@ if ($type === '' || $type === 'albums') {
     }
 }
 
-// 7. Gallery Photos
-// Filter 'albums' juga akan memuat foto
+// 8. Gallery Photos
 if ($type === '' || $type === 'photos' || $type === 'albums') {
     if (columnExists($db, 'gallery_photos', 'deleted_at')) {
         $sql = "SELECT p.id, COALESCE(p.title, CONCAT('Photo #', p.id)) as name, 'photo' as type, 'Foto Gallery' as type_label, p.deleted_at, p.created_at, a.name as album_name
@@ -148,7 +165,7 @@ if ($type === '' || $type === 'photos' || $type === 'albums') {
     }
 }
 
-// 8. Banners
+// 9. Banners
 if ($type === '' || $type === 'banners') {
     if (columnExists($db, 'banners', 'deleted_at')) {
         $sql = "SELECT id, title as name, 'banner' as type, 'Banner' as type_label, deleted_at, created_at FROM banners WHERE deleted_at IS NOT NULL";
@@ -159,7 +176,7 @@ if ($type === '' || $type === 'banners') {
     }
 }
 
-// 9. Contact Messages
+// 10. Contact Messages
 if ($type === '' || $type === 'contacts') {
     if (columnExists($db, 'contact_messages', 'deleted_at')) {
         $sql = "SELECT id, subject as name, 'contact' as type, 'Pesan Kontak' as type_label, deleted_at, created_at FROM contact_messages WHERE deleted_at IS NOT NULL";
@@ -179,21 +196,21 @@ usort($deletedItems, function($a, $b) {
 // STEP 3 - Paginate dan dapatkan hitungan untuk SUMMARY CARDS
 // =================================================================
 
-// Total items untuk TAMPILAN SAAT INI (filtered)
 $totalItems = count($deletedItems);
 $totalPages = ceil($totalItems / $perPage);
 $paginatedItems = array_slice($deletedItems, $offset, $perPage);
 
-// Get counts per type UNTUK SUMMARY CARDS (berdasarkan $deletedItems yang difilter)
 $summaryCardCounts = [
-    'posts' => 0, 'services' => 0, 'users' => 0, 'categories' => 0,
-    'files' => 0, 'albums' => 0, 'photos' => 0, 'banners' => 0, 'contacts' => 0,
+    'posts' => 0, 'services' => 0, 'users' => 0, 'pages' => 0, // 'pages' DITAMBAHKAN
+    'categories' => 0, 'files' => 0, 'albums' => 0, 'photos' => 0, 
+    'banners' => 0, 'contacts' => 0,
 ];
 
 foreach ($deletedItems as $item) {
     if ($item['type'] === 'post') $summaryCardCounts['posts']++;
     if ($item['type'] === 'service') $summaryCardCounts['services']++;
     if ($item['type'] === 'user') $summaryCardCounts['users']++;
+    if ($item['type'] === 'page') $summaryCardCounts['pages']++; // 'page' DITAMBAHKAN
     if ($item['type'] === 'category') $summaryCardCounts['categories']++;
     if ($item['type'] === 'file') $summaryCardCounts['files']++;
     if ($item['type'] === 'album') $summaryCardCounts['albums']++;
@@ -305,6 +322,7 @@ include '../../includes/header.php';
                                     else if ($type === 'posts') echo 'Posts';
                                     else if ($type === 'services') echo 'Layanan';
                                     else if ($type === 'users') echo 'Users';
+                                    else if ($type === 'pages') echo 'Halaman'; // 'pages' DITAMBAHKAN
                                     else if ($type === 'categories') echo 'Kategori';
                                     else if ($type === 'files') echo 'Files';
                                     else if ($type === 'albums' || $type === 'photos') echo 'Gallery';
@@ -337,6 +355,12 @@ include '../../includes/header.php';
                                     <a class="dropdown-item <?= $type === 'users' ? 'active' : '' ?>" href="?type=users">
                                         <i class="bi bi-people me-2"></i> Users
                                         <span class="badge bg-info float-end"><?= $dropdownCounts['users'] ?></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item <?= $type === 'pages' ? 'active' : '' ?>" href="?type=pages">
+                                        <i class="bi bi-file-earmark-text me-2"></i> Halaman
+                                        <span class="badge bg-info float-end"><?= $dropdownCounts['pages'] ?></span>
                                     </a>
                                 </li>
                                 <li>
@@ -453,6 +477,7 @@ include '../../includes/header.php';
                                                 'post' => '<span class="badge bg-primary"><i class="bi bi-newspaper me-1"></i> Post</span>',
                                                 'service' => '<span class="badge bg-success"><i class="bi bi-gear me-1"></i> Layanan</span>',
                                                 'user' => '<span class="badge bg-info"><i class="bi bi-people me-1"></i> User</span>',
+                                                'page' => '<span class="badge bg-info"><i class="bi bi-file-earmark-text me-1"></i> Halaman</span>', // 'page' DITAMBAHKAN
                                                 'category' => '<span class="badge bg-secondary"><i class="bi bi-tags me-1"></i> Kategori</span>',
                                                 'file' => '<span class="badge bg-warning text-dark"><i class="bi bi-download me-1"></i> File</span>',
                                                 'album' => '<span class="badge bg-secondary"><i class="bi bi-images me-1"></i> Album</span>',
@@ -521,6 +546,7 @@ include '../../includes/header.php';
                                                 'post' => '<span class="badge bg-primary"><i class="bi bi-newspaper me-1"></i> Post</span>',
                                                 'service' => '<span class="badge bg-success"><i class="bi bi-gear me-1"></i> Layanan</span>',
                                                 'user' => '<span class="badge bg-info"><i class="bi bi-people me-1"></i> User</span>',
+                                                'page' => '<span class="badge bg-info"><i class="bi bi-file-earmark-text me-1"></i> Halaman</span>', // 'page' DITAMBAHKAN
                                                 'category' => '<span class="badge bg-secondary"><i class="bi bi-tags me-1"></i> Kategori</span>',
                                                 'file' => '<span class="badge bg-warning text-dark"><i class="bi bi-download me-1"></i> File</span>',
                                                 'album' => '<span class="badge bg-secondary"><i class="bi bi-images me-1"></i> Album</span>',

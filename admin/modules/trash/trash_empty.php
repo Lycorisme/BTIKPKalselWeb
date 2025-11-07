@@ -34,7 +34,7 @@ try {
             setAlert('success', 'Semua foto gallery di trash sudah dihapus permanen!');
             break;
         case 'banners':
-            // Hapus file gambar dulu supaya tidak tersisa orphan
+            // Hapus file gambar dulu supaya tidak orphan
             $stmt = $db->query("SELECT image_path FROM banners WHERE deleted_at IS NOT NULL");
             foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) as $file) {
                 if ($file && file_exists('../../../public/' . $file)) {
@@ -48,16 +48,18 @@ try {
             $db->exec("DELETE FROM contact_messages WHERE deleted_at IS NOT NULL");
             setAlert('success', 'Semua pesan kontak di trash sudah dihapus permanen!');
             break;
+        case 'pages':
+            $db->exec("DELETE FROM pages WHERE deleted_at IS NOT NULL");
+            setAlert('success', 'Semua halaman di trash sudah dihapus permanen!');
+            break;
         case '':
-            // Kosongkan semua trash (semua tabel)
-            // Hapus file banner dulu
+            // Kosongkan semua trash (all tabels)
             $stmt = $db->query("SELECT image_path FROM banners WHERE deleted_at IS NOT NULL");
             foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) as $file) {
                 if ($file && file_exists('../../../public/' . $file)) {
                     unlink('../../../public/' . $file);
                 }
             }
-
             $tables = [
                 'posts',
                 'services',
@@ -66,7 +68,8 @@ try {
                 'gallery_albums',
                 'gallery_photos',
                 'banners',
-                'contact_messages'
+                'contact_messages',
+                'pages'
             ];
             foreach ($tables as $table) {
                 $db->exec("DELETE FROM $table WHERE deleted_at IS NOT NULL");

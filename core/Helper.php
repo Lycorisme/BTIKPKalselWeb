@@ -464,3 +464,23 @@ function bannerImageUrl($image_path) {
     $filename = basename($image_path);
     return BASE_URL . 'uploads/banners/' . $filename;
 }
+
+function slugify($text) {
+    // Ganti spasi dan karakter khusus dengan '-'
+    $text = preg_replace('~[^\pL\d]+~u', '-', $text);
+    // Transliterate (ubah karakter non ASCII ke setara ASCII)
+    $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+    // Hapus karakter yang bukan huruf, angka atau strip
+    $text = preg_replace('~[^-\w]+~', '', $text);
+    // Hapus strip berlebih di awal dan akhir
+    $text = trim($text, '-');
+    // Hapus strip yang berulang-ulang
+    $text = preg_replace('~-+~', '-', $text);
+    // Ubah ke huruf kecil
+    $text = strtolower($text);
+
+    if (empty($text)) {
+        return 'n-a';
+    }
+    return $text;
+}
