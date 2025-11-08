@@ -3,6 +3,9 @@
  * Helper Functions
  */
 
+// Tambahkan baris ini untuk memuat kelas Database
+require_once __DIR__ . '/Database.php';
+
 function clean($data) {
     return htmlspecialchars(strip_tags(trim($data)), ENT_QUOTES, 'UTF-8');
 }
