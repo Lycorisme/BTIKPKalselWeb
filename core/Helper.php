@@ -487,3 +487,121 @@ function slugify($text) {
     }
     return $text;
 }
+
+/**
+ * =============================
+ *  PUBLIC WEBSITE FUNCTIONS
+ * =============================
+ */
+
+/**
+ * URL Generators untuk Public Site
+ */
+function post_url($slug) {
+    return BASE_URL . 'berita/detail.php?slug=' . urlencode($slug);
+}
+
+function category_url($slug) {
+    return BASE_URL . 'berita/?kategori=' . urlencode($slug);
+}
+
+function tag_url($slug) {
+    return BASE_URL . 'berita/tag.php?tag=' . urlencode($slug);
+}
+
+function service_url($slug) {
+    return BASE_URL . 'layanan/detail.php?slug=' . urlencode($slug);
+}
+
+function album_url($slug) {
+    return BASE_URL . 'galeri/album.php?slug=' . urlencode($slug);
+}
+
+/**
+ * Image helpers dengan fallback
+ */
+function featured_img($path, $default = 'assets/images/blog-default.jpg') {
+    if (empty($path)) {
+        return BASE_URL . $default;
+    }
+    return uploadUrl($path);
+}
+
+function banner_img($path) {
+    if (empty($path)) {
+        return BASE_URL . 'assets/images/banner-default.jpg';
+    }
+    return uploadUrl($path);
+}
+
+function service_img($path) {
+    if (empty($path)) {
+        return BASE_URL . 'assets/images/service-default.jpg';
+    }
+    return uploadUrl($path);
+}
+
+function album_cover($path) {
+    if (empty($path)) {
+        return BASE_URL . 'assets/images/album-default.jpg';
+    }
+    return uploadUrl($path);
+}
+
+/**
+ * Check active menu
+ */
+function is_active($url) {
+    $current = $_SERVER['REQUEST_URI'];
+    if ($url === '/' || $url === '') {
+        return ($current === '/' || strpos($current, '/index.php') !== false) ? 'active' : '';
+    }
+    return (strpos($current, $url) !== false) ? 'active' : '';
+}
+
+/**
+ * Pagination HTML
+ */
+function paginate($current, $total, $baseUrl = '?') {
+    if ($total <= 1) return '';
+    
+    $separator = (strpos($baseUrl, '?') !== false) ? '&' : '?';
+    if (substr($baseUrl, -1) === '?' || substr($baseUrl, -1) === '&') {
+        $separator = '';
+    }
+    
+    $html = '<nav><ul class="pagination justify-content-center">';
+    
+    if ($current > 1) {
+        $html .= '<li class="page-item"><a class="page-link" href="' . $baseUrl . $separator . 'page=' . ($current - 1) . '">‹</a></li>';
+    }
+    
+    $start = max(1, $current - 2);
+    $end = min($total, $current + 2);
+    
+    if ($start > 1) {
+        $html .= '<li class="page-item"><a class="page-link" href="' . $baseUrl . $separator . 'page=1">1</a></li>';
+        if ($start > 2) {
+            $html .= '<li class="page-item disabled"><span class="page-link">...</span></li>';
+        }
+    }
+    
+    for ($i = $start; $i <= $end; $i++) {
+        $active = ($i === $current) ? 'active' : '';
+        $html .= '<li class="page-item ' . $active . '"><a class="page-link" href="' . $baseUrl . $separator . 'page=' . $i . '">' . $i . '</a></li>';
+    }
+    
+    if ($end < $total) {
+        if ($end < $total - 1) {
+            $html .= '<li class="page-item disabled"><span class="page-link">...</span></li>';
+        }
+        $html .= '<li class="page-item"><a class="page-link" href="' . $baseUrl . $separator . 'page=' . $total . '">' . $total . '</a></li>';
+    }
+    
+    if ($current < $total) {
+        $html .= '<li class="page-item"><a class="page-link" href="' . $baseUrl . $separator . 'page=' . ($current + 1) . '">›</a></li>';
+    }
+    
+    $html .= '</ul></nav>';
+    return $html;
+}
