@@ -605,3 +605,37 @@ function paginate($current, $total, $baseUrl = '?') {
     $html .= '</ul></nav>';
     return $html;
 }
+
+/**
+ * Get file type icon and color
+ * @param string $filetype
+ * @return array
+ */
+function getFileIcon($filetype) {
+    $icons = [
+        'pdf' => ['icon' => 'fa-file-pdf', 'color' => 'text-red-500'],
+        'doc' => ['icon' => 'fa-file-word', 'color' => 'text-blue-500'],
+        'docx' => ['icon' => 'fa-file-word', 'color' => 'text-blue-500'],
+        'xls' => ['icon' => 'fa-file-excel', 'color' => 'text-green-500'],
+        'xlsx' => ['icon' => 'fa-file-excel', 'color' => 'text-green-500'],
+        'ppt' => ['icon' => 'fa-file-powerpoint', 'color' => 'text-orange-500'],
+        'pptx' => ['icon' => 'fa-file-powerpoint', 'color' => 'text-orange-500'],
+        'zip' => ['icon' => 'fa-file-archive', 'color' => 'text-purple-500'],
+        'rar' => ['icon' => 'fa-file-archive', 'color' => 'text-purple-500'],
+        '7z' => ['icon' => 'fa-file-archive', 'color' => 'text-purple-500'],
+        'jpg' => ['icon' => 'fa-file-image', 'color' => 'text-pink-500'],
+        'jpeg' => ['icon' => 'fa-file-image', 'color' => 'text-pink-500'],
+        'png' => ['icon' => 'fa-file-image', 'color' => 'text-pink-500'],
+        'gif' => ['icon' => 'fa-file-image', 'color' => 'text-pink-500'],
+        'mp4' => ['icon' => 'fa-file-video', 'color' => 'text-indigo-500'],
+        'avi' => ['icon' => 'fa-file-video', 'color' => 'text-indigo-500'],
+        'mkv' => ['icon' => 'fa-file-video', 'color' => 'text-indigo-500'],
+        'mp3' => ['icon' => 'fa-file-audio', 'color' => 'text-yellow-500'],
+        'wav' => ['icon' => 'fa-file-audio', 'color' => 'text-yellow-500'],
+        'txt' => ['icon' => 'fa-file-alt', 'color' => 'text-gray-500'],
+        'csv' => ['icon' => 'fa-file-csv', 'color' => 'text-green-600'],
+    ];
+    
+    $type = strtolower($filetype);
+    return $icons[$type] ?? ['icon' => 'fa-file', 'color' => 'text-gray-400'];
+}

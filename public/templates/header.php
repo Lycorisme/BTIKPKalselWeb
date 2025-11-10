@@ -10,6 +10,16 @@ $site_tagline = getSetting('site_tagline', 'Balai Teknologi Informasi dan Komuni
 $site_logo = get_site_logo();
 $site_favicon = get_site_favicon();
 
+// Get all social media links
+$social_media = [
+    'facebook' => getSetting('social_facebook'),
+    'twitter' => getSetting('social_twitter'),
+    'instagram' => getSetting('social_instagram'),
+    'youtube' => getSetting('social_youtube'),
+    'linkedin' => getSetting('social_linkedin'),
+    'tiktok' => getSetting('social_tiktok'),
+];
+
 // SEO defaults
 $page_title = $pageTitle ?? $site_name;
 $page_description = $pageDescription ?? $site_tagline;
@@ -129,21 +139,23 @@ $page_url = $pageUrl ?? (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' 
                         <span><i class="fas fa-phone mr-1"></i> <?= getSetting('contact_phone', '(0511) 1234567') ?></span>
                     </div>
                     <div class="flex items-center space-x-3">
-                        <?php if ($fb = getSetting('social_facebook')): ?>
-                        <a href="<?= $fb ?>" target="_blank" class="hover:text-blue-300 transition">
-                            <i class="fab fa-facebook text-lg"></i>
-                        </a>
-                        <?php endif; ?>
-                        <?php if ($ig = getSetting('social_instagram')): ?>
-                        <a href="<?= $ig ?>" target="_blank" class="hover:text-blue-300 transition">
-                            <i class="fab fa-instagram text-lg"></i>
-                        </a>
-                        <?php endif; ?>
-                        <?php if ($yt = getSetting('social_youtube')): ?>
-                        <a href="<?= $yt ?>" target="_blank" class="hover:text-blue-300 transition">
-                            <i class="fab fa-youtube text-lg"></i>
-                        </a>
-                        <?php endif; ?>
+                        <?php foreach ($social_media as $platform => $url): ?>
+                            <?php if (!empty($url)): ?>
+                                <a href="<?= htmlspecialchars($url) ?>" target="_blank" rel="noopener" class="hover:text-blue-300 transition" title="<?= ucfirst($platform) ?>">
+                                    <?php
+                                    $icons = [
+                                        'facebook' => 'fab fa-facebook',
+                                        'twitter' => 'fab fa-twitter',
+                                        'instagram' => 'fab fa-instagram',
+                                        'youtube' => 'fab fa-youtube',
+                                        'linkedin' => 'fab fa-linkedin',
+                                        'tiktok' => 'fab fa-tiktok',
+                                    ];
+                                    ?>
+                                    <i class="<?= $icons[$platform] ?? 'fas fa-link' ?> text-lg"></i>
+                                </a>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
                     </div>
                 </div>
                 
@@ -216,6 +228,30 @@ $page_url = $pageUrl ?? (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' 
                 <a href="<?= BASE_URL ?>contact.php" class="block py-2 hover:text-blue-300 transition">
                     <i class="fas fa-envelope mr-2"></i> Kontak
                 </a>
+                
+                <!-- Social Media di Mobile -->
+                <div class="pt-4 mt-4 border-t border-blue-700">
+                    <p class="text-xs text-blue-200 mb-2">Ikuti Kami:</p>
+                    <div class="flex space-x-3">
+                        <?php foreach ($social_media as $platform => $url): ?>
+                            <?php if (!empty($url)): ?>
+                                <a href="<?= htmlspecialchars($url) ?>" target="_blank" rel="noopener" class="hover:text-blue-300 transition">
+                                    <?php
+                                    $icons = [
+                                        'facebook' => 'fab fa-facebook',
+                                        'twitter' => 'fab fa-twitter',
+                                        'instagram' => 'fab fa-instagram',
+                                        'youtube' => 'fab fa-youtube',
+                                        'linkedin' => 'fab fa-linkedin',
+                                        'tiktok' => 'fab fa-tiktok',
+                                    ];
+                                    ?>
+                                    <i class="<?= $icons[$platform] ?? 'fas fa-link' ?> text-xl"></i>
+                                </a>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
             </div>
         </div>
         

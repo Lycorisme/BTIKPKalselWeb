@@ -20,7 +20,7 @@ $pageDescription = getSetting('site_description', 'Portal resmi Balai Teknologi 
 $pageKeywords = getSetting('site_keywords', 'btikp, kalsel, pendidikan, teknologi, informasi');
 $pageImage = get_site_logo();
 
-// Get active banners (FIXED: column name is 'ordering', not 'display_order')
+// Get active banners
 $stmt = $db->query("
     SELECT * FROM banners 
     WHERE is_active = 1 AND deleted_at IS NULL 
@@ -40,7 +40,7 @@ $stmt = $db->query("
 ");
 $recent_posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Get featured services (4 services) - FIXED: no 'display_order', use created_at
+// Get featured services (4 services)
 $stmt = $db->query("
     SELECT * FROM services 
     WHERE status = 'published' AND deleted_at IS NULL 
@@ -49,7 +49,7 @@ $stmt = $db->query("
 ");
 $services = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Get latest gallery albums (4 albums) - FIXED: column name is 'display_order' with underscore
+// Get latest gallery albums (4 albums)
 $stmt = $db->query("
     SELECT a.*, 
            a.photo_count,
@@ -70,7 +70,7 @@ include 'templates/header.php';
 
 <!-- Hero Section - Banner Slider -->
 <?php if (!empty($banners)): ?>
-<section class="relative">
+<section class="relative overflow-hidden">
     <div class="swiper heroSwiper">
         <div class="swiper-wrapper">
             <?php foreach ($banners as $banner): ?>
@@ -78,22 +78,22 @@ include 'templates/header.php';
                 <div class="relative h-[500px] md:h-[600px] bg-cover bg-center" 
                      style="background-image: url('<?= get_banner_image($banner['image_path']) ?>');">
                     <!-- Overlay -->
-                    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent"></div>
                     
                     <!-- Content -->
                     <div class="relative container mx-auto px-4 h-full flex items-center">
                         <div class="max-w-2xl text-white" data-aos="fade-up">
-                            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+                            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
                                 <?= htmlspecialchars($banner['title']) ?>
                             </h1>
                             <?php if (!empty($banner['description'])): ?>
-                            <p class="text-lg md:text-xl mb-6 text-gray-200">
+                            <p class="text-lg md:text-xl mb-6 text-gray-200 leading-relaxed">
                                 <?= htmlspecialchars($banner['description']) ?>
                             </p>
                             <?php endif; ?>
                             <?php if (!empty($banner['button_text']) && !empty($banner['link_url'])): ?>
                             <a href="<?= htmlspecialchars($banner['link_url']) ?>" 
-                               class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition transform hover:scale-105">
+                               class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
                                 <?= htmlspecialchars($banner['button_text']) ?>
                             </a>
                             <?php endif; ?>
@@ -104,21 +104,33 @@ include 'templates/header.php';
             <?php endforeach; ?>
         </div>
         
-        <!-- Navigation -->
+        <!-- Navigation Arrows -->
         <?php if (count($banners) > 1): ?>
-        <div class="swiper-button-next text-white"></div>
-        <div class="swiper-button-prev text-white"></div>
-        <div class="swiper-pagination"></div>
+        <div class="swiper-button-next !text-white !w-12 !h-12 after:!text-2xl !bg-blue-600/80 !rounded-full hover:!bg-blue-700 transition-all"></div>
+        <div class="swiper-button-prev !text-white !w-12 !h-12 after:!text-2xl !bg-blue-600/80 !rounded-full hover:!bg-blue-700 transition-all"></div>
+        
+        <!-- Pagination -->
+        <div class="swiper-pagination !bottom-6"></div>
         <?php endif; ?>
     </div>
 </section>
 <?php else: ?>
 <!-- Default Hero (no banner) -->
-<section class="relative h-[500px] md:h-[600px] bg-gradient-to-r from-blue-900 to-blue-700 flex items-center">
-    <div class="container mx-auto px-4 text-center text-white">
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">Selamat Datang di BTIKP Kalimantan Selatan</h1>
-        <p class="text-xl mb-8"><?= htmlspecialchars(getSetting('site_tagline', 'Balai Teknologi Informasi dan Komunikasi Pendidikan')) ?></p>
-        <a href="<?= BASE_URL ?>contact.php" class="inline-block bg-white text-blue-900 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
+<section class="relative h-[500px] md:h-[600px] bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700 flex items-center overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMSI+PHBhdGggZD0iTTM2IDE0YzAtMS4xLS45LTItMi0yaC04Yy0xLjEgMC0yIC45LTIgMnY4YzAgMS4xLjkgMiAyIDJoOGMxLjEgMCAyLS45IDItMnYtOHoiLz48L2c+PC9nPjwvc3ZnPg==')]"></div>
+    </div>
+    <div class="container mx-auto px-4 text-center text-white relative z-10">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4" data-aos="fade-up">
+            Selamat Datang di BTIKP Kalimantan Selatan
+        </h1>
+        <p class="text-xl mb-8 text-blue-100" data-aos="fade-up" data-aos-delay="100">
+            <?= htmlspecialchars(getSetting('site_tagline', 'Balai Teknologi Informasi dan Komunikasi Pendidikan')) ?>
+        </p>
+        <a href="<?= BASE_URL ?>contact.php" 
+           class="inline-block bg-white text-blue-900 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg"
+           data-aos="fade-up" 
+           data-aos-delay="200">
             Hubungi Kami
         </a>
     </div>
@@ -344,33 +356,89 @@ include 'templates/header.php';
 
 <!-- Initialize Swiper & AOS -->
 <script>
-    // Hero Swiper
+document.addEventListener('DOMContentLoaded', function() {
+    // Hero Swiper - Banner Slider
     const heroSwiper = new Swiper('.heroSwiper', {
-        loop: true,
+        // Enable looping for seamless infinite scroll
+        loop: <?= count($banners) > 1 ? 'true' : 'false' ?>,
+        
+        // Autoplay settings
         autoplay: {
-            delay: 5000,
-            disableOnInteraction: false,
+            delay: 5000, // 5 seconds per slide
+            disableOnInteraction: false, // Continue autoplay after user interaction
+            pauseOnMouseEnter: true, // Pause when hovering
         },
+        
+        // Speed of transition
+        speed: 800,
+        
+        // Pagination bullets
         pagination: {
             el: '.swiper-pagination',
             clickable: true,
+            dynamicBullets: true, // Dynamic bullets for better UX with many slides
         },
+        
+        // Navigation arrows
         navigation: {
             nextEl: '.swiper-button-next',
             prevEl: '.swiper-button-prev',
         },
-        effect: 'fade',
+        
+        // Effect
+        effect: 'fade', // Smooth fade transition
         fadeEffect: {
             crossFade: true
         },
+        
+        // Accessibility
+        a11y: {
+            prevSlideMessage: 'Banner sebelumnya',
+            nextSlideMessage: 'Banner berikutnya',
+            paginationBulletMessage: 'Pergi ke banner {{index}}'
+        },
+        
+        // Keyboard control
+        keyboard: {
+            enabled: true,
+            onlyInViewport: true,
+        },
+        
+        // Touch/Swipe settings
+        touchRatio: 1,
+        touchAngle: 45,
+        grabCursor: true,
+        
+        // Preload images
+        preloadImages: true,
+        lazy: {
+            loadPrevNext: true,
+        },
+        
+        // Callbacks for smooth animation
+        on: {
+            init: function() {
+                console.log('Hero banner slider initialized');
+            },
+            slideChange: function() {
+                // Re-trigger AOS animations on slide change
+                if (typeof AOS !== 'undefined') {
+                    AOS.refresh();
+                }
+            }
+        }
     });
     
-    // Initialize AOS
-    AOS.init({
-        duration: 800,
-        once: true,
-        offset: 100
-    });
+    // Initialize AOS (Animate On Scroll)
+    if (typeof AOS !== 'undefined') {
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100,
+            easing: 'ease-in-out'
+        });
+    }
+});
 </script>
 
 <?php

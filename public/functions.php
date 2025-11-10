@@ -30,11 +30,34 @@ function get_site_favicon() {
  */
 function get_featured_image($image_path) {
     if (empty($image_path)) {
-        $placeholder = getSetting('post_placeholder', 'settings/post-placeholder.jpg');
-        return uploadUrl($placeholder);
+        return BASE_URL . 'assets/images/blog-default.jpg';
     }
     return uploadUrl($image_path);
 }
+
+/**
+ * Format relative date
+ */
+// function formatTanggalRelatif($date) {
+//     if (empty($date)) return '-';
+    
+//     $timestamp = strtotime($date);
+//     $diff = time() - $timestamp;
+    
+//     if ($diff < 60) {
+//         return 'Baru saja';
+//     } elseif ($diff < 3600) {
+//         $minutes = floor($diff / 60);
+//         return $minutes . ' menit yang lalu';
+//     } elseif ($diff < 86400) {
+//         $hours = floor($diff / 3600);
+//         return $hours . ' jam yang lalu';
+//     } elseif ($diff < 172800) {
+//         return 'Kemarin';
+//     } else {
+//         return formatTanggal($date, 'd M Y');
+//     }
+// }
 
 /**
  * Get banner image with fallback
@@ -79,10 +102,10 @@ function increment_post_views($post_id) {
         $stmt = $db->prepare("UPDATE posts SET view_count = view_count + 1 WHERE id = ?");
         $stmt->execute([$post_id]);
         
-        // Log to page_views table
+        // Log to page_views table (if table exists)
         $stmt = $db->prepare("
-            INSERT INTO page_views (model_type, model_id, ip_address, user_agent, referrer)
-            VALUES ('post', ?, ?, ?, ?)
+            INSERT INTO page_views (model_type, model_id, ip_address, user_agent, referrer, created_at)
+            VALUES ('post', ?, ?, ?, ?, NOW())
         ");
         $stmt->execute([
             $post_id,

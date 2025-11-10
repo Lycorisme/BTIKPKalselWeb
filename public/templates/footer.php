@@ -9,6 +9,21 @@ $footer_about = getSetting('footer_about', 'Balai Teknologi Informasi dan Komuni
 $footer_address = getSetting('footer_address', 'Jl. A. Yani KM 36, Banjarmasin, Kalimantan Selatan');
 $contact_email = getSetting('contact_email', 'info@btikpkalsel.id');
 $contact_phone = getSetting('contact_phone', '(0511) 1234567');
+
+// Get all social media links
+$social_media = [
+    'facebook' => ['url' => getSetting('social_facebook'), 'icon' => 'fab fa-facebook', 'name' => 'Facebook'],
+    'twitter' => ['url' => getSetting('social_twitter'), 'icon' => 'fab fa-twitter', 'name' => 'Twitter'],
+    'instagram' => ['url' => getSetting('social_instagram'), 'icon' => 'fab fa-instagram', 'name' => 'Instagram'],
+    'youtube' => ['url' => getSetting('social_youtube'), 'icon' => 'fab fa-youtube', 'name' => 'YouTube'],
+    'linkedin' => ['url' => getSetting('social_linkedin'), 'icon' => 'fab fa-linkedin', 'name' => 'LinkedIn'],
+    'tiktok' => ['url' => getSetting('social_tiktok'), 'icon' => 'fab fa-tiktok', 'name' => 'TikTok'],
+];
+
+// Filter hanya yang ada URL nya
+$active_socials = array_filter($social_media, function($social) {
+    return !empty($social['url']);
+});
 ?>
         </div>
         <!-- End Barba Container -->
@@ -25,23 +40,21 @@ $contact_phone = getSetting('contact_phone', '(0511) 1234567');
                 <div>
                     <h3 class="text-xl font-bold mb-4"><?= getSetting('site_name', 'BTIKP Kalsel') ?></h3>
                     <p class="text-gray-400 mb-4"><?= $footer_about ?></p>
-                    <div class="flex space-x-3">
-                        <?php if ($fb = getSetting('social_facebook')): ?>
-                        <a href="<?= $fb ?>" target="_blank" class="text-gray-400 hover:text-white transition">
-                            <i class="fab fa-facebook text-2xl"></i>
+                    
+                    <!-- Social Media Icons -->
+                    <?php if (!empty($active_socials)): ?>
+                    <div class="flex flex-wrap gap-2">
+                        <?php foreach ($active_socials as $platform => $social): ?>
+                        <a href="<?= htmlspecialchars($social['url']) ?>" 
+                           target="_blank" 
+                           rel="noopener" 
+                           class="w-10 h-10 bg-gray-800 hover:bg-blue-600 rounded-lg flex items-center justify-center transition"
+                           title="<?= $social['name'] ?>">
+                            <i class="<?= $social['icon'] ?> text-lg"></i>
                         </a>
-                        <?php endif; ?>
-                        <?php if ($ig = getSetting('social_instagram')): ?>
-                        <a href="<?= $ig ?>" target="_blank" class="text-gray-400 hover:text-white transition">
-                            <i class="fab fa-instagram text-2xl"></i>
-                        </a>
-                        <?php endif; ?>
-                        <?php if ($yt = getSetting('social_youtube')): ?>
-                        <a href="<?= $yt ?>" target="_blank" class="text-gray-400 hover:text-white transition">
-                            <i class="fab fa-youtube text-2xl"></i>
-                        </a>
-                        <?php endif; ?>
+                        <?php endforeach; ?>
                     </div>
+                    <?php endif; ?>
                 </div>
                 
                 <!-- Quick Links -->
@@ -82,15 +95,15 @@ $contact_phone = getSetting('contact_phone', '(0511) 1234567');
                     <h3 class="text-xl font-bold mb-4">Kontak Kami</h3>
                     <ul class="space-y-3 text-gray-400">
                         <li class="flex items-start">
-                            <i class="fas fa-map-marker-alt mt-1 mr-3 text-blue-400"></i>
+                            <i class="fas fa-map-marker-alt mt-1 mr-3 text-blue-400 flex-shrink-0"></i>
                             <span class="text-sm"><?= $footer_address ?></span>
                         </li>
                         <li class="flex items-center">
-                            <i class="fas fa-envelope mr-3 text-blue-400"></i>
-                            <a href="mailto:<?= $contact_email ?>" class="text-sm hover:text-white transition"><?= $contact_email ?></a>
+                            <i class="fas fa-envelope mr-3 text-blue-400 flex-shrink-0"></i>
+                            <a href="mailto:<?= $contact_email ?>" class="text-sm hover:text-white transition break-all"><?= $contact_email ?></a>
                         </li>
                         <li class="flex items-center">
-                            <i class="fas fa-phone mr-3 text-blue-400"></i>
+                            <i class="fas fa-phone mr-3 text-blue-400 flex-shrink-0"></i>
                             <a href="tel:<?= str_replace(['(', ')', ' ', '-'], '', $contact_phone) ?>" class="text-sm hover:text-white transition"><?= $contact_phone ?></a>
                         </li>
                     </ul>
