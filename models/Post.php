@@ -62,7 +62,7 @@ class Post extends Model {
                    c.slug AS category_slug,
                    u.name AS author_name
             FROM {$this->table} p
-            LEFT JOIN categories c ON p.category_id = c.id
+            LEFT JOIN post_categories c ON p.category_id = c.id
             LEFT JOIN users u ON p.author_id = u.id
             WHERE $whereClause
             ORDER BY p.published_at DESC, p.created_at DESC
@@ -95,7 +95,7 @@ class Post extends Model {
                    u.name AS author_name,
                    u.email AS author_email
             FROM {$this->table} p
-            LEFT JOIN categories c ON p.category_id = c.id
+            LEFT JOIN post_categories c ON p.category_id = c.id
             LEFT JOIN users u ON p.author_id = u.id
             WHERE p.id = ? AND p.deleted_at IS NULL
             LIMIT 1
@@ -115,7 +115,7 @@ class Post extends Model {
                    c.slug AS category_slug,
                    u.name AS author_name
             FROM {$this->table} p
-            LEFT JOIN categories c ON p.category_id = c.id
+            LEFT JOIN post_categories c ON p.category_id = c.id
             LEFT JOIN users u ON p.author_id = u.id
             WHERE p.slug = ? AND p.deleted_at IS NULL
         ";
@@ -131,7 +131,7 @@ class Post extends Model {
         $sql = "
             SELECT p.*, c.name AS category_name, u.name AS author_name
             FROM {$this->table} p
-            LEFT JOIN categories c ON p.category_id = c.id
+            LEFT JOIN post_categories c ON p.category_id = c.id
             LEFT JOIN users u ON p.author_id = u.id
             WHERE p.status = 'published' 
               AND p.deleted_at IS NULL
@@ -151,7 +151,7 @@ class Post extends Model {
         $sql = "
             SELECT p.*, c.name AS category_name, u.name AS author_name
             FROM {$this->table} p
-            LEFT JOIN categories c ON p.category_id = c.id
+            LEFT JOIN post_categories c ON p.category_id = c.id
             LEFT JOIN users u ON p.author_id = u.id
             WHERE p.is_featured = 1 
               AND p.status = 'published'
@@ -170,8 +170,7 @@ class Post extends Model {
      */
     public function getTags($postId) {
         $sql = "
-            SELECT t.* 
-            FROM tags t
+            SELECT t.* FROM tags t
             INNER JOIN post_tags pt ON t.id = pt.tag_id
             WHERE pt.post_id = ? AND t.deleted_at IS NULL
         ";
@@ -265,11 +264,11 @@ class Post extends Model {
     }
 
     /**
-     * Soft delete (rename slug)
-     */
+     * Soft delete (rename slug & update status)
+     */ 
     public function softDelete($id) {
         try {
-            $post = $this->getById($id);
+            $post = $this->getById($id); 
             if (!$post) return false;
 
             $newSlug = $post['slug'] . '_deleted' . time();

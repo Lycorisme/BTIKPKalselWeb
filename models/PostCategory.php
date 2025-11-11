@@ -1,9 +1,10 @@
 <?php
+require_once __DIR__ . '/../core/Model.php';
+
 /**
  * PostCategory Model
  * Complete CRUD with slug generation, soft delete, and post count
  */
-
 class PostCategory extends Model {
     
     protected $table = 'post_categories';
@@ -12,7 +13,6 @@ class PostCategory extends Model {
      * Override find to include deleted_at check if column exists
      */
     public function find($id) {
-        // Check if deleted_at column exists
         try {
             $sql = "SELECT * FROM {$this->table} WHERE id = ? LIMIT 1";
             $stmt = $this->db->prepare($sql);

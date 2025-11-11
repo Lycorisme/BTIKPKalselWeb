@@ -117,12 +117,12 @@ include 'includes/header.php';
                 <div class="card">
                     <div class="card-body px-4 py-4-5">
                         <div class="row">
-                            <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
+                            <div class="col-md-4 d-flex justify-content-start">
                                 <div class="stats-icon purple mb-2">
                                     <i class="iconly-boldDocument"></i>
                                 </div>
                             </div>
-                            <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
+                            <div class="col-md-8">
                                 <h6 class="text-muted font-semibold">Total Posts</h6>
                                 <h6 class="font-extrabold mb-0"><?= formatNumber($stats['posts']['total']) ?></h6>
                             </div>
@@ -136,12 +136,12 @@ include 'includes/header.php';
                 <div class="card">
                     <div class="card-body px-4 py-4-5">
                         <div class="row">
-                            <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
+                            <div class="col-md-4 d-flex justify-content-start">
                                 <div class="stats-icon green mb-2">
                                     <i class="iconly-boldShow"></i>
                                 </div>
                             </div>
-                            <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
+                            <div class="col-md-8">
                                 <h6 class="text-muted font-semibold">Published</h6>
                                 <h6 class="font-extrabold mb-0"><?= formatNumber($stats['posts']['published']) ?></h6>
                             </div>
@@ -155,12 +155,12 @@ include 'includes/header.php';
                 <div class="card">
                     <div class="card-body px-4 py-4-5">
                         <div class="row">
-                            <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
+                            <div class="col-md-4 d-flex justify-content-start">
                                 <div class="stats-icon blue mb-2">
                                     <i class="iconly-boldChart"></i>
                                 </div>
                             </div>
-                            <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
+                            <div class="col-md-8">
                                 <h6 class="text-muted font-semibold">Total Views</h6>
                                 <h6 class="font-extrabold mb-0"><?= formatNumber($stats['posts']['total_views']) ?></h6>
                             </div>
@@ -174,12 +174,12 @@ include 'includes/header.php';
                 <div class="card">
                     <div class="card-body px-4 py-4-5">
                         <div class="row">
-                            <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
+                            <div class="col-md-4 d-flex justify-content-start">
                                 <div class="stats-icon red mb-2">
                                     <i class="iconly-boldEdit"></i>
                                 </div>
                             </div>
-                            <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
+                            <div class="col-md-8">
                                 <h6 class="text-muted font-semibold">Draft</h6>
                                 <h6 class="font-extrabold mb-0"><?= formatNumber($stats['posts']['draft']) ?></h6>
                             </div>
@@ -371,16 +371,12 @@ new Chart(postsChartCtx, {
     options: {
         responsive: true,
         plugins: {
-            legend: {
-                display: true
-            }
+            legend: { display: true }
         },
         scales: {
             y: {
                 beginAtZero: true,
-                ticks: {
-                    stepSize: 1
-                }
+                ticks: { stepSize: 1 }
             }
         }
     }
@@ -405,14 +401,14 @@ new Chart(categoryChartCtx, {
                 'rgba(54, 162, 235, 0.7)',
                 'rgba(255, 206, 86, 0.7)',
                 'rgba(75, 192, 192, 0.7)',
-                'rgba(153, 102, 255, 0.7)',
+                'rgba(153, 102, 255, 0.7)'
             ],
             borderColor: [
                 'rgba(255, 99, 132, 1)',
                 'rgba(54, 162, 235, 1)',
                 'rgba(255, 206, 86, 1)',
                 'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
+                'rgba(153, 102, 255, 1)'
             ],
             borderWidth: 1
         }]
@@ -420,16 +416,12 @@ new Chart(categoryChartCtx, {
     options: {
         responsive: true,
         plugins: {
-            legend: {
-                display: false
-            }
+            legend: { display: false }
         },
         scales: {
             y: {
                 beginAtZero: true,
-                ticks: {
-                    stepSize: 1
-                }
+                ticks: { stepSize: 1 }
             }
         }
     }

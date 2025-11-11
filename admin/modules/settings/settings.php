@@ -98,6 +98,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
             
+            // Handle login background image upload
+            if (!empty($_FILES['login_background_image']['name'])) {
+                $loginBg = $upload->upload($_FILES['login_background_image'], 'backgrounds');
+                if ($loginBg) {
+                    $oldBg = getSetting('login_background_image');
+                    if ($oldBg) $upload->delete($oldBg);
+                    
+                    setSetting('login_background_image', $loginBg);
+                    $updated++;
+                }
+            }
+            
             // Log activity
             logActivity('UPDATE', "Mengupdate settings website ($updated items)", 'settings');
             
@@ -374,6 +386,97 @@ include '../../includes/header.php';
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Appearance Settings -->
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-palette"></i> Appearance (Background)
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Login Background Type -->
+                            <div class="form-group mb-3">
+                                <label class="form-label fw-bold">Login Page Background</label>
+                                
+                                <div class="form-check">
+                                    <input type="radio" name="login_background_type" id="login_bg_gradient" 
+                                           class="form-check-input" value="gradient" 
+                                           <?= ($settings['login_background_type'] ?? 'gradient') === 'gradient' ? 'checked' : '' ?>
+                                           onchange="toggleBackgroundFields('login')">
+                                    <label class="form-check-label" for="login_bg_gradient">
+                                        Gradient
+                                    </label>
+                                </div>
+                                
+                                <div class="form-check">
+                                    <input type="radio" name="login_background_type" id="login_bg_image" 
+                                           class="form-check-input" value="image" 
+                                           <?= ($settings['login_background_type'] ?? 'gradient') === 'image' ? 'checked' : '' ?>
+                                           onchange="toggleBackgroundFields('login')">
+                                    <label class="form-check-label" for="login_bg_image">
+                                        Custom Image
+                                    </label>
+                                </div>
+                                
+                                <div class="form-check">
+                                    <input type="radio" name="login_background_type" id="login_bg_solid" 
+                                           class="form-check-input" value="solid" 
+                                           <?= ($settings['login_background_type'] ?? 'gradient') === 'solid' ? 'checked' : '' ?>
+                                           onchange="toggleBackgroundFields('login')">
+                                    <label class="form-check-label" for="login_bg_solid">
+                                        Solid Color
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Login Gradient Preset -->
+                            <div id="login_gradient_field" class="form-group mb-3" 
+                                 style="display: <?= ($settings['login_background_type'] ?? 'gradient') === 'gradient' ? 'block' : 'none' ?>;">
+                                <label class="form-label">Gradient Style</label>
+                                <select name="login_background_gradient" class="form-select">
+                                    <?php 
+                                    $currentGradient = $settings['login_background_gradient'] ?? 'purple-pink';
+                                    foreach (getGradientOptions() as $key => $label): 
+                                    ?>
+                                        <option value="<?= $key ?>" <?= $currentGradient === $key ? 'selected' : '' ?>>
+                                            <?= $label ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            
+                            <!-- Login Image Upload -->
+                            <div id="login_image_field" class="form-group mb-3" 
+                                 style="display: <?= ($settings['login_background_type'] ?? 'gradient') === 'image' ? 'block' : 'none' ?>;">
+                                <label class="form-label">Background Image</label>
+                                <?php if (!empty($settings['login_background_image'])): ?>
+                                    <div class="mb-2">
+                                        <img src="<?= uploadUrl($settings['login_background_image']) ?>" 
+                                             alt="Login BG" style="max-height: 100px; border-radius: 8px;">
+                                    </div>
+                                <?php endif; ?>
+                                <input type="file" name="login_background_image" class="form-control" accept="image/*">
+                                <small class="text-muted">JPG/PNG, max 2MB. Rekomendasi: 1920x1080px</small>
+                            </div>
+                            
+                            <!-- Login Solid Color -->
+                            <div id="login_color_field" class="form-group mb-3" 
+                                 style="display: <?= ($settings['login_background_type'] ?? 'gradient') === 'solid' ? 'block' : 'none' ?>;">
+                                <label class="form-label">Background Color</label>
+                                <input type="color" name="login_background_color" class="form-control" 
+                                       value="<?= htmlspecialchars($settings['login_background_color'] ?? '#667eea') ?>"
+                                       style="height: 50px;">
+                            </div>
+                            
+                            <!-- Overlay Text Input -->
+                            <div class="form-group mb-3">
+                                <label class="form-label fw-bold">Teks Overlay di Background</label>
+                                <textarea class="form-control" name="login_background_overlay_text" rows="3" placeholder="Masukkan teks yang akan muncul di atas background"><?= htmlspecialchars($settings['login_background_overlay_text'] ?? '') ?></textarea>
+                                <small class="text-muted">Kosongkan jika tidak ingin menampilkan teks overlay</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -395,5 +498,22 @@ include '../../includes/header.php';
         </form>
     </section>
 </div>
+
+<script>
+function toggleBackgroundFields(type) {
+    if (type === 'login') {
+        const bgType = document.querySelector('input[name="login_background_type"]:checked').value;
+        
+        document.getElementById('login_gradient_field').style.display = bgType === 'gradient' ? 'block' : 'none';
+        document.getElementById('login_image_field').style.display = bgType === 'image' ? 'block' : 'none';
+        document.getElementById('login_color_field').style.display = bgType === 'solid' ? 'block' : 'none';
+    }
+}
+
+// Initialize toggle states on page load
+document.addEventListener('DOMContentLoaded', function() {
+    toggleBackgroundFields('login');
+});
+</script>
 
 <?php include '../../includes/footer.php'; ?>

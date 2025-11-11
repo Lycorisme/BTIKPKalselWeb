@@ -1,9 +1,10 @@
 <?php
+require_once __DIR__ . '/../core/Model.php';
+
 /**
  * Tag Model
  * Manage post tags with CRUD operations
  */
-
 class Tag extends Model {
     
     protected $table = 'tags';
@@ -142,9 +143,7 @@ class Tag extends Model {
     }
 
     /**
-     * ==========================================
-     * TAMBAHAN: Find by name (FIX UNTUK ERROR)
-     * ==========================================
+     * Find by name
      */
     public function findByName($name) {
         $sql = "SELECT * FROM {$this->table} WHERE name = ? LIMIT 1";
@@ -246,14 +245,14 @@ class Tag extends Model {
     }
     
     /**
-     * Insert tag
+     * Insert tag - prevent duplicate names
      */
     public function insert($data) {
-        // Cek dulu apakah NAMA sudah ada
+        // Check jika NAMA sudah ada
         if (isset($data['name'])) {
             $existing = $this->findByName($data['name']);
             if ($existing) {
-                return $existing['id']; // Kembalikan ID yang ada, JANGAN insert baru
+                return $existing['id']; // Return existing ID, don't insert duplicate
             }
         }
 

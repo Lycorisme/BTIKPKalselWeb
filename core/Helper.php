@@ -139,10 +139,9 @@ function getCurrentUser() {
         'name' => $_SESSION['user_name'],
         'email' => $_SESSION['user_email'],
         'role' => $_SESSION['user_role'],
-        'photo' => $_SESSION['user_photo'] ?? null // ADD THIS
+        'photo' => $_SESSION['user_photo'] ?? null
     ];
 }
-
 
 function hasRole($roles) {
     if (!isLoggedIn()) {
@@ -151,12 +150,10 @@ function hasRole($roles) {
     
     $userRole = $_SESSION['user_role'];
     
-    // Super admin has access to everything
     if ($userRole === 'super_admin') {
         return true;
     }
     
-    // Check against provided role(s)
     if (is_array($roles)) {
         return in_array($userRole, $roles);
     }
@@ -181,9 +178,7 @@ function csrfField() {
 }
 
 /**
- * =============================
- *  UPLOAD HELPER FUNCTIONS
- * =============================
+ * UPLOAD HELPER FUNCTIONS
  */
 
 /**
@@ -247,14 +242,19 @@ function uploadSize($path) {
 }
 
 /**
- * =============================
- *  MISC FUNCTIONS
- * =============================
+ * MISC FUNCTIONS
  */
 
-function formatNumber($number, $decimals = 0) {
+function formatNumber($number = 0, $decimals = 0) {
+    if ($number === null || $number === '') {
+        $number = 0;
+    }
+    
+    $number = floatval($number);
+    
     return number_format($number, $decimals, ',', '.');
 }
+
 
 function getStatusBadge($status) {
     $badges = [
@@ -351,11 +351,7 @@ function getRoleBadge($role) {
     return $badges[$role] ?? '<span class="badge bg-secondary">Unknown</span>';
 }
 
-/**
- * Get action color for activity logs
- * @param string $action
- * @return string
- */
+
 function getActionColor($action) {
     $colors = [
         'CREATE' => 'success',
@@ -369,11 +365,6 @@ function getActionColor($action) {
     return $colors[$action] ?? 'secondary';
 }
 
-/**
- * Get role name
- * @param string $role
- * @return string
- */
 function getRoleName($role) {
     $names = [
         'super_admin' => 'Super Admin',
@@ -385,21 +376,13 @@ function getRoleName($role) {
     return $names[$role] ?? 'Unknown';
 }
 
-/**
- * Check if user can perform action on target user
- * @param int $targetUserId
- * @param string $action (edit, delete, etc)
- * @return bool
- */
 function canManageUser($targetUserId, $action = 'edit') {
     $currentUser = getCurrentUser();
     
-    // Super admin can do anything
     if ($currentUser['role'] === 'super_admin') {
         return true;
     }
     
-    // Get target user
     $db = Database::getInstance()->getConnection();
     $stmt = $db->prepare("SELECT role FROM users WHERE id = ?");
     $stmt->execute([$targetUserId]);
@@ -409,12 +392,10 @@ function canManageUser($targetUserId, $action = 'edit') {
         return false;
     }
     
-    // Admin can't manage super_admin
     if ($targetUser['role'] === 'super_admin') {
         return false;
     }
     
-    // Can't delete self
     if ($action === 'delete' && $targetUserId == $currentUser['id']) {
         return false;
     }
@@ -422,15 +403,7 @@ function canManageUser($targetUserId, $action = 'edit') {
     return true;
 }
 
-/**
- * Update current user session
- * Call this after updating user profile
- * 
- * @param int $userId
- * @return void
- */
 function refreshUserSession($userId) {
-    // Only refresh if updating own profile
     $currentUser = getCurrentUser();
     if ($currentUser && $currentUser['id'] == $userId) {
         $db = Database::getInstance()->getConnection();
@@ -449,13 +422,10 @@ function refreshUserSession($userId) {
 
 function publicFileUrl($path) {
     if (empty($path)) {
-        return BASE_URL . 'assets/images/no-file.png'; // fallback
+        return BASE_URL . 'assets/images/no-file.png';
     }
     
-    // Normalisasi path: hilangkan public/, uploads\ atau uploads/
     $filePath = str_replace(['public/', 'public\\', 'uploads\\'], '', $path);
-    
-    // Pastikan dimulai dengan uploads/
     if (strpos($filePath, 'uploads/') !== 0) {
         $filePath = 'uploads/' . ltrim($filePath, '/');
     }
@@ -469,173 +439,59 @@ function bannerImageUrl($image_path) {
 }
 
 function slugify($text) {
-    // Ganti spasi dan karakter khusus dengan '-'
     $text = preg_replace('~[^\pL\d]+~u', '-', $text);
-    // Transliterate (ubah karakter non ASCII ke setara ASCII)
     $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
-    // Hapus karakter yang bukan huruf, angka atau strip
     $text = preg_replace('~[^-\w]+~', '', $text);
-    // Hapus strip berlebih di awal dan akhir
     $text = trim($text, '-');
-    // Hapus strip yang berulang-ulang
     $text = preg_replace('~-+~', '-', $text);
-    // Ubah ke huruf kecil
-    $text = strtolower($text);
-
-    if (empty($text)) {
-        return 'n-a';
-    }
-    return $text;
+    return strtolower($text) ?: 'n-a';
 }
 
 /**
  * =============================
- *  PUBLIC WEBSITE FUNCTIONS
+ *  BACKGROUND HELPER FUNCTIONS
  * =============================
  */
 
-/**
- * URL Generators untuk Public Site
- */
-function post_url($slug) {
-    return BASE_URL . 'berita/detail.php?slug=' . urlencode($slug);
-}
-
-function category_url($slug) {
-    return BASE_URL . 'berita/?kategori=' . urlencode($slug);
-}
-
-function tag_url($slug) {
-    return BASE_URL . 'berita/tag.php?tag=' . urlencode($slug);
-}
-
-function service_url($slug) {
-    return BASE_URL . 'layanan/detail.php?slug=' . urlencode($slug);
-}
-
-function album_url($slug) {
-    return BASE_URL . 'galeri/album.php?slug=' . urlencode($slug);
-}
-
-/**
- * Image helpers dengan fallback
- */
-function featured_img($path, $default = 'assets/images/blog-default.jpg') {
-    if (empty($path)) {
-        return BASE_URL . $default;
+function generateBackgroundStyle($type = 'gradient', $image = '', $gradient = 'purple-pink', $color = '#667eea') {
+    switch($type) {
+        case 'image':
+            if (!empty($image) && uploadExists($image)) {
+                return "background: url('" . uploadUrl($image) . "') center/cover no-repeat; position: relative;";
+            }
+            $type = 'gradient';
+            // no break here because fallback to gradient
+        case 'solid':
+            if ($type === 'solid') {
+                return "background: " . htmlspecialchars($color) . ";";
+            }
+            // fallback if type changed to gradient below
+        case 'gradient':
+        default:
+            $gradients = [
+                'purple-pink' => 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                'blue-teal' => 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)',
+                'orange-red' => 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                'blue-purple' => 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                'pink-orange' => 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+                'green-blue' => 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)',
+                'sunset' => 'linear-gradient(135deg, #ff6e7f 0%, #bfe9ff 100%)',
+                'ocean' => 'linear-gradient(135deg, #2e3192 0%, #1bffff 100%)',
+            ];
+            
+            $selectedGradient = $gradients[$gradient] ?? $gradients['purple-pink'];
+            return "background: {$selectedGradient};";
     }
-    return uploadUrl($path);
 }
-
-function banner_img($path) {
-    if (empty($path)) {
-        return BASE_URL . 'assets/images/banner-default.jpg';
-    }
-    return uploadUrl($path);
-}
-
-function service_img($path) {
-    if (empty($path)) {
-        return BASE_URL . 'assets/images/service-default.jpg';
-    }
-    return uploadUrl($path);
-}
-
-function album_cover($path) {
-    if (empty($path)) {
-        return BASE_URL . 'assets/images/album-default.jpg';
-    }
-    return uploadUrl($path);
-}
-
-/**
- * Check active menu
- */
-function is_active($url) {
-    $current = $_SERVER['REQUEST_URI'];
-    if ($url === '/' || $url === '') {
-        return ($current === '/' || strpos($current, '/index.php') !== false) ? 'active' : '';
-    }
-    return (strpos($current, $url) !== false) ? 'active' : '';
-}
-
-/**
- * Pagination HTML
- */
-function paginate($current, $total, $baseUrl = '?') {
-    if ($total <= 1) return '';
-    
-    $separator = (strpos($baseUrl, '?') !== false) ? '&' : '?';
-    if (substr($baseUrl, -1) === '?' || substr($baseUrl, -1) === '&') {
-        $separator = '';
-    }
-    
-    $html = '<nav><ul class="pagination justify-content-center">';
-    
-    if ($current > 1) {
-        $html .= '<li class="page-item"><a class="page-link" href="' . $baseUrl . $separator . 'page=' . ($current - 1) . '">‹</a></li>';
-    }
-    
-    $start = max(1, $current - 2);
-    $end = min($total, $current + 2);
-    
-    if ($start > 1) {
-        $html .= '<li class="page-item"><a class="page-link" href="' . $baseUrl . $separator . 'page=1">1</a></li>';
-        if ($start > 2) {
-            $html .= '<li class="page-item disabled"><span class="page-link">...</span></li>';
-        }
-    }
-    
-    for ($i = $start; $i <= $end; $i++) {
-        $active = ($i === $current) ? 'active' : '';
-        $html .= '<li class="page-item ' . $active . '"><a class="page-link" href="' . $baseUrl . $separator . 'page=' . $i . '">' . $i . '</a></li>';
-    }
-    
-    if ($end < $total) {
-        if ($end < $total - 1) {
-            $html .= '<li class="page-item disabled"><span class="page-link">...</span></li>';
-        }
-        $html .= '<li class="page-item"><a class="page-link" href="' . $baseUrl . $separator . 'page=' . $total . '">' . $total . '</a></li>';
-    }
-    
-    if ($current < $total) {
-        $html .= '<li class="page-item"><a class="page-link" href="' . $baseUrl . $separator . 'page=' . ($current + 1) . '">›</a></li>';
-    }
-    
-    $html .= '</ul></nav>';
-    return $html;
-}
-
-/**
- * Get file type icon and color
- * @param string $filetype
- * @return array
- */
-function getFileIcon($filetype) {
-    $icons = [
-        'pdf' => ['icon' => 'fa-file-pdf', 'color' => 'text-red-500'],
-        'doc' => ['icon' => 'fa-file-word', 'color' => 'text-blue-500'],
-        'docx' => ['icon' => 'fa-file-word', 'color' => 'text-blue-500'],
-        'xls' => ['icon' => 'fa-file-excel', 'color' => 'text-green-500'],
-        'xlsx' => ['icon' => 'fa-file-excel', 'color' => 'text-green-500'],
-        'ppt' => ['icon' => 'fa-file-powerpoint', 'color' => 'text-orange-500'],
-        'pptx' => ['icon' => 'fa-file-powerpoint', 'color' => 'text-orange-500'],
-        'zip' => ['icon' => 'fa-file-archive', 'color' => 'text-purple-500'],
-        'rar' => ['icon' => 'fa-file-archive', 'color' => 'text-purple-500'],
-        '7z' => ['icon' => 'fa-file-archive', 'color' => 'text-purple-500'],
-        'jpg' => ['icon' => 'fa-file-image', 'color' => 'text-pink-500'],
-        'jpeg' => ['icon' => 'fa-file-image', 'color' => 'text-pink-500'],
-        'png' => ['icon' => 'fa-file-image', 'color' => 'text-pink-500'],
-        'gif' => ['icon' => 'fa-file-image', 'color' => 'text-pink-500'],
-        'mp4' => ['icon' => 'fa-file-video', 'color' => 'text-indigo-500'],
-        'avi' => ['icon' => 'fa-file-video', 'color' => 'text-indigo-500'],
-        'mkv' => ['icon' => 'fa-file-video', 'color' => 'text-indigo-500'],
-        'mp3' => ['icon' => 'fa-file-audio', 'color' => 'text-yellow-500'],
-        'wav' => ['icon' => 'fa-file-audio', 'color' => 'text-yellow-500'],
-        'txt' => ['icon' => 'fa-file-alt', 'color' => 'text-gray-500'],
-        'csv' => ['icon' => 'fa-file-csv', 'color' => 'text-green-600'],
+function getGradientOptions() {
+    return [
+        'purple-pink' => 'Purple to Pink',
+        'blue-teal' => 'Blue to Teal',
+        'orange-red' => 'Orange to Red',
+        'blue-purple' => 'Blue to Purple',
+        'pink-orange' => 'Pink to Orange',
+        'green-blue' => 'Green to Blue',
+        'sunset' => 'Sunset',
+        'ocean' => 'Ocean',
     ];
-    
-    $type = strtolower($filetype);
-    return $icons[$type] ?? ['icon' => 'fa-file', 'color' => 'text-gray-400'];
 }

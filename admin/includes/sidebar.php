@@ -1,99 +1,12 @@
 <?php
-/**
- * Admin Sidebar Navigation
- * Fixed version - No double hover, proper active state detection
- */
-
-// Get current page from URL
- $currentFile = basename($_SERVER['PHP_SELF']);
- $currentPath = $_SERVER['PHP_SELF'];
-
-// Determine current module and page for accurate active state
- $currentModule = '';
- $currentPage = '';
-
-// Extract module from path
-if (preg_match('/\/modules\/([^\/]+)\//', $currentPath, $matches)) {
-    $currentModule = $matches[1];
-}
-
-// Determine specific page
-if (strpos($currentPath, '/posts/') !== false) {
-    $currentPage = 'posts';
-} elseif (strpos($currentPath, '/services/') !== false) {
-    $currentPage = 'services';
-} elseif (strpos($currentPath, '/users/') !== false) {
-    $currentPage = 'users';
-} elseif (strpos($currentPath, '/categories/') !== false) {
-    $currentPage = 'categories';
-} elseif (strpos($currentPath, '/tags/') !== false) {
-    $currentPage = 'tags';
-} elseif (strpos($currentPath, '/files/') !== false) {
-    $currentPage = 'files';
-} elseif (strpos($currentPath, '/banners/') !== false) {
-    $currentPage = 'banners';
-} elseif (strpos($currentPath, '/settings/') !== false) {
-    $currentPage = 'settings';
-} elseif (strpos($currentPath, '/gallery/') !== false) {
-    $currentPage = 'gallery';
-} elseif (strpos($currentPath, '/contact/') !== false) {
-    $currentPage = 'contact';
-} elseif (strpos($currentPath, '/trash/') !== false) {
-    $currentPage = 'trash';
-} elseif (strpos($currentPath, '/pages/') !== false) {
-    $currentPage = 'pages';
-} elseif (strpos($currentPath, '/reports/') !== false) {
-    $currentPage = 'reports';
-    // Sub-detect report type
-    if (strpos($currentPath, 'report_posts') !== false) {
-        $currentReportType = 'report_posts';
-    } elseif (strpos($currentPath, 'report_activities') !== false) {
-        $currentReportType = 'report_activities';
-    } elseif (strpos($currentPath, 'report_users') !== false) {
-        $currentReportType = 'report_users';
-    } elseif (strpos($currentPath, 'report_services') !== false) {
-        $currentReportType = 'report_services';
-    } elseif (strpos($currentPath, 'report_categories') !== false) {
-        $currentReportType = 'report_categories';
-    } elseif (strpos($currentPath, 'report_overview') !== false) {
-        $currentReportType = 'report_overview';
-    }
-} elseif (strpos($currentPath, '/activity-logs/') !== false) {
-    $currentPage = 'activity_logs';
-} elseif ($currentFile === 'index.php' && strpos($currentPath, '/admin/index.php') !== false) {
-    $currentPage = 'dashboard';
-}
-
-// Get database connection for badge counts
- $db = Database::getInstance()->getConnection();
-
-// Get unread contact messages count
- $unreadContactStmt = $db->query("SELECT COUNT(*) as unread FROM contact_messages WHERE status = 'unread'");
- $unreadContactData = $unreadContactStmt->fetch();
- $unreadContactCount = $unreadContactData['unread'] ?? 0;
-
-// Get trash items count
- $trashCountStmt = $db->query("
-    SELECT 
-        (SELECT COUNT(*) FROM posts WHERE deleted_at IS NOT NULL) +
-        (SELECT COUNT(*) FROM services WHERE deleted_at IS NOT NULL) +
-        (SELECT COUNT(*) FROM users WHERE deleted_at IS NOT NULL) +
-        (SELECT COUNT(*) FROM downloadable_files WHERE deleted_at IS NOT NULL) +
-        (SELECT COUNT(*) FROM gallery_albums WHERE deleted_at IS NOT NULL) +
-        (SELECT COUNT(*) FROM gallery_photos WHERE deleted_at IS NOT NULL) as total
-");
- $trashCountData = $trashCountStmt->fetch();
- $trashCount = $trashCountData['total'] ?? 0;
-?>
-
-<?php
-// Sidebar setup sama seperti sebelumnya...
+// Ambil status dan badge count (kode PHP tetap seperti sebelumnya)
 $currentFile = basename($_SERVER['PHP_SELF']);
 $currentPath = $_SERVER['PHP_SELF'];
 $currentModule = '';
 $currentPage = '';
 $currentReportType = '';
 
+// Ekstrak module dari path
 if (preg_match('/\/modules\/([^\/]+)\//', $currentPath, $matches)) {
     $currentModule = $matches[1];
 }
@@ -127,7 +40,6 @@ elseif ($currentFile === 'index.php' && strpos($currentPath, '/admin/index.php')
 
 // Badge counts
 $db = Database::getInstance()->getConnection();
-
 $unreadContactStmt = $db->query("SELECT COUNT(*) as unread FROM contact_messages WHERE status = 'unread'");
 $unreadContactData = $unreadContactStmt->fetch();
 $unreadContactCount = $unreadContactData['unread'] ?? 0;
@@ -153,23 +65,14 @@ $trashCount = $trashCountData['total'] ?? 0;
       <div class="d-flex flex-column align-items-center justify-content-center" style="gap:8px;">
         <!-- LOGO --> 
         <?php if ($adminLogo = getSetting('site_logo')): ?>
-          <img src="<?= uploadUrl($adminLogo) ?>" alt="Logo BTIKP" 
-               style="height:70px; width:auto; display:block;">
+          <img src="<?= uploadUrl($adminLogo) ?>" alt="Logo BTIKP" style="height:70px; width:auto; display:block;">
         <?php else: ?>
-          <img src="<?= BASE_URL ?>path/to/default/logo.png" alt="Logo" 
-               style="height:70px; width:auto; display:block;">
+          <img src="<?= BASE_URL ?>path/to/default/logo.png" alt="Logo" style="height:70px; width:auto; display:block;">
         <?php endif; ?>
+
         <!-- Logo Text --> 
         <?php if (getSetting('site_logo_show_text', '1') == '1'): ?>
-          <span style="
-            font-size: 1.50rem; 
-            font-weight: 800; 
-            color: var(--bs-primary); 
-            text-align:center;
-            line-height:1.1;
-            letter-spacing:1px;
-            display:block;
-            ">
+          <span style="font-size:1.5rem; font-weight:800; color:var(--bs-primary); text-align:center;"> 
             <?= getSetting('site_logo_text', 'BTIKP KALSEL') ?>
           </span>
         <?php endif; ?>
@@ -180,20 +83,18 @@ $trashCount = $trashCountData['total'] ?? 0;
     <div class="sidebar-menu">
       <ul class="menu">
         <li class="sidebar-title">Menu</li>
-        <!-- Dashboard -->
         <li class="sidebar-item <?= $currentPage === 'dashboard' ? 'active' : '' ?>">
           <a href="<?= ADMIN_URL ?>" class="sidebar-link">
             <i class="bi bi-grid-fill"></i>
             <span>Dashboard</span>
           </a>
         </li>
-        <!-- Posts/Articles -->
         <li class="sidebar-item has-sub <?= $currentPage === 'posts' || $currentPage === 'categories' || $currentPage === 'tags' ? 'active' : '' ?>">
           <a href="#" class="sidebar-link">
             <i class="bi bi-newspaper"></i>
             <span>Berita & Artikel</span>
           </a>
-          <ul class="submenu <?= $currentPage === 'posts' || $currentPage === 'categories' || $currentPage === 'tags' ? 'active' : '' ?>">
+          <ul class="submenu">
             <li class="submenu-item <?= $currentPage === 'posts' ? 'active' : '' ?>">
               <a href="<?= ADMIN_URL ?>modules/posts/posts_list.php">Semua Post</a>
             </li>
@@ -208,20 +109,18 @@ $trashCount = $trashCountData['total'] ?? 0;
             </li>
           </ul>
         </li>
-        <!-- Layanan -->
         <li class="sidebar-item <?= $currentPage === 'services' ? 'active' : '' ?>">
           <a href="<?= ADMIN_URL ?>modules/services/services_list.php" class="sidebar-link">
             <i class="bi bi-gear-fill"></i>
             <span>Layanan</span>
           </a>
         </li>
-        <!-- Gallery -->
         <li class="sidebar-item has-sub <?= $currentPage === 'gallery' ? 'active' : '' ?>">
           <a href="#" class="sidebar-link">
             <i class="bi bi-images"></i>
             <span>Gallery</span>
           </a>
-          <ul class="submenu <?= $currentPage === 'gallery' ? 'active' : '' ?>">
+          <ul class="submenu">
             <li class="submenu-item <?= strpos($currentFile, 'albums_') !== false ? 'active' : '' ?>">
               <a href="<?= ADMIN_URL ?>modules/gallery/albums_list.php">Semua Album</a>
             </li>
@@ -230,28 +129,24 @@ $trashCount = $trashCountData['total'] ?? 0;
             </li>
           </ul>
         </li>
-        <!-- Pages -->
-        <li class="sidebar-item <?= $currentPage === 'pages' ? 'active' : '' ?>">
+<!--         <li class="sidebar-item <?= $currentPage === 'pages' ? 'active' : '' ?>">
           <a href="<?= ADMIN_URL ?>modules/pages/pages_list.php" class="sidebar-link">
             <i class="bi bi-file-earmark-text"></i>
             <span>Halaman</span>
           </a>
-        </li>
-        <!-- Downloads -->
+        </li> -->
         <li class="sidebar-item <?= $currentPage === 'files' ? 'active' : '' ?>">
           <a href="<?= ADMIN_URL ?>modules/files/files_list.php" class="sidebar-link">
             <i class="bi bi-download"></i>
             <span>File Download</span>
           </a>
         </li>
-        <!-- Banners -->
         <li class="sidebar-item <?= $currentPage === 'banners' ? 'active' : '' ?>">
           <a href="<?= ADMIN_URL ?>modules/banners/banners_list.php" class="sidebar-link">
             <i class="bi bi-card-image"></i>
             <span>Banner</span>
           </a>
         </li>
-        <!-- Kontak -->
         <li class="sidebar-item <?= $currentPage === 'contact' ? 'active' : '' ?>">
           <a href="<?= ADMIN_URL ?>modules/contact/messages_list.php" class="sidebar-link">
             <i class="bi bi-envelope"></i>
@@ -262,21 +157,18 @@ $trashCount = $trashCountData['total'] ?? 0;
           </a>
         </li>
         <li class="sidebar-title">Manajemen</li>
-        <!-- Users -->
         <li class="sidebar-item <?= $currentPage === 'users' ? 'active' : '' ?>">
           <a href="<?= ADMIN_URL ?>modules/users/users_list.php" class="sidebar-link">
             <i class="bi bi-people-fill"></i>
             <span>Users</span>
           </a>
         </li>
-        <!-- Activity Logs -->
         <li class="sidebar-item <?= $currentPage === 'activity_logs' ? 'active' : '' ?>">
           <a href="<?= ADMIN_URL ?>modules/logs/activity_logs.php" class="sidebar-link">
             <i class="bi bi-clock-history"></i>
             <span>Activity Logs</span>
           </a>
         </li>
-        <!-- Trash -->
         <li class="sidebar-item <?= $currentPage === 'trash' ? 'active' : '' ?>">
           <a href="<?= ADMIN_URL ?>modules/trash/trash_list.php" class="sidebar-link">
             <i class="bi bi-trash"></i>
@@ -286,14 +178,12 @@ $trashCount = $trashCountData['total'] ?? 0;
             <?php endif; ?>
           </a>
         </li>
-        <!-- Settings -->
         <li class="sidebar-item <?= $currentPage === 'settings' ? 'active' : '' ?>">
           <a href="<?= ADMIN_URL ?>modules/settings/settings.php" class="sidebar-link">
             <i class="bi bi-gear"></i>
             <span>Pengaturan</span>
           </a>
         </li>
-
         <li class="sidebar-title">Laporan</li>
         <li class="sidebar-item <?= (isset($currentReportType) && $currentReportType === 'report_overview') ? 'active' : '' ?>">
           <a href="<?= ADMIN_URL ?>modules/reports/report_overview.php" class="sidebar-link">
@@ -349,44 +239,67 @@ $trashCount = $trashCountData['total'] ?? 0;
             <span>Laporan Pesan Kontak</span>
           </a>
         </li>
-
       </ul>
     </div>
-
   </div>
 </div>
 
-
+<!-- Script Animasi & Expand Menu Mazer -->
+<script src="<?= BASE_URL ?>assets/static/js/sidebar.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  const btn = document.getElementById('theme-toggle-btn');
-  const iconLight = document.getElementById('icon-light');
-  const iconDark = document.getElementById('icon-dark');
+  // Script utama handling sidebar: collapse-expand, animation, responsive, dan toggle theme
+  document.addEventListener('DOMContentLoaded', function() {
+    var sidebar = document.querySelector('.sidebar-wrapper');
+    var toggler = document.querySelector('.sidebar-toggler');
+    var submenuLinks = document.querySelectorAll('.sidebar-item.has-sub > .sidebar-link');
+    var menuActive = document.querySelectorAll('.sidebar-item.active.has-sub > .submenu');
 
-  function updateIcons(theme) {
-    if (theme === 'dark') {
-      iconLight.classList.remove('d-none');
-      iconDark.classList.add('d-none');
-    } else {
-      iconLight.classList.add('d-none');
-      iconDark.classList.remove('d-none');
-    }
-  }
+    // Dropdown expand/collapse
+    submenuLinks.forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        var parent = link.parentElement;
+        var subMenu = parent.querySelector('.submenu');
+        if (subMenu) {
+          parent.classList.toggle('show');
+          subMenu.classList.toggle('show');
+          setTimeout(function() {
+            if (subMenu.classList.contains('show')) {
+              subMenu.style.maxHeight = subMenu.scrollHeight + "px";
+            } else {
+              subMenu.style.maxHeight = null;
+            }
+          }, 10);
+        }
+      });
+    });
 
-  let currentTheme = localStorage.getItem('theme') || 'light';
-  updateIcons(currentTheme);
+    // Sidebar hide (close animation)
+    toggler && toggler.addEventListener('click', function(e) {
+      e.preventDefault();
+      sidebar.classList.toggle('hide');
+    });
 
-  btn.onclick = function() {
-    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    localStorage.setItem('theme', currentTheme);
-    document.body.classList.toggle('dark-theme', currentTheme === 'dark');
-    updateIcons(currentTheme);
-  };
+    // Theme toggle (dark/light)
+    var themeSwitch = document.getElementById('toggle-dark');
+    themeSwitch && themeSwitch.addEventListener('change', function() {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    });
 
-  if (currentTheme === 'dark') {
-    document.body.classList.add('dark-theme');
-  } else {
-    document.body.classList.remove('dark-theme');
-  }
-});
+    // Inisialisasi submenu yang aktif
+    menuActive.forEach(function(submenu) {
+      submenu.classList.add('show');
+      submenu.style.maxHeight = submenu.scrollHeight + "px";
+      submenu.parentElement.classList.add('show');
+    });
+    // Responsif pada mobile: sidebar hide di klik luar pada layar kecil
+    window.addEventListener('click', function(e) {
+      var isSidebar = e.target.closest('.sidebar-wrapper');
+      var isToggler = e.target.closest('.sidebar-toggler');
+      if (!isSidebar && !isToggler && window.innerWidth <= 991) {
+        sidebar.classList.add('hide');
+      }
+    });
+  });
 </script>

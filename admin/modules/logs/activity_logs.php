@@ -1,13 +1,11 @@
 <?php
 /**
- * Activity Logs Page
- * Complete with filters, search, export, and cleanup
+ * Activity Logs Page - Full Mazer Design
+ * Complete with filters, search, export, pagination, and cleanup
  */
-
 require_once '../../includes/auth_check.php';
 require_once '../../../core/Database.php';
 require_once '../../../core/Helper.php';
-require_once '../../../core/Pagination.php';
 
 $pageTitle = 'Activity Logs';
 
@@ -21,6 +19,7 @@ $db = Database::getInstance()->getConnection();
 
 // Get items per page
 $itemsPerPage = (int)getSetting('items_per_page', 25);
+$page = max(1, (int)($_GET['page'] ?? 1));
 
 // Get filters
 $userId = $_GET['user_id'] ?? '';
@@ -28,8 +27,7 @@ $actionType = $_GET['action_type'] ?? '';
 $modelType = $_GET['model_type'] ?? '';
 $dateFrom = $_GET['date_from'] ?? '';
 $dateTo = $_GET['date_to'] ?? '';
-$search = $_GET['search'] ?? '';
-$page = $_GET['page'] ?? 1;
+$search = trim($_GET['search'] ?? '');
 
 // Export to CSV
 if (isset($_GET['export']) && $_GET['export'] === 'csv') {
@@ -70,12 +68,12 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
     }
     
     if ($search) {
-        $sql .= " AND (al.description LIKE ? OR al.user_name LIKE ?)";
+        $sql .= " AND (al.description LIKE ? OR u.name LIKE ?)";
         $params[] = "%$search%";
         $params[] = "%$search%";
     }
     
-    $sql .= " ORDER BY al.created_at DESC LIMIT 5000"; // Max 5000 records
+    $sql .= " ORDER BY al.created_at DESC LIMIT 5000";
     
     $stmt = $db->prepare($sql);
     $stmt->execute($params);
@@ -86,14 +84,10 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
     header('Content-Disposition: attachment; filename=activity_logs_' . date('Y-m-d_His') . '.csv');
     
     $output = fopen('php://output', 'w');
-    
-    // UTF-8 BOM for Excel
     fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
     
-    // Header
-    fputcsv($output, ['ID', 'User', 'Email', 'Action', 'Description', 'Model Type', 'Model ID', 'IP Address', 'Date Time']);
+    fputcsv($output, ['ID', 'User', 'Email', 'Action', 'Description', 'Module', 'Model ID', 'IP Address', 'Timestamp']);
     
-    // Data
     foreach ($logs as $log) {
         fputcsv($output, [
             $log['id'],
@@ -114,7 +108,7 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
 
 // Handle cleanup
 if (isset($_POST['cleanup_logs'])) {
-    $cleanupDays = (int)$_POST['cleanup_days'];
+    $cleanupDays = (int)($_POST['cleanup_days'] ?? 0);
     
     if ($cleanupDays > 0 && $cleanupDays <= 365) {
         try {
@@ -125,7 +119,6 @@ if (isset($_POST['cleanup_logs'])) {
             $stmt->execute([$cleanupDays]);
             
             $deleted = $stmt->rowCount();
-            
             logActivity('DELETE', "Cleanup activity logs ($deleted records older than $cleanupDays days)", 'activity_logs');
             
             setAlert('success', "Berhasil menghapus $deleted log lama");
@@ -140,7 +133,7 @@ if (isset($_POST['cleanup_logs'])) {
 // Build query with filters
 $sql = "SELECT 
             al.*,
-            COALESCE(u.name, al.user_name) as user_display_name,
+            COALESCE(u.name, 'System') as user_display_name,
             u.email as user_email,
             u.photo as user_photo
         FROM activity_logs al
@@ -175,7 +168,7 @@ if ($dateTo) {
 }
 
 if ($search) {
-    $sql .= " AND (al.description LIKE ? OR al.user_name LIKE ?)";
+    $sql .= " AND (al.description LIKE ? OR u.name LIKE ?)";
     $params[] = "%$search%";
     $params[] = "%$search%";
 }
@@ -184,7 +177,8 @@ if ($search) {
 $countSql = "SELECT COUNT(*) FROM (" . $sql . ") as filtered";
 $countStmt = $db->prepare($countSql);
 $countStmt->execute($params);
-$total = $countStmt->fetchColumn();
+$total = (int)$countStmt->fetchColumn();
+$totalPages = max(1, ceil($total / $itemsPerPage));
 
 // Add pagination
 $offset = ($page - 1) * $itemsPerPage;
@@ -197,14 +191,11 @@ $stmt = $db->prepare($sql);
 $stmt->execute($params);
 $logs = $stmt->fetchAll();
 
-// Initialize pagination
-$pagination = new Pagination($total, $itemsPerPage, $page);
-
 // Get all users for filter
-$usersStmt = $db->query("SELECT id, name FROM users ORDER BY name");
+$usersStmt = $db->query("SELECT id, name FROM users WHERE deleted_at IS NULL ORDER BY name");
 $users = $usersStmt->fetchAll();
 
-// Get distinct action types
+// Action types
 $actionTypes = ['CREATE', 'UPDATE', 'DELETE', 'LOGIN', 'LOGOUT', 'VIEW'];
 
 // Get distinct model types
@@ -234,6 +225,7 @@ include '../../includes/header.php';
         <div class="row">
             <div class="col-12 col-md-6">
                 <h3><?= $pageTitle ?></h3>
+                <p class="text-subtitle text-muted">Monitor dan kelola semua aktivitas sistem</p>
             </div>
             <div class="col-12 col-md-6">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
@@ -246,246 +238,212 @@ include '../../includes/header.php';
         </div>
     </div>
 
-    <section class="section">
-        <?php if ($alert = getAlert()): ?>
-            <div class="alert alert-<?= $alert['type'] ?> alert-dismissible fade show">
-                <?= $alert['message'] ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        <?php endif; ?>
-        
-        <!-- Statistics Cards -->
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="text-muted mb-1">Total Logs</h6>
-                                <h3 class="mb-0"><?= formatNumber($stats['total']) ?></h3>
-                            </div>
-                            <div class="text-primary">
-                                <i class="bi bi-file-text" style="font-size: 2rem;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="text-muted mb-1">Unique Users</h6>
-                                <h3 class="mb-0"><?= formatNumber($stats['unique_users']) ?></h3>
-                            </div>
-                            <div class="text-success">
-                                <i class="bi bi-people" style="font-size: 2rem;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="text-muted mb-1">Last Activity</h6>
-                                <h6 class="mb-0"><?= formatTanggalRelatif($stats['last_activity']) ?></h6>
-                                <small class="text-muted"><?= formatTanggal($stats['last_activity'], 'd M Y H:i') ?></small>
-                            </div>
-                            <div class="text-info">
-                                <i class="bi bi-clock-history" style="font-size: 2rem;"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- Statistics Cards -->
+    <section class="row mb-4">
+        <div class="col-md-4 col-6 mb-2">
+            <div class="card"><div class="card-body text-center">
+                <div class="stats-icon blue mb-2 mx-auto"><i class="bi bi-file-text"></i></div>
+                <h6 class="text-muted mb-1">Total Logs</h6>
+                <h6 class="mb-0"><?= formatNumber($stats['total']) ?></h6>
+            </div></div>
         </div>
-        
-        <!-- Main Card -->
-        <div class="card">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">Activity Logs</h5>
-                    <div class="d-flex gap-2">
-                        <!-- Export Button -->
-                        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exportModal">
-                            <i class="bi bi-download"></i> Export CSV
+        <div class="col-md-4 col-6 mb-2">
+            <div class="card"><div class="card-body text-center">
+                <div class="stats-icon green mb-2 mx-auto"><i class="bi bi-people"></i></div>
+                <h6 class="text-muted mb-1">Unique Users</h6>
+                <h6 class="mb-0"><?= formatNumber($stats['unique_users']) ?></h6>
+            </div></div>
+        </div>
+        <div class="col-md-4 col-6 mb-2">
+            <div class="card"><div class="card-body text-center">
+                <div class="stats-icon purple mb-2 mx-auto"><i class="bi bi-clock-history"></i></div>
+                <h6 class="text-muted mb-1">Last Activity</h6>
+                <h6 class="mb-0"><?= formatTanggalRelatif($stats['last_activity']) ?></h6>
+            </div></div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="card shadow">
+            <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div class="card-title m-0 fw-bold">Activity Logs</div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exportModal">
+                        <i class="bi bi-download"></i> <span class="d-none d-md-inline">Export CSV</span>
+                    </button>
+                    <?php if (hasRole(['super_admin'])): ?>
+                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#cleanupModal">
+                            <i class="bi bi-trash"></i> <span class="d-none d-md-inline">Cleanup</span>
                         </button>
-                        
-                        <!-- Cleanup Button -->
-                        <?php if (hasRole(['super_admin'])): ?>
-                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#cleanupModal">
-                                <i class="bi bi-trash"></i> Cleanup
-                            </button>
-                        <?php endif; ?>
-                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
-            
+
             <div class="card-body">
-                <!-- Filters -->
-                <form method="GET" class="mb-4">
-                    <div class="row g-3">
-                        <!-- User Filter -->
-                        <div class="col-md-2">
-                            <select name="user_id" class="form-select form-select-sm">
-                                <option value="">Semua User</option>
-                                <?php foreach ($users as $user): ?>
-                                    <option value="<?= $user['id'] ?>" <?= $userId == $user['id'] ? 'selected' : '' ?>>
-                                        <?= htmlspecialchars($user['name']) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        
-                        <!-- Action Type Filter -->
-                        <div class="col-md-2">
-                            <select name="action_type" class="form-select form-select-sm">
-                                <option value="">Semua Action</option>
-                                <?php foreach ($actionTypes as $type): ?>
-                                    <option value="<?= $type ?>" <?= $actionType === $type ? 'selected' : '' ?>>
-                                        <?= $type ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        
-                        <!-- Model Type Filter -->
-                        <div class="col-md-2">
-                            <select name="model_type" class="form-select form-select-sm">
-                                <option value="">Semua Module</option>
-                                <?php foreach ($modelTypes as $type): ?>
-                                    <option value="<?= $type ?>" <?= $modelType === $type ? 'selected' : '' ?>>
-                                        <?= ucfirst($type) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        
-                        <!-- Date From -->
-                        <div class="col-md-2">
-                            <input type="date" name="date_from" class="form-control form-control-sm" 
-                                   value="<?= htmlspecialchars($dateFrom) ?>" placeholder="Dari Tanggal">
-                        </div>
-                        
-                        <!-- Date To -->
-                        <div class="col-md-2">
-                            <input type="date" name="date_to" class="form-control form-control-sm" 
-                                   value="<?= htmlspecialchars($dateTo) ?>" placeholder="Sampai Tanggal">
-                        </div>
-                        
-                        <!-- Search -->
-                        <div class="col-md-2">
-                            <input type="text" name="search" class="form-control form-control-sm" 
-                                   placeholder="Cari deskripsi..." 
-                                   value="<?= htmlspecialchars($search) ?>">
-                        </div>
+                <!-- Filter Panel -->
+                <form method="GET" class="row g-2 align-items-center mb-3">
+                    <div class="col-12 col-sm-3">
+                        <input type="text" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Cari deskripsi..." class="form-control">
                     </div>
-                    
-                    <div class="row mt-2">
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-primary btn-sm">
-                                <i class="bi bi-search"></i> Filter
-                            </button>
-                            <?php if ($userId || $actionType || $modelType || $dateFrom || $dateTo || $search): ?>
-                                <a href="activity_logs.php" class="btn btn-secondary btn-sm">
-                                    <i class="bi bi-x-circle"></i> Reset
-                                </a>
-                            <?php endif; ?>
-                        </div>
+                    <div class="col-6 col-sm-3">
+                        <select name="user_id" class="form-select custom-dropdown">
+                            <option value="">Semua User</option>
+                            <?php foreach ($users as $user): ?>
+                                <option value="<?= $user['id'] ?>"<?= $userId === (string)$user['id'] ? ' selected' : '' ?>>
+                                    <?= htmlspecialchars($user['name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-6 col-sm-2">
+                        <select name="action_type" class="form-select custom-dropdown">
+                            <option value="">Semua Action</option>
+                            <?php foreach ($actionTypes as $type): ?>
+                                <option value="<?= $type ?>"<?= $actionType === $type ? ' selected' : '' ?>><?= $type ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-6 col-sm-2">
+                        <select name="model_type" class="form-select custom-dropdown">
+                            <option value="">Semua Module</option>
+                            <?php foreach ($modelTypes as $type): ?>
+                                <option value="<?= $type ?>"<?= $modelType === $type ? ' selected' : '' ?>><?= ucfirst($type) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-6 col-sm-2">
+                        <button type="submit" class="btn btn-outline-primary w-100">
+                            <i class="bi bi-search"></i> <span class="d-none d-md-inline">Filter</span>
+                        </button>
                     </div>
                 </form>
 
-                <!-- Info -->
+                <!-- Date Range (Optional additional row) -->
+                <form method="GET" class="row g-2 align-items-center mb-3">
+                    <div class="col-6 col-sm-3">
+                        <input type="date" name="date_from" class="form-control" value="<?= htmlspecialchars($dateFrom) ?>">
+                    </div>
+                    <div class="col-6 col-sm-3">
+                        <input type="date" name="date_to" class="form-control" value="<?= htmlspecialchars($dateTo) ?>">
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <button type="submit" class="btn btn-outline-primary w-100">
+                            <i class="bi bi-calendar"></i> Filter by Date
+                        </button>
+                    </div>
+                </form>
+
+                <?php if ($userId || $actionType || $modelType || $dateFrom || $dateTo || $search): ?>
+                    <div class="mb-3">
+                        <a href="activity_logs.php" class="btn btn-sm btn-secondary">
+                            <i class="bi bi-x-circle"></i> Reset
+                        </a>
+                    </div>
+                <?php endif; ?>
+
                 <div class="alert alert-info mb-3">
                     <i class="bi bi-info-circle"></i>
                     Menampilkan <strong><?= count($logs) ?></strong> dari <strong><?= formatNumber($total) ?></strong> log
                 </div>
 
-                <!-- Logs Timeline -->
+                <!-- Logs Table -->
                 <div class="table-responsive">
-                    <?php if (empty($logs)): ?>
-                        <div class="text-center text-muted py-5">
-                            <i class="bi bi-inbox" style="font-size: 3rem;"></i>
-                            <p class="mt-2">Belum ada activity log</p>
-                        </div>
-                    <?php else: ?>
-                        <table class="table table-hover">
-                            <thead>
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width:45px;">No</th>
+                                <th>User</th>
+                                <th>Action</th>
+                                <th>Description</th>
+                                <th>Module</th>
+                                <th>IP Address</th>
+                                <th>Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($logs)): ?>
                                 <tr>
-                                    <th width="60">ID</th>
-                                    <th width="200">User</th>
-                                    <th width="100">Action</th>
-                                    <th>Description</th>
-                                    <th width="100">Module</th>
-                                    <th width="120">IP Address</th>
-                                    <th width="150">Timestamp</th>
+                                    <td colspan="7" class="text-center py-5 text-muted">
+                                        <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                                        Belum ada activity log
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($logs as $log): ?>
-                                    <tr>
-                                        <td><?= $log['id'] ?></td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
+                            <?php else: foreach ($logs as $i => $log): ?>
+                                <tr>
+                                    <td><?= $offset + $i + 1 ?></td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar avatar-md me-2">
                                                 <?php if ($log['user_photo']): ?>
-                                                    <img src="<?= uploadUrl($log['user_photo']) ?>" 
-                                                         alt="<?= htmlspecialchars($log['user_name']) ?>" 
-                                                         class="rounded-circle me-2" 
-                                                         style="width: 30px; height: 30px; object-fit: cover;">
+                                                    <img src="<?= uploadUrl($log['user_photo']) ?>" alt="">
                                                 <?php else: ?>
-                                                    <div class="rounded-circle bg-secondary text-white d-inline-flex align-items-center justify-content-center me-2" 
-                                                         style="width: 30px; height: 30px; font-size: 0.75rem;">
-                                                        <?= strtoupper(substr($log['user_name'], 0, 1)) ?>
-                                                    </div>
+                                                    <img src="<?= ADMIN_URL ?>assets/static/images/faces/1.jpg" alt="">
                                                 <?php endif; ?>
-                                                <div>
-                                                    <div class="fw-bold"><?= htmlspecialchars($log['user_display_name']) ?></div>
-                                                    <small class="text-muted"><?= htmlspecialchars($log['user_email']) ?></small>
-                                                </div>
                                             </div>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-<?= getActionColor($log['action_type']) ?>">
-                                                <?= $log['action_type'] ?>
-                                            </span>
-                                        </td>
-                                        <td><?= htmlspecialchars($log['description']) ?></td>
-                                        <td>
-                                            <?php if ($log['model_type']): ?>
-                                                <span class="badge bg-secondary">
-                                                    <?= ucfirst($log['model_type']) ?>
-                                                </span>
-                                            <?php else: ?>
-                                                <span class="text-muted">-</span>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td>
-                                            <small class="font-monospace"><?= $log['ip_address'] ?? '-' ?></small>
-                                        </td>
-                                        <td>
-                                            <div><?= formatTanggalRelatif($log['created_at']) ?></div>
-                                            <small class="text-muted"><?= formatTanggal($log['created_at'], 'd M Y H:i') ?></small>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    <?php endif; ?>
+                                            <div>
+                                                <div class="fw-semibold"><?= htmlspecialchars($log['user_display_name']) ?></div>
+                                                <small class="text-muted"><?= htmlspecialchars($log['user_email'] ?? '-') ?></small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-<?= getActionColor($log['action_type']) ?>">
+                                            <?= $log['action_type'] ?>
+                                        </span>
+                                    </td>
+                                    <td><?= htmlspecialchars($log['description']) ?></td>
+                                    <td>
+                                        <?php if ($log['model_type']): ?>
+                                            <span class="badge bg-secondary"><?= ucfirst($log['model_type']) ?></span>
+                                        <?php else: ?>
+                                            <span class="text-muted">-</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <small class="font-monospace"><?= $log['ip_address'] ?? '-' ?></small>
+                                    </td>
+                                    <td>
+                                        <div><?= formatTanggalRelatif($log['created_at']) ?></div>
+                                        <small class="text-muted"><?= formatTanggal($log['created_at'], 'd M Y H:i') ?></small>
+                                    </td>
+                                </tr>
+                            <?php endforeach; endif; ?>
+                        </tbody>
+                    </table>
                 </div>
 
-                <!-- Pagination -->
+                <!-- Pagination bawah selalu tampil -->
                 <?php if ($total > 0): ?>
-                    <div class="mt-4 d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-4">
                         <div>
                             <small class="text-muted">
-                                Halaman <?= $page ?> dari <?= ceil($total / $itemsPerPage) ?>
+                                Halaman <?= $page ?> dari <?= $totalPages ?> · Menampilkan <?= count($logs) ?> dari <?= formatNumber($total) ?> log
                             </small>
                         </div>
-                        <?= $pagination->render() ?>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination mb-0">
+                                <li class="page-item<?= $page <= 1 ? ' disabled' : '' ?>">
+                                    <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['page' => $page - 1])) ?>">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </a>
+                                </li>
+                                <?php
+                                $from = max(1, $page - 2);
+                                $to = min($totalPages, $page + 2);
+                                for ($i = $from; $i <= $to; $i++): ?>
+                                    <li class="page-item<?= $i == $page ? ' active' : '' ?>">
+                                        <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['page' => $i])) ?>">
+                                            <?= $i ?>
+                                        </a>
+                                    </li>
+                                <?php endfor; ?>
+                                <li class="page-item<?= $page >= $totalPages ? ' disabled' : '' ?>">
+                                    <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['page' => $page + 1])) ?>">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 <?php endif; ?>
             </div>
@@ -507,36 +465,10 @@ include '../../includes/header.php';
                     <i class="bi bi-exclamation-triangle"></i>
                     <strong>Perhatian:</strong> Maksimal 5000 records akan di-export.
                 </div>
-                
-                <?php if ($userId || $actionType || $modelType || $dateFrom || $dateTo || $search): ?>
-                    <div class="alert alert-info">
-                        <strong>Filter aktif:</strong>
-                        <ul class="mb-0">
-                            <?php if ($userId): ?>
-                                <li>User: <?= htmlspecialchars($users[array_search($userId, array_column($users, 'id'))]['name'] ?? 'Unknown') ?></li>
-                            <?php endif; ?>
-                            <?php if ($actionType): ?>
-                                <li>Action: <?= $actionType ?></li>
-                            <?php endif; ?>
-                            <?php if ($modelType): ?>
-                                <li>Module: <?= ucfirst($modelType) ?></li>
-                            <?php endif; ?>
-                            <?php if ($dateFrom): ?>
-                                <li>Dari: <?= formatTanggal($dateFrom, 'd M Y') ?></li>
-                            <?php endif; ?>
-                            <?php if ($dateTo): ?>
-                                <li>Sampai: <?= formatTanggal($dateTo, 'd M Y') ?></li>
-                            <?php endif; ?>
-                            <?php if ($search): ?>
-                                <li>Search: "<?= htmlspecialchars($search) ?>"</li>
-                            <?php endif; ?>
-                        </ul>
-                    </div>
-                <?php endif; ?>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <a href="?export=csv<?= $userId ? '&user_id='.$userId : '' ?><?= $actionType ? '&action_type='.$actionType : '' ?><?= $modelType ? '&model_type='.$modelType : '' ?><?= $dateFrom ? '&date_from='.$dateFrom : '' ?><?= $dateTo ? '&date_to='.$dateTo : '' ?><?= $search ? '&search='.$search : '' ?>" 
+                <a href="?export=csv<?= $userId ? '&user_id='.$userId : '' ?><?= $actionType ? '&action_type='.$actionType : '' ?><?= $modelType ? '&model_type='.$modelType : '' ?><?= $dateFrom ? '&date_from='.$dateFrom : '' ?><?= $dateTo ? '&date_to='.$dateTo : '' ?><?= $search ? '&search='.urlencode($search) : '' ?>" 
                    class="btn btn-success">
                     <i class="bi bi-download"></i> Download CSV
                 </a>

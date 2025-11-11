@@ -104,14 +104,7 @@ include 'templates/header.php';
             <?php endforeach; ?>
         </div>
         
-        <!-- Navigation Arrows -->
-        <?php if (count($banners) > 1): ?>
-        <div class="swiper-button-next !text-white !w-12 !h-12 after:!text-2xl !bg-blue-600/80 !rounded-full hover:!bg-blue-700 transition-all"></div>
-        <div class="swiper-button-prev !text-white !w-12 !h-12 after:!text-2xl !bg-blue-600/80 !rounded-full hover:!bg-blue-700 transition-all"></div>
-        
-        <!-- Pagination -->
-        <div class="swiper-pagination !bottom-6"></div>
-        <?php endif; ?>
+
     </div>
 </section>
 <?php else: ?>
@@ -136,30 +129,6 @@ include 'templates/header.php';
     </div>
 </section>
 <?php endif; ?>
-
-<!-- Statistics Section -->
-<section class="py-12 bg-blue-900 text-white">
-    <div class="container mx-auto px-4">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div data-aos="fade-up" data-aos-delay="0">
-                <div class="text-4xl md:text-5xl font-bold mb-2"><?= number_format($stats['posts']) ?>+</div>
-                <div class="text-blue-200">Berita & Artikel</div>
-            </div>
-            <div data-aos="fade-up" data-aos-delay="100">
-                <div class="text-4xl md:text-5xl font-bold mb-2"><?= number_format($stats['photos']) ?>+</div>
-                <div class="text-blue-200">Foto Galeri</div>
-            </div>
-            <div data-aos="fade-up" data-aos-delay="200">
-                <div class="text-4xl md:text-5xl font-bold mb-2"><?= number_format($stats['files']) ?>+</div>
-                <div class="text-blue-200">File Unduhan</div>
-            </div>
-            <div data-aos="fade-up" data-aos-delay="300">
-                <div class="text-4xl md:text-5xl font-bold mb-2"><?= number_format($stats['services']) ?>+</div>
-                <div class="text-blue-200">Layanan</div>
-            </div>
-        </div>
-    </div>
-</section>
 
 <!-- Recent Posts Section -->
 <?php if (!empty($recent_posts)): ?>
@@ -372,18 +341,18 @@ document.addEventListener('DOMContentLoaded', function() {
         // Speed of transition
         speed: 800,
         
-        // Pagination bullets
-        pagination: {
-            el: '.swiper-pagination',
-            clickable: true,
-            dynamicBullets: true, // Dynamic bullets for better UX with many slides
-        },
+        // Pagination disabled
+        // pagination: {
+        //     el: '.swiper-pagination',
+        //     clickable: true,
+        //     dynamicBullets: true,
+        // },
         
-        // Navigation arrows
-        navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-        },
+        // Navigation disabled
+        // navigation: {
+        //     nextEl: '.swiper-button-next',
+        //     prevEl: '.swiper-button-prev',
+        // },
         
         // Effect
         effect: 'fade', // Smooth fade transition

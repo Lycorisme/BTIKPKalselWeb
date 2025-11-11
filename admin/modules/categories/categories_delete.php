@@ -1,10 +1,11 @@
 <?php
-
+/**
+ * Categories Delete Page - Soft Delete Implementation
+ * Set deleted_at = NOW() untuk soft delete, bukan menggunakan model method
+ */
 require_once '../../includes/auth_check.php';
 require_once '../../../core/Database.php';
 require_once '../../../core/Helper.php';
-require_once '../../../core/Model.php';
-require_once '../../../models/PostCategory.php';
 
 // Only super_admin and admin can delete
 if (!hasRole(['super_admin', 'admin'])) {
@@ -12,45 +13,47 @@ if (!hasRole(['super_admin', 'admin'])) {
     redirect(ADMIN_URL);
 }
 
+$db = Database::getInstance()->getConnection();
+
 // Get category ID
-$categoryId = $_GET['id'] ?? 0;
+$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-if (!$categoryId) {
-    setAlert('danger', 'ID kategori tidak valid');
+if (!$id) {
+    setAlert('danger', 'ID kategori tidak valid.');
     redirect(ADMIN_URL . 'modules/categories/categories_list.php');
 }
 
-$categoryModel = new PostCategory();
-$category = $categoryModel->find($categoryId);
-
-if (!$category) {
-    setAlert('danger', 'Kategori tidak ditemukan');
-    redirect(ADMIN_URL . 'modules/categories/categories_list.php');
-}
-
-// Delete category
 try {
-    error_log("Attempting to HARD DELETE category ID: {$categoryId}, Name: {$category['name']}");
-
-    $result = $categoryModel->hardDelete($categoryId); 
+    // Cek apakah data kategori ada dan belum di-delete
+    $stmtCheck = $db->prepare("SELECT * FROM post_categories WHERE id = ? AND deleted_at IS NULL");
+    $stmtCheck->execute([$id]);
+    $category = $stmtCheck->fetch();
     
-    if ($result) {
-        // Log activity
-        try {
-            logActivity('DELETE', "Menghapus kategori: {$category['name']}", 'post_categories', $categoryId);
-        } catch (Exception $e) {
-            error_log("Activity log failed: " . $e->getMessage());
-        }
-        
-        setAlert('success', "Kategori '{$category['name']}' berhasil dihapus permanen");
-    } else {
-        setAlert('danger', 'Gagal menghapus kategori');
+    if (!$category) {
+        setAlert('danger', 'Kategori tidak ditemukan atau sudah dihapus.');
+        redirect(ADMIN_URL . 'modules/categories/categories_list.php');
     }
+
+    // Check if category has posts
+    $stmtCheckPosts = $db->prepare("SELECT COUNT(*) FROM posts WHERE category_id = ? AND deleted_at IS NULL");
+    $stmtCheckPosts->execute([$id]);
+    $postCount = $stmtCheckPosts->fetchColumn();
     
-} catch (Exception $e) {
-    error_log("Error in delete: " . $e->getMessage());
-    // Pesan error ini kemungkinan besar akan tetap muncul
-    setAlert('danger', 'Tidak dapat menghapus kategori: ' . $e->getMessage());
+    if ($postCount > 0) {
+        setAlert('warning', "Kategori '{$category['name']}' memiliki {$postCount} posts. Silakan pindahkan atau hapus posts terlebih dahulu.");
+        redirect(ADMIN_URL . 'modules/categories/categories_list.php');
+    }
+
+    // Lakukan soft delete dengan update kolom deleted_at menjadi waktu sekarang
+    $stmt = $db->prepare("UPDATE post_categories SET deleted_at = NOW(), updated_at = NOW() WHERE id = ?");
+    $stmt->execute([$id]);
+
+    logActivity('DELETE', "Soft delete kategori: {$category['name']}", 'post_categories', $id);
+    setAlert('success', "Kategori '{$category['name']}' berhasil dipindahkan ke Trash.");
+
+} catch (PDOException $e) {
+    error_log($e->getMessage());
+    setAlert('danger', 'Gagal menghapus kategori. Silakan coba lagi.');
 }
 
 redirect(ADMIN_URL . 'modules/categories/categories_list.php');

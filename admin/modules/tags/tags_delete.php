@@ -1,14 +1,11 @@
 <?php
 /**
- * Delete Tag Handler
- * Hard delete tag with validation
+ * Tags Delete Page - Soft Delete Implementation
+ * Set deleted_at = NOW() untuk soft delete (seperti kategori dan services)
  */
-
 require_once '../../includes/auth_check.php';
 require_once '../../../core/Database.php';
 require_once '../../../core/Helper.php';
-require_once '../../../core/Model.php';
-require_once '../../../models/Tag.php';
 
 // Only super_admin and admin can delete
 if (!hasRole(['super_admin', 'admin'])) {
@@ -16,49 +13,47 @@ if (!hasRole(['super_admin', 'admin'])) {
     redirect(ADMIN_URL);
 }
 
+$db = Database::getInstance()->getConnection();
+
 // Get tag ID
-$tagId = $_GET['id'] ?? 0;
+$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-if (!$tagId) {
-    setAlert('danger', 'ID tag tidak valid');
+if (!$id) {
+    setAlert('danger', 'ID tag tidak valid.');
     redirect(ADMIN_URL . 'modules/tags/tags_list.php');
 }
 
-$tagModel = new Tag();
-$tag = $tagModel->find($tagId);
-
-if (!$tag) {
-    setAlert('danger', 'Tag tidak ditemukan');
-    redirect(ADMIN_URL . 'modules/tags/tags_list.php');
-}
-
-// Delete tag
 try {
-    error_log("Attempting to HARD DELETE tag ID: {$tagId}, Name: {$tag['name']}");
+    // Cek apakah data tag ada dan belum di-delete
+    $stmtCheck = $db->prepare("SELECT * FROM tags WHERE id = ? AND deleted_at IS NULL");
+    $stmtCheck->execute([$id]);
+    $tag = $stmtCheck->fetch();
     
-    // =======================================================
-    // PERUBAHAN DI SINI: Menggunakan hardDelete (Hapus permanen)
-    // =======================================================
-    $result = $tagModel->hardDelete($tagId);
-    // =======================================================
-    
-    if ($result) {
-        // Log activity
-        try {
-            logActivity('DELETE', "Menghapus tag: {$tag['name']}", 'tags', $tagId);
-        } catch (Exception $e) {
-            error_log("Activity log failed: " . $e->getMessage());
-        }
-        
-        setAlert('success', "Tag '{$tag['name']}' berhasil dihapus permanen");
-    } else {
-        setAlert('danger', 'Gagal menghapus tag');
+    if (!$tag) {
+        setAlert('danger', 'Tag tidak ditemukan atau sudah dihapus.');
+        redirect(ADMIN_URL . 'modules/tags/tags_list.php');
     }
+
+    // Check if tag has posts
+    $stmtCheckPosts = $db->prepare("SELECT COUNT(*) FROM post_tags WHERE tag_id = ?");
+    $stmtCheckPosts->execute([$id]);
+    $postCount = $stmtCheckPosts->fetchColumn();
     
-} catch (Exception $e) {
-    error_log("Error in delete: " . $e->getMessage());
-    // Pesan error ini akan tetap muncul jika tag masih dipakai
-    setAlert('danger', 'Tidak dapat menghapus tag: ' . $e->getMessage());
+    if ($postCount > 0) {
+        setAlert('warning', "Tag '{$tag['name']}' memiliki {$postCount} posts. Silakan hapus tag dari posts terlebih dahulu.");
+        redirect(ADMIN_URL . 'modules/tags/tags_list.php');
+    }
+
+    // Lakukan soft delete dengan update kolom deleted_at menjadi waktu sekarang
+    $stmt = $db->prepare("UPDATE tags SET deleted_at = NOW() WHERE id = ?");
+    $stmt->execute([$id]);
+
+    logActivity('DELETE', "Soft delete tag: {$tag['name']}", 'tags', $id);
+    setAlert('success', "Tag '{$tag['name']}' berhasil dipindahkan ke Trash.");
+
+} catch (PDOException $e) {
+    error_log($e->getMessage());
+    setAlert('danger', 'Gagal menghapus tag. Silakan coba lagi.');
 }
 
 redirect(ADMIN_URL . 'modules/tags/tags_list.php');

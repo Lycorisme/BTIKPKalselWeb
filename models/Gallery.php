@@ -1,18 +1,19 @@
 <?php
+require_once __DIR__ . '/../core/Model.php';
+
 /**
  * Gallery Model
  */
-
 class Gallery extends Model {
     protected $table = 'gallery_albums';
     
     /**
-     * Get all albums with photo count
+     * Get all albums with photo count - EXCLUDE DELETED
      */
     public function getAllAlbums($limit = null) {
         $sql = "SELECT a.*, 
                 (SELECT COUNT(*) FROM gallery_photos WHERE album_id = a.id AND deleted_at IS NULL) as photo_count,
-                (SELECT image_path FROM gallery_photos WHERE album_id = a.id AND deleted_at IS NULL ORDER BY display_order ASC LIMIT 1) as cover_image
+                (SELECT filename FROM gallery_photos WHERE album_id = a.id AND deleted_at IS NULL ORDER BY display_order ASC LIMIT 1) as cover_image
                 FROM {$this->table} a
                 WHERE a.deleted_at IS NULL
                 ORDER BY a.created_at DESC";
@@ -26,7 +27,7 @@ class Gallery extends Model {
     }
     
     /**
-     * Get album by slug
+     * Get album by slug - EXCLUDE DELETED
      */
     public function getAlbumBySlug($slug) {
         $stmt = $this->db->prepare("
@@ -40,7 +41,7 @@ class Gallery extends Model {
     }
     
     /**
-     * Get album by ID
+     * Get album by ID - EXCLUDE DELETED
      */
     public function getAlbumById($id) {
         $stmt = $this->db->prepare("
@@ -54,7 +55,7 @@ class Gallery extends Model {
     }
     
     /**
-     * Get photos by album ID
+     * Get photos by album ID - EXCLUDE DELETED
      */
     public function getPhotosByAlbumId($album_id) {
         $stmt = $this->db->prepare("
@@ -67,7 +68,7 @@ class Gallery extends Model {
     }
     
     /**
-     * Get photo by ID
+     * Get photo by ID - EXCLUDE DELETED
      */
     public function getPhotoById($id) {
         $stmt = $this->db->prepare("
@@ -76,5 +77,22 @@ class Gallery extends Model {
         ");
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
+    /**
+     * Soft delete album
+     */
+    public function softDelete($id) {
+        try {
+            $sql = "UPDATE {$this->table} 
+                    SET deleted_at = NOW(), updated_at = NOW()
+                    WHERE id = ? AND deleted_at IS NULL";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$id]);
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            error_log("Error in softDelete: " . $e->getMessage());
+            throw $e;
+        }
     }
 }

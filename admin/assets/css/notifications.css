@@ -1,0 +1,358 @@
+/**
+ * BTIKP Notification System Styles
+ */
+
+/* Notification Container */
+.btikp-notification-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 400px;
+}
+
+/* Toast Notifications */
+.btikp-toast {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+    position: relative;
+    min-width: 320px;
+    border-left: 4px solid;
+}
+
+.btikp-toast.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.btikp-toast-success {
+    border-left-color: #198754;
+}
+
+.btikp-toast-error,
+.btikp-toast-danger {
+    border-left-color: #dc3545;
+}
+
+.btikp-toast-warning {
+    border-left-color: #ffc107;
+}
+
+.btikp-toast-info {
+    border-left-color: #0dcaf0;
+}
+
+.btikp-toast-icon {
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btikp-toast-success .btikp-toast-icon {
+    color: #198754;
+}
+
+.btikp-toast-error .btikp-toast-icon,
+.btikp-toast-danger .btikp-toast-icon {
+    color: #dc3545;
+}
+
+.btikp-toast-warning .btikp-toast-icon {
+    color: #ffc107;
+}
+
+.btikp-toast-info .btikp-toast-icon {
+    color: #0dcaf0;
+}
+
+.btikp-toast-content {
+    flex: 1;
+}
+
+.btikp-toast-title {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 4px;
+    color: #333;
+}
+
+.btikp-toast-message {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.4;
+}
+
+.btikp-toast-close {
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    padding: 0;
+    font-size: 14px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.btikp-toast-close:hover {
+    color: #333;
+}
+
+/* Alert Modal */
+.btikp-alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.btikp-alert-overlay.show {
+    opacity: 1;
+}
+
+.btikp-alert {
+    background: white;
+    border-radius: 12px;
+    padding: 32px;
+    max-width: 450px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.btikp-alert-overlay.show .btikp-alert {
+    transform: scale(1);
+}
+
+.btikp-alert-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+}
+
+.btikp-alert-success .btikp-alert-icon {
+    color: #198754;
+}
+
+.btikp-alert-error .btikp-alert-icon,
+.btikp-alert-danger .btikp-alert-icon {
+    color: #dc3545;
+}
+
+.btikp-alert-warning .btikp-alert-icon {
+    color: #ffc107;
+}
+
+.btikp-alert-info .btikp-alert-icon {
+    color: #0dcaf0;
+}
+
+.btikp-alert-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #333;
+}
+
+.btikp-alert-message {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.btikp-alert-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.btikp-btn {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 100px;
+}
+
+.btikp-btn-success {
+    background: #198754;
+    color: white;
+}
+
+.btikp-btn-success:hover {
+    background: #157347;
+}
+
+.btikp-btn-error,
+.btikp-btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btikp-btn-error:hover,
+.btikp-btn-danger:hover {
+    background: #bb2d3b;
+}
+
+.btikp-btn-warning {
+    background: #ffc107;
+    color: #000;
+}
+
+.btikp-btn-warning:hover {
+    background: #ffca2c;
+}
+
+.btikp-btn-info {
+    background: #0dcaf0;
+    color: #000;
+}
+
+.btikp-btn-info:hover {
+    background: #31d2f2;
+}
+
+.btikp-btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btikp-btn-secondary:hover {
+    background: #5c636a;
+}
+
+/* Loading Overlay */
+.btikp-loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 10002;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.btikp-loading-overlay.show {
+    opacity: 1;
+}
+
+.btikp-loading {
+    text-align: center;
+}
+
+.btikp-loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: btikp-spin 1s linear infinite;
+    margin: 0 auto 16px;
+}
+
+@keyframes btikp-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.btikp-loading-message {
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* Dark Mode Support */
+[data-bs-theme="dark"] .btikp-toast {
+    background: #2d3135;
+}
+
+[data-bs-theme="dark"] .btikp-toast-title {
+    color: #e9ecef;
+}
+
+[data-bs-theme="dark"] .btikp-toast-message {
+    color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .btikp-alert {
+    background: #2d3135;
+}
+
+[data-bs-theme="dark"] .btikp-alert-title {
+    color: #e9ecef;
+}
+
+[data-bs-theme="dark"] .btikp-alert-message {
+    color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .btikp-toast-close {
+    color: #adb5bd;
+}
+
+[data-bs-theme="dark"] .btikp-toast-close:hover {
+    color: #e9ecef;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .btikp-notification-container {
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+    
+    .btikp-toast {
+        min-width: auto;
+    }
+    
+    .btikp-alert {
+        padding: 24px;
+    }
+    
+    .btikp-alert-icon {
+        font-size: 48px;
+    }
+    
+    .btikp-alert-title {
+        font-size: 20px;
+    }
+    
+    .btikp-alert-message {
+        font-size: 14px;
+    }
+}

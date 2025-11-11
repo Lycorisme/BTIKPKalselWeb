@@ -1,7 +1,7 @@
 <?php
 /**
  * Admin Header Template
- * With Dynamic Favicon, Site Name & User Photo
+ * With Dynamic Favicon, Site Name, User Photo & Notifications
  */
 if (!defined('ADMIN_URL')) {
     die('Direct access not allowed');
@@ -12,11 +12,11 @@ require_once dirname(__DIR__, 2) . '/core/Database.php';
 require_once dirname(__DIR__, 2) . '/core/Helper.php';
 
 // Get settings
- $siteName = getSetting('site_name', 'BTIKP Kalimantan Selatan');
- $siteFavicon = getSetting('site_favicon');
+$siteName = getSetting('site_name', 'BTIKP Kalimantan Selatan');
+$siteFavicon = getSetting('site_favicon');
 
 // Get current user with photo
- $currentUser = getCurrentUser();
+$currentUser = getCurrentUser();
 
 // Get user photo from database if not in session
 if (!isset($currentUser['photo'])) {
@@ -27,7 +27,37 @@ if (!isset($currentUser['photo'])) {
     $currentUser['photo'] = $userPhoto;
 }
 
- $alert = getAlert();
+// ===================================
+// NOTIFICATION LOGIC
+// ===================================
+try {
+    $db = Database::getInstance()->getConnection();
+    
+    // Get unread contact messages count
+    $notifCountStmt = $db->query("
+        SELECT COUNT(*) as total 
+        FROM contact_messages 
+        WHERE status = 'unread' 
+        AND deleted_at IS NULL
+    ");
+    $unreadCount = (int)$notifCountStmt->fetchColumn();
+    
+    // Get recent unread messages (last 5)
+    $notifStmt = $db->query("
+        SELECT id, name, subject, created_at 
+        FROM contact_messages 
+        WHERE status = 'unread' 
+        AND deleted_at IS NULL
+        ORDER BY created_at DESC 
+        LIMIT 5
+    ");
+    $notifications = $notifStmt->fetchAll(PDO::FETCH_ASSOC);
+    
+} catch (PDOException $e) {
+    error_log('Error fetching notifications: ' . $e->getMessage());
+    $unreadCount = 0;
+    $notifications = [];
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -42,36 +72,18 @@ if (!isset($currentUser['photo'])) {
         <link rel="icon" type="image/png" href="<?= ADMIN_URL ?>assets/static/images/logo/favicon.png" />
     <?php endif; ?>
     
+    <!-- Mazer CSS -->
     <link rel="stylesheet" href="<?= ADMIN_URL ?>assets/compiled/css/app.css" />
     <link rel="stylesheet" href="<?= ADMIN_URL ?>assets/compiled/css/app-dark.css" />
     <link rel="stylesheet" href="<?= ADMIN_URL ?>assets/compiled/css/iconly.css" />
     
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
-    />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+    
+    <!-- BTIKP Custom Notifications CSS -->
+    <link rel="stylesheet" href="<?= ADMIN_URL ?>assets/css/notifications.css?v=<?= time() ?>" />
     
     <style>
-        .alert-floating {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            z-index: 9999;
-            min-width: 300px;
-            animation: slideInRight 0.3s ease;
-        }
-        
-        @keyframes slideInRight {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-        
         .stats-icon {
             width: 3rem;
             height: 3rem;
@@ -196,6 +208,12 @@ if (!isset($currentUser['photo'])) {
             right: -5px;
             font-size: 0.65rem;
             padding: 0.25em 0.5em;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .nav-link {
@@ -207,6 +225,88 @@ if (!isset($currentUser['photo'])) {
             display: flex;
             align-items: center;
             gap: 0.5rem;
+        }
+        
+        /* Notification dropdown styling */
+        .notification-dropdown {
+            min-width: 320px;
+            max-width: 400px;
+        }
+        
+        .notification-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e9ecef;
+            transition: background-color 0.2s;
+        }
+        
+        [data-bs-theme="dark"] .notification-item {
+            border-bottom-color: #2d3135;
+        }
+        
+        .notification-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        [data-bs-theme="dark"] .notification-item:hover {
+            background-color: #2d3135;
+        }
+        
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        
+        .notification-content {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .notification-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #333;
+            margin: 0;
+        }
+        
+        [data-bs-theme="dark"] .notification-title {
+            color: #e9ecef;
+        }
+        
+        .notification-text {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .notification-time {
+            font-size: 0.75rem;
+            color: #999;
+            margin: 0;
+        }
+        
+        .notification-empty {
+            padding: 2rem 1rem;
+            text-align: center;
+            color: #6c757d;
+        }
+        
+        .notification-footer {
+            padding: 0.5rem 1rem;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        [data-bs-theme="dark"] .notification-footer {
+            border-top-color: #2d3135;
+        }
+        
+        .notification-footer a {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
         }
     </style>
     
@@ -282,7 +382,7 @@ if (!isset($currentUser['photo'])) {
         }
     });
     </script>
-    </head>
+</head>
 <body>
     <script src="<?= ADMIN_URL ?>assets/static/js/initTheme.js"></script>
     
@@ -326,11 +426,54 @@ if (!isset($currentUser['photo'])) {
                                 <a class="nav-link active dropdown-toggle text-gray-600" href="#" 
                                    data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class='bi bi-bell bi-sub fs-4'></i>
-                                    <span class="badge badge-notification bg-danger">5</span>
+                                    <?php if ($unreadCount > 0): ?>
+                                        <span class="badge badge-notification bg-danger"><?= $unreadCount ?></span>
+                                    <?php endif; ?>
                                 </a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                                    <li><h6 class="dropdown-header">Notifikasi</h6></li>
-                                    <li><a class="dropdown-item" href="#">Belum ada notifikasi baru</a></li>
+                                <ul class="dropdown-menu dropdown-menu-end notification-dropdown" aria-labelledby="dropdownMenuButton">
+                                    <li>
+                                        <h6 class="dropdown-header d-flex justify-content-between align-items-center">
+                                            <span>Notifikasi</span>
+                                            <?php if ($unreadCount > 0): ?>
+                                                <span class="badge bg-primary"><?= $unreadCount ?></span>
+                                            <?php endif; ?>
+                                        </h6>
+                                    </li>
+                                    
+                                    <?php if (empty($notifications)): ?>
+                                        <li class="notification-empty">
+                                            <i class="bi bi-inbox fs-3 text-muted mb-2"></i>
+                                            <p class="mb-0">Belum ada notifikasi baru</p>
+                                        </li>
+                                    <?php else: ?>
+                                        <?php foreach ($notifications as $notif): ?>
+                                            <li>
+                                                <a class="dropdown-item notification-item" 
+                                                   href="<?= ADMIN_URL ?>modules/contact/messages_view.php?id=<?= $notif['id'] ?>">
+                                                    <div class="notification-content">
+                                                        <p class="notification-title">
+                                                            <i class="bi bi-envelope me-1"></i>
+                                                            Pesan dari <?= htmlspecialchars($notif['name']) ?>
+                                                        </p>
+                                                        <p class="notification-text">
+                                                            <?= htmlspecialchars(truncateText($notif['subject'], 40)) ?>
+                                                        </p>
+                                                        <p class="notification-time">
+                                                            <i class="bi bi-clock me-1"></i>
+                                                            <?= formatTanggalRelatif($notif['created_at']) ?>
+                                                        </p>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        <?php endforeach; ?>
+                                        
+                                        <li class="notification-footer">
+                                            <a href="<?= ADMIN_URL ?>modules/contact/messages_list.php?status=unread" class="text-primary">
+                                                Lihat Semua Notifikasi
+                                                <i class="bi bi-arrow-right ms-1"></i>
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
                                 </ul>
                             </div>
                             
@@ -380,8 +523,10 @@ if (!isset($currentUser['photo'])) {
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <a class="dropdown-item" href="<?= ADMIN_URL ?>logout.php" 
-                                           onclick="return confirm('Yakin ingin logout?')">
+                                        <a class="dropdown-item" 
+                                           href="<?= ADMIN_URL ?>logout.php"
+                                           data-confirm-logout
+                                           data-url="<?= ADMIN_URL ?>logout.php">
                                             <i class="icon-mid bi bi-box-arrow-left me-2"></i> Logout
                                         </a>
                                     </li>
@@ -410,33 +555,5 @@ if (!isset($currentUser['photo'])) {
                     </div>
                 </nav>
             </header>
-            
-            <?php if ($alert): ?>
-            <div class="alert alert-<?= $alert['type'] ?> alert-floating alert-dismissible fade show" role="alert">
-                <strong>
-                    <?php if ($alert['type'] === 'success'): ?>
-                        <i class="bi bi-check-circle"></i> Berhasil!
-                    <?php elseif ($alert['type'] === 'danger'): ?>
-                        <i class="bi bi-x-circle"></i> Error!
-                    <?php elseif ($alert['type'] === 'warning'): ?>
-                        <i class="bi bi-exclamation-triangle"></i> Peringatan!
-                    <?php else: ?>
-                        <i class="bi bi-info-circle"></i> Info!
-                    <?php endif; ?>
-                </strong>
-                <?= $alert['message'] ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            <script>
-                // Auto hide alert after 5 seconds
-                setTimeout(function() {
-                    let alert = document.querySelector('.alert-floating');
-                    if (alert) {
-                        let bsAlert = new bootstrap.Alert(alert);
-                        bsAlert.close();
-                    }
-                }, 5000);
-            </script>
-            <?php endif; ?>
             
             <div id="main-content">

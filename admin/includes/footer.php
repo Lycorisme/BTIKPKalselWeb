@@ -31,14 +31,27 @@ $siteName = getSetting('site_name', 'BTIKP Kalimantan Selatan');
         </div>
     </div>
     
-    <!-- Mazer JS -->
+    <!-- Mazer Core JS -->
     <script src="<?= ADMIN_URL ?>assets/static/js/components/dark.js"></script>
     <script src="<?= ADMIN_URL ?>assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="<?= ADMIN_URL ?>assets/compiled/js/app.js"></script>
     
-    <!-- Additional Scripts -->
+    <!-- BTIKP Custom Notifications - MUST LOAD BEFORE AUTO ALERT -->
+    <script src="<?= ADMIN_URL ?>assets/js/notifications.js?v=<?= time() ?>"></script>
+    
+    <!-- Auto show alert from PHP session (using custom toast) -->
+    <?php if ($alert = getAlert()): ?>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        notify.<?= $alert['type'] === 'danger' ? 'error' : $alert['type'] ?>('<?= addslashes($alert['message']) ?>');
+    });
+    </script>
+    <?php endif; ?>
+    
+    <!-- Additional Scripts from Pages -->
     <?php if (isset($additionalScripts)): ?>
         <?= $additionalScripts ?>
     <?php endif; ?>
+
 </body>
 </html>

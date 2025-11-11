@@ -1,7 +1,7 @@
 <?php
 /**
  * Add Post Page
- * Create new post - REBUILT VERSION
+ * Create new post - FIXED VERSION using post_categories table
  */
 
 require_once '../../includes/auth_check.php';
@@ -27,7 +27,7 @@ $categoryModel = new PostCategory();
 $tagModel = new Tag();
 $validator = null;
 
-// Get categories and tags
+// Get categories and tags from post_categories table
 $categories = $categoryModel->getActive();
 $allTags = $tagModel->getAll();
 
@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($postId) {
                     
                     // ==========================================
-                    // START: FINAL TAG HANDLING (FIXED)
+                    // FINAL TAG HANDLING (FIXED)
                     // ==========================================
                     if (!empty($_POST['tags'])) {
                         $tagNames = array_map('trim', explode(',', $_POST['tags']));
@@ -99,18 +99,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $normalizedName = strtolower(trim($tagName));
                             if (empty($normalizedName)) continue;
                     
-                            // ** INI PERBAIKANNYA **
-                            // Cek berdasarkan NAMA, bukan slug
+                            // Check by NAME, not slug
                             $existingTag = $tagModel->findByName($normalizedName);
                     
                             if ($existingTag) {
-                                // Tag SUDAH ADA - Gunakan ID yang existing
+                                // Tag EXISTS - Use existing ID
                                 $tagIds[] = $existingTag['id'];
                             } else {
-                                // Tag TIDAK ADA - Buat tag baru
+                                // Tag NOT EXISTS - Create new tag
                                 $newTagId = $tagModel->insert([
                                     'name' => $normalizedName,
-                                    'slug' => $tagModel->generateSlug($normalizedName) // Biarkan generateSlug handle slug
+                                    'slug' => $tagModel->generateSlug($normalizedName)
                                 ]);
                                 $tagIds[] = $newTagId;
                             }
@@ -123,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     }
                     // ==========================================
-                    // END: FINAL TAG HANDLING
+                    // END: TAG HANDLING
                     // ==========================================
                     
                     logActivity('CREATE', "Menambah post: {$data['title']}", 'posts', $postId);

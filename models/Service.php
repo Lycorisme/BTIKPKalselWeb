@@ -1,26 +1,22 @@
 <?php
+require_once __DIR__ . '/../core/Model.php';
+
 /**
  * Service Model
- * Complete CRUD operations for services with author name fix
+ * Complete CRUD operations for services with soft delete
  */
-
 class Service extends Model {
     
     protected $table = 'services';
     
     /**
-     * Find service by ID with author name
-     * Override parent find() to include LEFT JOIN
-     * 
-     * @param int $id
-     * @return array|false
+     * Find service by ID - EXCLUDE DELETED
      */
     public function find($id) {
         $sql = "
-            SELECT s.*, u.name as author_name
-            FROM {$this->table} s
-            LEFT JOIN users u ON s.author_id = u.id
-            WHERE s.id = ? AND s.deleted_at IS NULL
+            SELECT *
+            FROM {$this->table}
+            WHERE id = ? AND deleted_at IS NULL
             LIMIT 1
         ";
         $stmt = $this->db->prepare($sql);
@@ -33,11 +29,10 @@ class Service extends Model {
      */
     public function getAll() {
         $sql = "
-            SELECT s.*, u.name as author_name
-            FROM {$this->table} s
-            LEFT JOIN users u ON s.author_id = u.id
-            WHERE s.deleted_at IS NULL
-            ORDER BY s.`order` ASC, s.created_at DESC
+            SELECT *
+            FROM {$this->table}
+            WHERE deleted_at IS NULL
+            ORDER BY created_at DESC
         ";
         
         $stmt = $this->db->query($sql);
@@ -50,65 +45,58 @@ class Service extends Model {
     public function getPaginated($page = 1, $perPage = 10, $filters = []) {
         $offset = ($page - 1) * $perPage;
         $params = [];
-        
-        // Build WHERE clause
         $where = [];
-        
+
         // Show deleted or not
         if (empty($filters['show_deleted'])) {
-            $where[] = "s.deleted_at IS NULL";
+            $where[] = "deleted_at IS NULL";
         }
-        
+
         // Status filter
         if (!empty($filters['status'])) {
-            $where[] = "s.status = ?";
+            $where[] = "status = ?";
             $params[] = $filters['status'];
         }
-        
+
         // Featured filter
         if (isset($filters['featured']) && $filters['featured'] !== '') {
-            $where[] = "s.featured = ?";
+            $where[] = "featured = ?";
             $params[] = $filters['featured'];
         }
-        
+
         // Search filter
         if (!empty($filters['search'])) {
-            $where[] = "(s.title LIKE ? OR s.description LIKE ?)";
+            $where[] = "(title LIKE ? OR description LIKE ?)";
             $searchTerm = '%' . $filters['search'] . '%';
             $params[] = $searchTerm;
             $params[] = $searchTerm;
         }
-        
-        // Default WHERE
-        if (empty($where)) {
-            $where[] = "1=1";
-        }
-        
+
+        if (empty($where)) $where[] = "1=1";
         $whereClause = implode(' AND ', $where);
-        
+
         // Get total count
-        $countSql = "SELECT COUNT(*) FROM {$this->table} s WHERE $whereClause";
+        $countSql = "SELECT COUNT(*) FROM {$this->table} WHERE $whereClause";
         $stmt = $this->db->prepare($countSql);
         $stmt->execute($params);
         $total = $stmt->fetchColumn();
-        
+
         // Get data
         $sql = "
-            SELECT s.*, u.name as author_name
-            FROM {$this->table} s
-            LEFT JOIN users u ON s.author_id = u.id
+            SELECT *
+            FROM {$this->table}
             WHERE $whereClause
-            ORDER BY s.`order` ASC, s.created_at DESC
+            ORDER BY created_at DESC
             LIMIT ? OFFSET ?
         ";
-        
+
         $params[] = $perPage;
         $params[] = $offset;
-        
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
         $data = $stmt->fetchAll();
-        
+
         return [
             'data' => $data,
             'total' => $total,
@@ -119,14 +107,13 @@ class Service extends Model {
     }
     
     /**
-     * Find service by slug
+     * Find service by slug - EXCLUDE DELETED
      */
     public function findBySlug($slug) {
         $sql = "
-            SELECT s.*, u.name as author_name
-            FROM {$this->table} s
-            LEFT JOIN users u ON s.author_id = u.id
-            WHERE s.slug = ? AND s.deleted_at IS NULL
+            SELECT *
+            FROM {$this->table}
+            WHERE slug = ? AND deleted_at IS NULL
             LIMIT 1
         ";
         $stmt = $this->db->prepare($sql);
@@ -174,7 +161,7 @@ class Service extends Model {
         $sql = "
             SELECT * FROM {$this->table}
             WHERE featured = 1 AND status = 'published' AND deleted_at IS NULL
-            ORDER BY `order` ASC, created_at DESC
+            ORDER BY created_at DESC
             LIMIT ?
         ";
         $stmt = $this->db->prepare($sql);
@@ -189,7 +176,7 @@ class Service extends Model {
         $sql = "
             SELECT * FROM {$this->table}
             WHERE status = 'published' AND deleted_at IS NULL
-            ORDER BY `order` ASC, created_at DESC
+            ORDER BY created_at DESC
         ";
         
         if ($limit) {
@@ -204,7 +191,7 @@ class Service extends Model {
     }
     
     /**
-     * Count services by status
+     * Count services by status - EXCLUDE DELETED
      */
     public function countByStatus() {
         $sql = "
@@ -266,6 +253,22 @@ class Service extends Model {
     }
     
     /**
+     * Hard delete
+     */
+    public function hardDelete($id) {
+        try {
+            $sql = "DELETE FROM {$this->table} WHERE id = ?";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$id]);
+            
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            error_log("Error in hardDelete: " . $e->getMessage());
+            throw $e;
+        }
+    }
+    
+    /**
      * Insert service
      */
     public function insert($data) {
@@ -277,30 +280,7 @@ class Service extends Model {
      * Update service - FORCE updated_at refresh
      */
     public function update($id, $data) {
-        // Always set updated_at to NOW even if no changes
         $data['updated_at'] = date('Y-m-d H:i:s');
-        
-        // Force update by using raw SQL
-        $fields = [];
-        $values = [];
-        
-        foreach ($data as $field => $value) {
-            $fields[] = "`{$field}` = ?";
-            $values[] = $value;
-        }
-        
-        $sql = "UPDATE {$this->table} SET " . implode(', ', $fields) . 
-               " WHERE id = ?";
-        
-        $values[] = $id;
-        
-        $stmt = $this->db->prepare($sql);
-        $result = $stmt->execute($values);
-        
-        // Debug log
-        error_log("Updated service ID {$id} at " . $data['updated_at']);
-        
-        return $result;
+        return parent::update($id, $data);
     }
-    
-} 
+}

@@ -1,19 +1,73 @@
 <?php
 /**
- * Tags List
- * With DataTables for better filtering & sorting
+ * Tags List Page - Full Mazer, Soft Delete, Custom Notif/Confirm, Responsive Table
+ * Default: menampilkan tags aktif saja (deleted_at IS NULL)
  */
-
 require_once '../../includes/auth_check.php';
 require_once '../../../core/Database.php';
 require_once '../../../core/Helper.php';
-require_once '../../../core/Model.php';
 require_once '../../../models/Tag.php';
 
 $pageTitle = 'Kelola Tags';
+$db = Database::getInstance()->getConnection();
 
-$tagModel = new Tag();
-$tags = $tagModel->getWithPostCount();
+$itemsPerPage = (int)getSetting('items_per_page', 10);
+$search = trim($_GET['search'] ?? '');
+$page = max(1, (int)($_GET['page'] ?? 1));
+$showDeleted = $_GET['show_deleted'] ?? '0';
+
+// Build WHERE clause - MUST INCLUDE deleted_at check
+$where = [];
+$params = [];
+
+// DEFAULT: Hanya tampilkan data yang BELUM di-delete
+if ($showDeleted !== '1') {
+    $where[] = "t.deleted_at IS NULL";
+}
+
+// Filter search
+if ($search) {
+    $where[] = "(t.name LIKE ? OR t.slug LIKE ?)";
+    $searchTerm = "%{$search}%";
+    $params[] = $searchTerm;
+    $params[] = $searchTerm;
+}
+
+$whereClause = $where ? ('WHERE ' . implode(' AND ', $where)) : '';
+
+// Count total
+$countSql = "SELECT COUNT(*) FROM tags t $whereClause";
+$stmtCount = $db->prepare($countSql);
+$stmtCount->execute($params);
+$totalItems = (int)$stmtCount->fetchColumn();
+$totalPages = max(1, ceil($totalItems / $itemsPerPage));
+$offset = ($page - 1) * $itemsPerPage;
+
+// Get data dengan post count
+$sql = "
+    SELECT 
+        t.*,
+        COUNT(pt.post_id) as post_count
+    FROM tags t
+    LEFT JOIN post_tags pt ON t.id = pt.tag_id
+    $whereClause
+    GROUP BY t.id
+    ORDER BY t.name ASC
+    LIMIT ? OFFSET ?
+";
+
+$params[] = $itemsPerPage;
+$params[] = $offset;
+
+$stmt = $db->prepare($sql);
+$stmt->execute($params);
+$tags = $stmt->fetchAll();
+
+// Options for dropdown
+$showDeletedOptions = [
+    '0' => 'Tampilkan Tags Aktif',
+    '1' => 'Tampilkan Tags Terhapus'
+];
 
 include '../../includes/header.php';
 ?>
@@ -37,127 +91,162 @@ include '../../includes/header.php';
     </div>
 
     <section class="section">
-        <div class="card">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">Daftar Tags</h5>
+        <div class="card shadow">
+            <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div class="card-title m-0 fw-bold">Daftar Tags</div>
+                <div>
                     <a href="tags_add.php" class="btn btn-primary">
-                        <i class="bi bi-plus-circle"></i> Tambah Tag
+                        <i class="bi bi-plus-circle"></i>
+                        <span class="d-none d-md-inline">Tambah Tag</span>
                     </a>
                 </div>
             </div>
-            
+
             <div class="card-body">
-                <!-- Alert Messages -->
-                <?php if ($alert = getAlert()): ?>
-                    <div class="alert alert-<?= $alert['type'] ?> alert-dismissible fade show">
-                        <?= $alert['message'] ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <!-- Filter Panel -->
+                <form method="GET" class="row g-2 align-items-center mb-3">
+                    <div class="col-12 col-sm-6">
+                        <input type="text" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Cari nama atau slug tag..." class="form-control">
+                    </div>
+                    <div class="col-6 col-sm-3">
+                        <select name="show_deleted" class="form-select custom-dropdown">
+                            <?php foreach ($showDeletedOptions as $val => $label): ?>
+                                <option value="<?= $val ?>"<?= $showDeleted === $val ? ' selected' : '' ?>><?= $label ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-6 col-sm-3">
+                        <button type="submit" class="btn btn-outline-primary w-100">
+                            <i class="bi bi-search"></i>
+                            <span class="d-none d-md-inline">Filter</span>
+                        </button>
+                    </div>
+                </form>
+
+                <?php if ($search || $showDeleted === '1'): ?>
+                    <div class="mb-3">
+                        <a href="tags_list.php" class="btn btn-sm btn-secondary">
+                            <i class="bi bi-x-circle"></i> Reset
+                        </a>
                     </div>
                 <?php endif; ?>
-                
+
                 <!-- Info -->
-                <div class="alert alert-info">
+                <div class="alert alert-info mb-3">
                     <i class="bi bi-info-circle"></i>
-                    Total <strong><?= count($tags) ?></strong> tags
+                    Menampilkan <strong><?= count($tags) ?></strong> dari <strong><?= $totalItems ?></strong> tags
+                    <?php if ($showDeleted === '1'): ?>
+                        <span class="badge bg-warning ms-2">Termasuk data terhapus</span>
+                    <?php endif; ?>
                 </div>
-                
+
+                <!-- Tags Table -->
                 <div class="table-responsive">
-                    <table class="table table-hover" id="tagsTable">
-                        <thead>
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
                             <tr>
-                                <th width="50">ID</th>
+                                <th style="width:40px;">No</th>
                                 <th>Nama Tag</th>
                                 <th>Slug</th>
-                                <th width="120" class="text-center">Jumlah Post</th>
-                                <th width="150" class="text-center">Aksi</th>
+                                <th class="text-center" style="width:130px;">Jumlah Post</th>
+                                <th class="text-center" style="width:150px;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if (empty($tags)): ?>
                                 <tr>
-                                    <td colspan="5" class="text-center text-muted py-4">
-                                        <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                                        Belum ada tag. <a href="tags_add.php">Tambah tag pertama</a>
+                                    <td colspan="5" class="text-center py-4 text-muted">
+                                        <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                                        Data tidak ditemukan.
                                     </td>
                                 </tr>
-                            <?php else: ?>
-                                <?php foreach ($tags as $tag): ?>
-                                    <tr>
-                                        <td><?= $tag['id'] ?></td>
-                                        <td>
-                                            <span class="badge bg-light text-dark border">
-                                                #<?= htmlspecialchars($tag['name']) ?>
+                            <?php else: foreach ($tags as $i => $tag):
+                                $isTrashed = !is_null($tag['deleted_at'] ?? null);
+                            ?>
+                                <tr<?= $isTrashed ? ' class="table-danger text-muted"' : '' ?>>
+                                    <td><?= $offset + $i + 1 ?></td>
+                                    <td>
+                                        <span class="badge bg-light text-dark border">#<?= htmlspecialchars($tag['name']) ?></span>
+                                    </td>
+                                    <td>
+                                        <code><?= htmlspecialchars($tag['slug']) ?></code>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-info"><?= formatNumber($tag['post_count']) ?> post</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <?php if ($isTrashed): ?>
+                                            <span class="text-danger fw-semibold">
+                                                Deleted at <?= formatTanggal($tag['deleted_at'], 'd M Y H:i') ?>
                                             </span>
-                                        </td>
-                                        <td><code><?= $tag['slug'] ?></code></td>
-                                        <td class="text-center">
-                                            <span class="badge bg-primary"><?= formatNumber($tag['post_count']) ?></span>
-                                        </td>
-                                        <td class="text-center">
+                                        <?php else: ?>
                                             <div class="btn-group btn-group-sm">
-                                                <a href="<?= BASE_URL ?>news/tag.php?slug=<?= $tag['slug'] ?>" 
-                                                   class="btn btn-info" title="Lihat" target="_blank">
+                                                <a href="<?= BASE_URL ?>news/tag.php?slug=<?= $tag['slug'] ?>"
+                                                   class="btn btn-info" target="_blank" title="Lihat">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
-                                                <a href="tags_edit.php?id=<?= $tag['id'] ?>" 
-                                                   class="btn btn-warning" title="Edit">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <a href="tags_delete.php?id=<?= $tag['id'] ?>" 
-                                                   class="btn btn-danger" 
-                                                   onclick="return confirm('Yakin hapus tag ini?')"
-                                                   title="Hapus">
-                                                    <i class="bi bi-trash"></i>
-                                                </a>
+                                                <?php if (hasRole(['super_admin', 'admin', 'editor'])): ?>
+                                                    <a href="tags_edit.php?id=<?= $tag['id'] ?>"
+                                                       class="btn btn-warning" title="Edit">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                <?php endif; ?>
+                                                <?php if (hasRole(['super_admin', 'admin'])): ?>
+                                                    <a href="tags_delete.php?id=<?= $tag['id'] ?>"
+                                                       class="btn btn-danger" title="Hapus"
+                                                       data-confirm-delete
+                                                       data-title="<?= htmlspecialchars($tag['name']) ?>"
+                                                       data-message="Tag &quot;<?= htmlspecialchars($tag['name']) ?>&quot; akan dipindahkan ke Trash. Lanjutkan?"
+                                                       data-loading-text="Menghapus tag...">
+                                                        <i class="bi bi-trash"></i>
+                                                    </a>
+                                                <?php endif; ?>
                                             </div>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; endif; ?>
                         </tbody>
                     </table>
                 </div>
-                
-                <div class="mt-3">
-                    <small class="text-muted">
-                        Tags digunakan untuk menandai topik spesifik dalam berita. Satu berita bisa memiliki banyak tags.
-                    </small>
-                </div>
+
+                <!-- Pagination bawah selalu tampil -->
+                <?php if ($totalItems > 0): ?>
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-4">
+                        <div>
+                            <small class="text-muted">
+                                Halaman <?= $page ?> dari <?= $totalPages ?> · Menampilkan <?= count($tags) ?> dari <?= $totalItems ?> tags
+                            </small>
+                        </div>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination mb-0">
+                                <li class="page-item<?= $page <= 1 ? ' disabled' : '' ?>">
+                                    <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['page' => $page - 1])) ?>">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </a>
+                                </li>
+                                <?php
+                                $from = max(1, $page - 2);
+                                $to = min($totalPages, $page + 2);
+                                for ($i = $from; $i <= $to; $i++): ?>
+                                    <li class="page-item<?= $i == $page ? ' active' : '' ?>">
+                                        <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['page' => $i])) ?>">
+                                            <?= $i ?>
+                                        </a>
+                                    </li>
+                                <?php endfor; ?>
+                                <li class="page-item<?= $page >= $totalPages ? ' disabled' : '' ?>">
+                                    <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['page' => $page + 1])) ?>">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </section>
 </div>
-
-<!-- DataTables CSS & JS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-<script>
-$(document).ready(function() {
-    // Get items per page from settings
-    var itemsPerPage = <?= (int)getSetting('items_per_page', 10) ?>;
-    
-    $('#tagsTable').DataTable({
-        "pageLength": itemsPerPage,
-        "order": [[3, "desc"]], // Sort by post count
-        "language": {
-            "search": "Cari:",
-            "lengthMenu": "Tampilkan _MENU_ data per halaman",
-            "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ tags",
-            "infoEmpty": "Tidak ada data",
-            "infoFiltered": "(difilter dari _MAX_ total tags)",
-            "zeroRecords": "Tidak ada tags yang cocok",
-            "paginate": {
-                "first": "Pertama",
-                "last": "Terakhir",
-                "next": "Selanjutnya",
-                "previous": "Sebelumnya"
-            }
-        }
-    });
-});
-</script>
 
 <?php include '../../includes/footer.php'; ?>

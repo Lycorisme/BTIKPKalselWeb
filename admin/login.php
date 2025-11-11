@@ -1,7 +1,7 @@
 <?php
 /**
  * Admin Login Page
- * With Dynamic Logo & Favicon
+ * With Dynamic Logo & Favicon and Dynamic Background with Overlay Text and Remember Me feature
  */
 
 session_start();
@@ -23,12 +23,26 @@ $siteLogoText = getSetting('site_logo_text', 'BTIKP KALSEL');
 $showLogoText = getSetting('site_logo_show_text', '1');
 $siteFavicon = getSetting('site_favicon');
 
+// Load background settings
+$bgType = getSetting('login_background_type', 'gradient');
+$bgImage = getSetting('login_background_image');
+$bgGradient = getSetting('login_background_gradient', 'purple-pink');
+$bgColor = getSetting('login_background_color', '#667eea');
+
+// Load overlay text for background
+$bgOverlayText = trim(getSetting('login_background_overlay_text', ''));
+
 $validator = null;
+
+// Initialize remembered email/password from cookies if exists
+$rememberedEmail = $_COOKIE['remember_email'] ?? '';
+$rememberedPassword = $_COOKIE['remember_password'] ?? '';
 
 // Process login
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = clean($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
+    $remember = isset($_POST['remember']);
     
     $validator = new Validator($_POST);
     $validator->required('email', 'Email');
@@ -50,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['user_name'] = $user['name'];
                 $_SESSION['user_email'] = $user['email'];
                 $_SESSION['user_role'] = $user['role'];
-                $_SESSION['user_photo'] = $user['photo']; // ✅ Tambahkan ini
+                $_SESSION['user_photo'] = $user['photo'];
 
                 // Update last login
                 $stmt = $db->prepare("UPDATE users SET last_login_at = NOW() WHERE id = ?");
@@ -58,6 +72,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 // Log activity
                 logActivity('LOGIN', 'User login ke sistem', 'users', $user['id']);
+                
+                // Set cookies for remember me feature
+                if ($remember) {
+                    setcookie('remember_email', $email, time() + (86400 * 30), "/");  // 30 days
+                    setcookie('remember_password', $password, time() + (86400 * 30), "/"); // 30 days (consider security)
+                } else {
+                    setcookie('remember_email', '', time() - 3600, "/");
+                    setcookie('remember_password', '', time() - 3600, "/");
+                }
 
                 setAlert('success', 'Selamat datang, ' . $user['name'] . '!');
                 redirect(ADMIN_URL);
@@ -76,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - <?= $siteName ?></title>
+    <title>Login - <?= htmlspecialchars($siteName) ?></title>
     
     <!-- Favicon (Dynamic) -->
     <?php if ($siteFavicon): ?>
@@ -90,6 +113,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        /* Overlay text styling */
+        #auth-right .overlay-text {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+            font-size: 1.75rem;
+            max-width: 80%;
+            text-align: center;
+            font-weight: 600;
+            user-select: none;
+            pointer-events: none;
+            white-space: pre-wrap;
+            line-height: 1.4;
+            z-index: 10;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        #auth-right {
+            position: relative;
+            overflow: hidden;
+        }
+    </style>
 </head>
 <body>
     <script src="<?= ADMIN_URL ?>assets/static/js/initTheme.js"></script>
@@ -123,12 +173,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                     <?php endif; ?>
 
-                    <form method="POST">
+                    <form method="POST" novalidate>
                         <div class="form-group position-relative has-icon-left mb-4">
                             <input type="email" name="email" 
                                    class="form-control form-control-xl <?= $validator && $validator->getError('email') ? 'is-invalid' : '' ?>" 
                                    placeholder="Email" 
-                                   value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" 
+                                   value="<?= htmlspecialchars($_POST['email'] ?? $rememberedEmail) ?>" 
                                    required autofocus>
                             <div class="form-control-icon">
                                 <i class="bi bi-person"></i>
@@ -142,6 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input type="password" name="password" 
                                    class="form-control form-control-xl <?= $validator && $validator->getError('password') ? 'is-invalid' : '' ?>" 
                                    placeholder="Password" 
+                                   value="<?= htmlspecialchars($rememberedPassword) ?>"
                                    required>
                             <div class="form-control-icon">
                                 <i class="bi bi-shield-lock"></i>
@@ -152,7 +203,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                         
                         <div class="form-check form-check-lg d-flex align-items-end mb-4">
-                            <input class="form-check-input me-2" type="checkbox" name="remember" id="flexCheckDefault">
+                            <input class="form-check-input me-2" type="checkbox" name="remember" id="flexCheckDefault"
+                            <?= $rememberedEmail ? 'checked' : '' ?>>
                             <label class="form-check-label text-gray-600" for="flexCheckDefault">
                                 Ingat saya
                             </label>
@@ -169,6 +221,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <a href="<?= ADMIN_URL ?>forgot-password.php" class="font-bold">Reset Password</a>
                         </p>
                         <p>
+                            <a href="<?= ADMIN_URL ?>register.php" class="font-bold">
+                                Belum punya akun? Daftar di sini
+                            </a>
+                        </p>
+                        <p>
                             <a href="<?= BASE_URL ?>" class="font-bold">
                                 <i class="bi bi-arrow-left"></i> Kembali ke Website
                             </a>
@@ -178,13 +235,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             
             <div class="col-lg-7 d-none d-lg-block">
-                <div id="auth-right" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                    <div class="d-flex align-items-center justify-content-center h-100">
-                        <div class="text-center text-white p-5">
-                            <h1 class="display-4 fw-bold mb-3"><?= $siteName ?></h1>
-                            <p class="lead"><?= getSetting('site_tagline', 'Portal Administrasi') ?></p>
-                        </div>
-                    </div>
+                <div id="auth-right" style="<?= generateBackgroundStyle($bgType, $bgImage, $bgGradient, $bgColor) ?>">
+                    <?php if ($bgType === 'image' && !empty($bgOverlayText)): ?>
+                        <div class="overlay-text"><?= nl2br(htmlspecialchars($bgOverlayText)) ?></div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

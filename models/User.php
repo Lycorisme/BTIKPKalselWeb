@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../core/Model.php';
 /**
  * User Model
  * Complete with role management, pagination, soft delete, and activity tracking
