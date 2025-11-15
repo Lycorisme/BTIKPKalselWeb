@@ -12,11 +12,11 @@ require_once dirname(__DIR__, 2) . '/core/Database.php';
 require_once dirname(__DIR__, 2) . '/core/Helper.php';
 
 // Get settings
-$siteName = getSetting('site_name', 'BTIKP Kalimantan Selatan');
-$siteFavicon = getSetting('site_favicon');
+ $siteName = getSetting('site_name', 'BTIKP Kalimantan Selatan');
+ $siteFavicon = getSetting('site_favicon');
 
 // Get current user with photo
-$currentUser = getCurrentUser();
+ $currentUser = getCurrentUser();
 
 // Get user photo from database if not in session
 if (!isset($currentUser['photo'])) {
@@ -62,10 +62,10 @@ try {
 // ===================================
 // DYNAMIC NOTIFICATION THEME LOADING
 // ===================================
-$notification_theme = getSetting('notification_alert_theme', 'alecto-final-blow');
+ $notification_theme = getSetting('notification_alert_theme', 'alecto-final-blow');
 
 // Map theme names to CSS and JS file names
-$themeFiles = [
+ $themeFiles = [
     'alecto-final-blow' => [
         'css' => 'notifications.css',
         'js' => 'notifications.js'
@@ -89,9 +89,9 @@ $themeFiles = [
 ];
 
 // Get current theme files or fallback to default
-$currentThemeFiles = $themeFiles[$notification_theme] ?? $themeFiles['alecto-final-blow'];
-$themeCssFile = $currentThemeFiles['css'];
-$themeJsFile = $currentThemeFiles['js'];
+ $currentThemeFiles = $themeFiles[$notification_theme] ?? $themeFiles['alecto-final-blow'];
+ $themeCssFile = $currentThemeFiles['css'];
+ $themeJsFile = $currentThemeFiles['js'];
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -117,6 +117,9 @@ $themeJsFile = $currentThemeFiles['js'];
     <!-- DYNAMIC NOTIFICATION THEME CSS -->
     <link rel="stylesheet" href="<?= ADMIN_URL ?>assets/css/<?= $themeCssFile ?>?v=<?= time() ?>" 
           data-notification-theme="<?= $notification_theme ?>" />
+
+    <!-- PAGE ANIMATIONS CSS - TAMBAHAN BARU -->
+    <link rel="stylesheet" href="<?= ADMIN_URL ?>assets/css/page-animations.css?v=<?= time() ?>" />
 
     <!-- Inject notification theme JavaScript global variable -->
     <script>
@@ -424,13 +427,18 @@ $themeJsFile = $currentThemeFiles['js'];
     </script>
 </head>
 <body>
+    <!-- Page Loader -->
+    <div class="page-loader">
+        <div class="loader-spinner"></div>
+    </div>
+    
     <script src="<?= ADMIN_URL ?>assets/static/js/initTheme.js"></script>
 
     <div id="app">
         <?php include 'sidebar.php'; ?>
 
         <div id="main" class='layout-navbar navbar-fixed'>
-            <header>
+            <header class="animate-on-scroll fade-in-down">
                 <nav class="navbar navbar-expand navbar-light navbar-top">
                     <div class="container-fluid">
                         <a href="#" class="burger-btn d-block">
@@ -440,7 +448,7 @@ $themeJsFile = $currentThemeFiles['js'];
                         <!-- Right side items -->
                         <div class="navbar-right-items ms-auto">
                             <!-- Desktop Search Form -->
-                            <form class="search-form-desktop d-flex my-2 my-lg-0" role="search" action="<?= ADMIN_URL ?>modules/search/search.php" method="GET">
+                            <form class="search-form-desktop d-flex my-2 my-lg-0 animate-on-scroll fade-in" data-delay="200" role="search" action="<?= ADMIN_URL ?>modules/search/search.php" method="GET">
                                 <div class="input-group">
                                     <input
                                         class="form-control"
@@ -457,12 +465,12 @@ $themeJsFile = $currentThemeFiles['js'];
                             </form>
 
                             <!-- Mobile Search Toggle -->
-                            <button id="search-toggle-mobile" class="search-toggle-mobile" title="Search">
+                            <button id="search-toggle-mobile" class="search-toggle-mobile animate-on-scroll fade-in" data-delay="300" title="Search">
                                 <i class="bi bi-search"></i>
                             </button>
 
                             <!-- Notifications -->
-                            <div class="dropdown">
+                            <div class="dropdown animate-on-scroll fade-in" data-delay="400">
                                 <a class="nav-link active dropdown-toggle text-gray-600" href="#" 
                                    data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class='bi bi-bell bi-sub fs-4'></i>
@@ -518,7 +526,7 @@ $themeJsFile = $currentThemeFiles['js'];
                             </div>
 
                             <!-- User Profile Dropdown -->
-                            <div class="dropdown">
+                            <div class="dropdown animate-on-scroll fade-in" data-delay="500">
                                 <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
                                     <div class="user-menu d-flex align-items-center">
                                         <div class="user-name text-end me-3">

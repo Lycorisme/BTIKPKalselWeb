@@ -417,21 +417,6 @@ include '../../includes/header.php';
     word-break: break-all;
 }
 </style>
-<div class="card">
-    <div class="card-body">
-        <small>
-            <strong>No:</strong> <?= $post['id'] ?><br>
-            <strong>Views:</strong> <?= formatNumber($post['view_count']) ?><br>
-            
-            <strong>Slug:</strong> <code class="slug-code"><?= $post['slug'] ?></code><br>
-            
-            <strong>Dibuat:</strong> <?= formatTanggal($post['created_at'], 'd M Y H:i') ?><br>
-            <?php if ($post['updated_at']): ?>
-                <strong>Diupdate:</strong> <?= formatTanggal($post['updated_at'], 'd M Y H:i') ?>
-            <?php endif; ?>
-        </small>
-    </div>
-</div>
 <script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/classic/ckeditor.js"></script>
 <script>
     ClassicEditor

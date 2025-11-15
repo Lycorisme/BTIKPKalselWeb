@@ -23,7 +23,7 @@ elseif (strpos($currentPath, '/gallery/') !== false) $currentPage = 'gallery';
 elseif (strpos($currentPath, '/contact/') !== false) $currentPage = 'contact';
 elseif (strpos($currentPath, '/trash/') !== false) $currentPage = 'trash';
 elseif (strpos($currentPath, '/pages/') !== false) $currentPage = 'pages';
-elseif (strpos($currentPath, '/logs/') !== false) $currentPage = 'activity_logs'; // PERBAIKAN DI SINI
+elseif (strpos($currentPath, '/logs/') !== false) $currentPage = 'activity_logs';
 elseif (strpos($currentPath, '/reports/') !== false) {
     $currentPage = 'reports';
     if (strpos($currentPath, 'report_activities') !== false) $currentReportType = 'report_activities';
@@ -75,21 +75,62 @@ $pendingCommentsData = $pendingCommentsStmt->fetch();
 $pendingCommentsCount = $pendingCommentsData['pending'] ?? 0;
 ?>
 
+<style>
+/* * Menonaktifkan PerfectScrollbar Mazer dan 
+ * menggantinya dengan scrollbar bawaan browser.
+ */
+#sidebar .sidebar-wrapper {
+    /* * Paksa scrollbar browser
+     * 'auto' berarti scrollbar hanya muncul saat dibutuhkan.
+     */
+    overflow-y: auto; 
+    overflow-x: hidden;
+    
+    /* * Ini PENTING: Mencegah 'app.js' Mazer menginisialisasi
+     * PerfectScrollbar pada elemen ini.
+     */
+    "data-perfect-scrollbar": "none";
+}
+
+/* * Menonaktifkan 'padding-right' aneh yang 
+ * mungkin ditambahkan Mazer untuk scrollbar.
+ */
+body.sidebar-desktop #sidebar .sidebar-wrapper {
+    padding-right: 0;
+}
+
+/* * Mengatur CSS untuk transisi Akordeon (Buka/Tutup)
+ */
+#sidebar .submenu {
+    /* Sembunyikan submenu secara default */
+    max-height: 0;
+    overflow: hidden;
+    
+    /* Atur animasi transisi */
+    transition: max-height 0.3s ease-out;
+}
+
+/* * Saat .has-sub memiliki class .active,
+ * buka submenu-nya ke tinggi maksimum kontennya.
+ */
+#sidebar .has-sub.active > .submenu {
+    max-height: 1000px; /* Atur ke angka yang besar */
+    /* Transisi saat membuka */
+    transition: max-height 0.5s ease-in-out;
+}
+</style>
 <div id="sidebar">
     <div class="sidebar-wrapper active">
 
-        <!-- Sidebar Header Logo & Text -->
         <div class="sidebar-header position-relative">
             <div class="d-flex align-items-center justify-content-center">
                 <a href="<?= ADMIN_URL ?>" class="d-flex flex-column align-items-center text-decoration-none w-100 py-3"> 
-                    <!-- Logo Image - DIPERBESAR -->
                     <?php if ($adminLogo = getSetting('site_logo')): ?>
                       <img src="<?= uploadUrl($adminLogo) ?>" alt="Logo BTIKP" style="height:60px; width:auto; display:block;">
                     <?php else: ?>
                       <img src="<?= BASE_URL ?>path/to/default/logo.png" alt="Logo" style="height:70px; width:auto; display:block;">
                     <?php endif; ?>
 
-                    <!-- Logo Text -->
                     <?php if (getSetting('site_logo_show_text', '1') == '1'): ?>
                         <div class="text-center">
                           <span style="font-size:1.5rem; font-weight:800; color:var(--bs-primary); text-align:center;"> 
@@ -102,14 +143,11 @@ $pendingCommentsCount = $pendingCommentsData['pending'] ?? 0;
             <hr class="sidebar-divider my-0">
         </div>
 
-        <!-- Sidebar Menu -->
         <div class="sidebar-menu">
             <ul class="menu">
                 
-                <!-- SECTION: UTAMA -->
                 <li class="sidebar-title">Menu Utama</li>
                 
-                <!-- Dashboard -->
                 <li class="sidebar-item <?= $currentPage === 'dashboard' ? 'active' : '' ?>">
                     <a href="<?= ADMIN_URL ?>" class="sidebar-link">
                         <i class="bi bi-grid-fill"></i>
@@ -117,10 +155,8 @@ $pendingCommentsCount = $pendingCommentsData['pending'] ?? 0;
                     </a>
                 </li>
 
-                <!-- SECTION: KONTEN -->
                 <li class="sidebar-title">Konten</li>
 
-                <!-- Berita & Artikel -->
                 <li class="sidebar-item has-sub <?= $currentPage === 'posts' || $currentPage === 'categories' || $currentPage === 'tags' ? 'active' : '' ?>">
                     <a href="#" class="sidebar-link">
                         <i class="bi bi-newspaper"></i>
@@ -157,7 +193,6 @@ $pendingCommentsCount = $pendingCommentsData['pending'] ?? 0;
                     </ul>
                 </li>
 
-                <!-- Halaman -->
                 <li class="sidebar-item <?= $currentPage === 'pages' ? 'active' : '' ?>">
                     <a href="<?= ADMIN_URL ?>modules/pages/pages_list.php" class="sidebar-link">
                         <i class="bi bi-file-earmark-text"></i>
@@ -165,7 +200,6 @@ $pendingCommentsCount = $pendingCommentsData['pending'] ?? 0;
                     </a>
                 </li>
 
-                <!-- Layanan -->
                 <li class="sidebar-item <?= $currentPage === 'services' ? 'active' : '' ?>">
                     <a href="<?= ADMIN_URL ?>modules/services/services_list.php" class="sidebar-link">
                         <i class="bi bi-gear-fill"></i>
@@ -173,7 +207,6 @@ $pendingCommentsCount = $pendingCommentsData['pending'] ?? 0;
                     </a>
                 </li>
 
-                <!-- Gallery -->
                 <li class="sidebar-item has-sub <?= $currentPage === 'gallery' ? 'active' : '' ?>">
                     <a href="#" class="sidebar-link">
                         <i class="bi bi-images"></i>
@@ -195,7 +228,6 @@ $pendingCommentsCount = $pendingCommentsData['pending'] ?? 0;
                     </ul>
                 </li>
 
-                <!-- File Download -->
                 <li class="sidebar-item <?= $currentPage === 'files' ? 'active' : '' ?>">
                     <a href="<?= ADMIN_URL ?>modules/files/files_list.php" class="sidebar-link">
                         <i class="bi bi-download"></i>
@@ -203,7 +235,6 @@ $pendingCommentsCount = $pendingCommentsData['pending'] ?? 0;
                     </a>
                 </li>
 
-                <!-- Banner -->
                 <li class="sidebar-item <?= $currentPage === 'banners' ? 'active' : '' ?>">
                     <a href="<?= ADMIN_URL ?>modules/banners/banners_list.php" class="sidebar-link">
                         <i class="bi bi-card-image"></i>
@@ -211,7 +242,6 @@ $pendingCommentsCount = $pendingCommentsData['pending'] ?? 0;
                     </a>
                 </li>
 
-                <!-- Pesan Kontak -->
                 <li class="sidebar-item <?= $currentPage === 'contact' ? 'active' : '' ?>">
                     <a href="<?= ADMIN_URL ?>modules/contact/messages_list.php" class="sidebar-link">
                         <i class="bi bi-envelope-fill"></i>
@@ -222,10 +252,8 @@ $pendingCommentsCount = $pendingCommentsData['pending'] ?? 0;
                     </a>
                 </li>
 
-                <!-- SECTION: MANAJEMEN -->
                 <li class="sidebar-title">Manajemen</li>
 
-                <!-- Users -->
                 <li class="sidebar-item <?= $currentPage === 'users' ? 'active' : '' ?>">
                     <a href="<?= ADMIN_URL ?>modules/users/users_list.php" class="sidebar-link">
                         <i class="bi bi-people-fill"></i>
@@ -236,7 +264,6 @@ $pendingCommentsCount = $pendingCommentsData['pending'] ?? 0;
                     </a>
                 </li>
 
-                <!-- Activity Logs -->
                 <li class="sidebar-item <?= $currentPage === 'activity_logs' ? 'active' : '' ?>">
                     <a href="<?= ADMIN_URL ?>modules/logs/activity_logs.php" class="sidebar-link">
                         <i class="bi bi-clock-history"></i>
@@ -244,7 +271,6 @@ $pendingCommentsCount = $pendingCommentsData['pending'] ?? 0;
                     </a>
                 </li>
 
-                <!-- Trash -->
                 <li class="sidebar-item <?= $currentPage === 'trash' ? 'active' : '' ?>">
                     <a href="<?= ADMIN_URL ?>modules/trash/trash_list.php" class="sidebar-link">
                         <i class="bi bi-trash-fill"></i>
@@ -255,7 +281,6 @@ $pendingCommentsCount = $pendingCommentsData['pending'] ?? 0;
                     </a>
                 </li>
 
-                <!-- Pengaturan -->
                 <li class="sidebar-item <?= $currentPage === 'settings' ? 'active' : '' ?>">
                     <a href="<?= ADMIN_URL ?>modules/settings/settings.php" class="sidebar-link">
                         <i class="bi bi-gear-fill"></i>
@@ -263,10 +288,8 @@ $pendingCommentsCount = $pendingCommentsData['pending'] ?? 0;
                     </a>
                 </li>
 
-                <!-- SECTION: LAPORAN -->
                 <li class="sidebar-title">Laporan & Analisis</li>
 
-                <!-- Laporan Utama (Dropdown) -->
                 <li class="sidebar-item has-sub <?= in_array($currentReportType, ['report_executive', 'report_posts', 'report_engagement']) ? 'active' : '' ?>">
                     <a href="#" class="sidebar-link">
                         <i class="bi bi-bar-chart-fill"></i>
@@ -294,7 +317,6 @@ $pendingCommentsCount = $pendingCommentsData['pending'] ?? 0;
                     </ul>
                 </li>
 
-                <!-- Laporan Konten (Dropdown) -->
                 <li class="sidebar-item has-sub <?= in_array($currentReportType, ['report_categories', 'report_tags', 'report_services', 'report_downloads']) ? 'active' : '' ?>">
                     <a href="#" class="sidebar-link">
                         <i class="bi bi-folder-fill"></i>
@@ -328,7 +350,6 @@ $pendingCommentsCount = $pendingCommentsData['pending'] ?? 0;
                     </ul>
                 </li>
 
-                <!-- Laporan Manajemen (Dropdown) -->
                 <li class="sidebar-item has-sub <?= in_array($currentReportType, ['report_users', 'report_activities', 'report_contacts', 'report_security']) ? 'active' : '' ?>">
                     <a href="#" class="sidebar-link">
                         <i class="bi bi-shield-check"></i>
@@ -363,6 +384,60 @@ $pendingCommentsCount = $pendingCommentsData['pending'] ?? 0;
                 </li>
 
             </ul>
-        </div>
-    </div>
-</div>
+        </div> </div> </div> <script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Ambil elemen wrapper scrollbar
+    const sidebarWrapper = document.querySelector('#sidebar .sidebar-wrapper');
+    if (!sidebarWrapper) return; // Keluar jika tidak ada
+    
+    // Ambil semua item menu yang memiliki submenu
+    const hasSubItems = document.querySelectorAll('.sidebar-item.has-sub');
+
+    // Fungsi untuk meng-scroll wrapper ke atas
+    function resetSidebarScroll() {
+        if (sidebarWrapper.scrollTop > 0) {
+            sidebarWrapper.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    // Pasang listener ke setiap item menu
+    hasSubItems.forEach(item => {
+        const link = item.querySelector('.sidebar-link');
+        
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Cek apakah item ini *sudah* aktif
+            const wasActive = item.classList.contains('active');
+            
+            // 1. SELALU scroll ke atas setiap kali ada klik
+            // Ini akan memperbaiki bug "regroup"
+            resetSidebarScroll();
+
+            // 2. TUTUP SEMUA submenu lain
+            // Ini memenuhi permintaan "hanya satu yang boleh buka"
+            hasSubItems.forEach(otherItem => {
+                if (otherItem !== item) {
+                    otherItem.classList.remove('active');
+                }
+            });
+
+            // 3. BUKA submenu yang diklik (jika tadinya tertutup)
+            // Kita beri jeda sedikit (50ms) agar scroll ke atas
+            // bisa dimulai sebelum animasi 'max-height' dimulai.
+            if (!wasActive) {
+                setTimeout(() => {
+                    item.classList.add('active');
+                }, 50); 
+            } else {
+                // Jika tadinya sudah aktif, tutup saja
+                item.classList.remove('active');
+            }
+        });
+    });
+});
+</script>

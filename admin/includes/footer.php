@@ -5,33 +5,30 @@
  */
 
 // Get copyright from settings
-$copyright = getSetting('site_copyright', 'Â© {year} BTIKP Kalimantan Selatan. All Rights Reserved.');
-$copyright = str_replace('{year}', date('Y'), $copyright);
+ $copyright = getSetting('site_copyright', '© {year} BTIKP Kalimantan Selatan. All Rights Reserved.');
+ $copyright = str_replace('{year}', date('Y'), $copyright);
 
 // Get site name
-$siteName = getSetting('site_name', 'BTIKP Kalimantan Selatan');
+ $siteName = getSetting('site_name', 'BTIKP Kalimantan Selatan');
 
 // ===================================
 // DYNAMIC NOTIFICATION THEME LOADING
 // ===================================
-$notification_theme = getSetting('notification_alert_theme', 'alecto-final-blow');
+ $notification_theme = getSetting('notification_alert_theme', 'alecto-final-blow');
 
 // Map theme names to JS file names
-$themeFiles = [
-    'alecto-final-blow' => 'notifications.js',
-    'an-eye-for-an-eye' => 'notifications_an_eye_for_an_eye.js',
-    'throne-of-ruin' => 'notifications_throne.js',
-    'hoki-crossbow-of-tang' => 'notifications_crossbow.js',
-    'death-sonata' => 'notifications_death_sonata.js'
+ $themeFiles = [
+     'alecto-final-blow' => 'notifications.js',
+     'an-eye-for-an-eye' => 'notifications_an_eye_for_an_eye.js',
+     'throne-of-ruin' => 'notifications_throne.js',
+     'hoki-crossbow-of-tang' => 'notifications_crossbow.js',
+     'death-sonata' => 'notifications_death_sonata.js'
 ];
 
 // Get current theme JS file or fallback to default
-$themeJsFile = $themeFiles[$notification_theme] ?? $themeFiles['alecto-final-blow'];
+ $themeJsFile = $themeFiles[$notification_theme] ?? $themeFiles['alecto-final-blow'];
 ?>
-            </div> <!-- End #main-content -->
-            
-            <!-- Footer -->
-            <footer>
+            </div> <footer>
                 <div class="container-fluid">
                     <div class="footer clearfix mb-0 text-muted">
                         <div class="float-start">
@@ -48,16 +45,16 @@ $themeJsFile = $themeFiles[$notification_theme] ?? $themeFiles['alecto-final-blo
         </div>
     </div>
     
-    <!-- Mazer Core JS -->
     <script src="<?= ADMIN_URL ?>assets/static/js/components/dark.js"></script>
     <script src="<?= ADMIN_URL ?>assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="<?= ADMIN_URL ?>assets/compiled/js/app.js"></script>
     
-    <!-- DYNAMIC NOTIFICATION THEME JAVASCRIPT -->
     <script src="<?= ADMIN_URL ?>assets/js/<?= $themeJsFile ?>?v=<?= time() ?>" 
             data-notification-theme="<?= $notification_theme ?>"></script>
     
-    <!-- Auto show alert from PHP session (using custom toast) -->
+    
+    <script src="<?= ADMIN_URL ?>assets/js/page-animations.js"></script>
+
     <?php if ($alert = getAlert()): ?>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -72,7 +69,6 @@ $themeJsFile = $themeFiles[$notification_theme] ?? $themeFiles['alecto-final-blo
     </script>
     <?php endif; ?>
     
-    <!-- Additional Scripts from Pages -->
     <?php if (isset($additionalScripts)): ?>
         <?= $additionalScripts ?>
     <?php endif; ?>
