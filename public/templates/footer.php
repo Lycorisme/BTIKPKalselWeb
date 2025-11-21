@@ -3,6 +3,46 @@
  * Public Footer Template
  */
 
+// 1. Load OfficeHours Class
+// Pastikan path ini sesuai dengan struktur folder Anda. 
+if (file_exists(__DIR__ . '/../../core/OfficeHours.php')) {
+    require_once __DIR__ . '/../../core/OfficeHours.php';
+}
+
+// 2. Init Office Hours & Get Status
+$office = new OfficeHours();
+$officeStatus = $office->getStatus();
+$workingHoursText = $office->getFormattedWorkingHours();
+
+// Mapping warna Tailwind berdasarkan status
+// Default values
+$statusColor = 'bg-gray-600';
+$statusIcon = 'fa-door-closed';
+
+if ($officeStatus) {
+    // Kita override variable local berdasarkan return dari Class
+    // (Meskipun Class OfficeHours di atas sudah return 'badge' class bootstrap/tailwind, 
+    // kita mapping ulang disini untuk kepastian desain footer ini)
+    switch ($officeStatus['status']) {
+        case 'open':
+            $statusColor = 'bg-green-600';
+            $statusIcon = 'fa-door-open';
+            break;
+        case 'break':
+            $statusColor = 'bg-yellow-600';
+            $statusIcon = 'fa-mug-hot';
+            break;
+        case 'holiday':
+            $statusColor = 'bg-red-600';
+            $statusIcon = 'fa-calendar-times';
+            break;
+        default: // closed
+            $statusColor = 'bg-gray-600';
+            $statusIcon = 'fa-door-closed';
+            break;
+    }
+}
+
 // Get footer settings
 $footer_about = getSetting('footer_about', 'Balai Teknologi Informasi dan Komunikasi Pendidikan Kalimantan Selatan');
 $footer_address = getSetting('footer_address', 'Jl. A. Yani KM 36, Banjarmasin, Kalimantan Selatan');
@@ -32,6 +72,15 @@ $active_socials = array_filter($social_media, function($social) {
                     <h3 class="text-xl font-bold mb-4"><?= getSetting('site_name', 'BTIKP Kalsel') ?></h3>
                     <p class="text-gray-400 mb-4"><?= $footer_about ?></p>
                     
+                    <?php if ($officeStatus): ?>
+                    <div class="mb-6 inline-block animate-pulse">
+                        <div class="flex items-center px-3 py-2 rounded-lg text-white text-sm font-medium shadow-lg <?= $statusColor ?>">
+                            <i class="fas <?= $statusIcon ?> mr-2"></i>
+                            <span>Kantor <?= $officeStatus['message'] ?></span>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+
                     <?php if (!empty($active_socials)): ?>
                     <div class="flex flex-wrap gap-2">
                         <?php foreach ($active_socials as $platform => $social): ?>
@@ -64,18 +113,22 @@ $active_socials = array_filter($social_media, function($social) {
                     <ul class="space-y-3">
                         <?php
                         // Memanggil fungsi untuk mendapatkan 3 berita terbaru
-                        $recent_posts = get_recent_posts(3);
-                        foreach ($recent_posts as $post):
+                        if (function_exists('get_recent_posts')) {
+                            $recent_posts = get_recent_posts(3);
+                            foreach ($recent_posts as $post):
                         ?>
                         <li>
                             <a href="<?= BASE_URL ?>post.php?slug=<?= $post['slug'] ?>" class="text-gray-400 hover:text-white transition text-sm line-clamp-2">
-                                <?= truncateText($post['title'], 100) ?>
+                                <?= function_exists('truncateText') ? truncateText($post['title'], 100) : substr($post['title'], 0, 100) ?>
                             </a>
                             <div class="text-xs text-gray-500 mt-1">
-                                <i class="far fa-calendar mr-1"></i><?= formatTanggal($post['created_at'], 'd M Y') ?>
+                                <i class="far fa-calendar mr-1"></i><?= function_exists('formatTanggal') ? formatTanggal($post['created_at'], 'd M Y') : date('d M Y', strtotime($post['created_at'])) ?>
                             </div>
                         </li>
-                        <?php endforeach; ?>
+                        <?php 
+                            endforeach; 
+                        }
+                        ?>
                     </ul>
                 </div>
                 
@@ -93,6 +146,10 @@ $active_socials = array_filter($social_media, function($social) {
                         <li class="flex items-center">
                             <i class="fas fa-phone mr-3 text-blue-400 flex-shrink-0"></i>
                             <a href="tel:<?= str_replace(['(', ')', ' ', '-'], '', $contact_phone) ?>" class="text-sm hover:text-white transition"><?= $contact_phone ?></a>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-clock mt-1 mr-3 text-blue-400 flex-shrink-0"></i>
+                            <span class="text-sm"><?= $workingHoursText ?></span>
                         </li>
                     </ul>
                 </div>
@@ -140,6 +197,24 @@ $active_socials = array_filter($social_media, function($social) {
                 background: '<?= getSetting('public_theme_background_color', '#ffffff') ?>'
             });
         }
+
+        // Simple Back to Top Logic
+        const backToTopButton = document.createElement('button');
+        backToTopButton.innerHTML = '<i class="fas fa-arrow-up"></i>';
+        backToTopButton.className = 'fixed bottom-8 right-8 bg-blue-600 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition transform hover:-translate-y-1 hidden z-40';
+        document.body.appendChild(backToTopButton);
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopButton.classList.remove('hidden');
+            } else {
+                backToTopButton.classList.add('hidden');
+            }
+        });
+
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
     </script>
 </body>
 </html>

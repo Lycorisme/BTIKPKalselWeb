@@ -38,8 +38,8 @@
                             <p><?= $copyright ?></p>
                         </div>
                         <div class="float-end">
-                            <p>Powered by <span class="text-danger"><i class="bi bi-heart-fill icon-mid"></i></span>
-                                <a href="<?= BASE_URL ?>" target="_blank"><?= $siteName ?></a>
+                            <p>Powered by <span class="text-danger"><i class=""></i></span>
+                                <a href="#" target="_blank">M. Haldi</a>
                             </p>
                         </div>
                     </div>

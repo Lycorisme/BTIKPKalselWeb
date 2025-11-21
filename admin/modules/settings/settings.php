@@ -2,6 +2,7 @@
 /**
  * Settings Management - Complete with Logo Text & Copyright
  * WITH CUSTOM NOTIFICATIONS SYSTEM
+ * UPDATED: Working Hours, Auto-Response, Email & Notification Settings
  */
 
 require_once '../../includes/auth_check.php';
@@ -46,7 +47,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $updated = 0;
             
             // Process checkbox values
-            $checkboxFields = ['site_logo_show_text', 'site_maintenance_mode'];
+            $checkboxFields = [
+                'site_logo_show_text', 
+                'site_maintenance_mode',
+                'office_show_status',
+                'contact_auto_reply',
+                'contact_working_hours_only',
+                'email_smtp_enable',
+                'notification_new_contact'
+            ];
             foreach ($checkboxFields as $field) {
                 if (!isset($_POST[$field])) {
                     $_POST[$field] = '0';
@@ -156,7 +165,12 @@ include '../../includes/header.php';
             <?= csrfField() ?>
             
             <div class="row">
-                <div class="col-lg-6"> <div class="card">
+                <!-- ========================================
+                     KOLOM KIRI
+                ======================================== -->
+                <div class="col-lg-6">
+                    <!-- General Settings -->
+                    <div class="card">
                         <div class="card-header">
                             <h5 class="card-title mb-0">
                                 <i class="bi bi-gear"></i> Pengaturan Umum
@@ -242,7 +256,8 @@ include '../../includes/header.php';
                         </div>
                     </div>
                     
-                    <div class="card">
+                    <!-- Upload Settings -->
+                    <div class="card mt-3">
                         <div class="card-header">
                             <h5 class="card-title mb-0">
                                 <i class="bi bi-cloud-upload"></i> Pengaturan Upload
@@ -277,6 +292,7 @@ include '../../includes/header.php';
                         </div>
                     </div>
 
+                    <!-- Notification Theme -->
                     <div class="card mt-3">
                         <div class="card-header">
                             <h5 class="card-title mb-0">
@@ -298,7 +314,7 @@ include '../../includes/header.php';
                             
                             <div class="form-group mb-3">
                                 <label class="form-label fw-bold" for="notification_alert_theme">
-                                    <i class=""></i> Pilih Tema
+                                    Pilih Tema
                                 </label>
                                 <select name="notification_alert_theme" id="notification_alert_theme" class="form-select">
                                     <?php foreach ($themeStyles as $key => $label): ?>
@@ -318,6 +334,7 @@ include '../../includes/header.php';
                         </div>
                     </div>
 
+                    <!-- Maintenance Mode -->
                     <div class="card mt-3">
                         <div class="card-header">
                             <h5 class="card-title mb-0">
@@ -345,7 +362,132 @@ include '../../includes/header.php';
                         </div>
                     </div>
 
-                    </div> <div class="col-lg-6"> <div class="card">
+                    <!-- ========================================
+                         SECTION BARU: WORKING HOURS & HOLIDAY
+                    ======================================== -->
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-clock-history"></i> Jam Kerja & Hari Libur
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group mb-3">
+                                <label class="form-label">Hari Kerja</label>
+                                <input type="text" name="office_working_days" class="form-control" 
+                                       value="<?= htmlspecialchars($settings['office_working_days'] ?? 'monday,tuesday,wednesday,thursday,friday') ?>">
+                                <small class="text-muted">Pisahkan dengan koma. Contoh: monday,tuesday,wednesday,thursday,friday</small>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Jam Mulai Kerja</label>
+                                        <input type="time" name="office_start_time" class="form-control" 
+                                               value="<?= htmlspecialchars($settings['office_start_time'] ?? '08:00') ?>">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Jam Selesai Kerja</label>
+                                        <input type="time" name="office_end_time" class="form-control" 
+                                               value="<?= htmlspecialchars($settings['office_end_time'] ?? '16:00') ?>">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Jam Mulai Istirahat</label>
+                                        <input type="time" name="office_break_start" class="form-control" 
+                                               value="<?= htmlspecialchars($settings['office_break_start'] ?? '12:00') ?>">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Jam Selesai Istirahat</label>
+                                        <input type="time" name="office_break_end" class="form-control" 
+                                               value="<?= htmlspecialchars($settings['office_break_end'] ?? '13:00') ?>">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label class="form-label">Tanggal Hari Libur</label>
+                                <textarea name="office_holiday_dates" class="form-control" rows="3" placeholder="2025-12-25, 2025-12-31, 2026-01-01"><?= htmlspecialchars($settings['office_holiday_dates'] ?? '') ?></textarea>
+                                <small class="text-muted">Format: YYYY-MM-DD, pisahkan dengan koma</small>
+                            </div>
+
+                            <div class="form-group mb-0">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" name="office_show_status" id="office_show_status" 
+                                           class="form-check-input" 
+                                           value="1" <?= ($settings['office_show_status'] ?? '1') == '1' ? 'checked' : '' ?>>
+                                    <label class="form-check-label" for="office_show_status">
+                                        Tampilkan Status Kantor di Website
+                                    </label>
+                                </div>
+                                <small class="text-muted">Menampilkan "Buka" atau "Tutup" berdasarkan jam kerja</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ========================================
+                         SECTION BARU: AUTO-RESPONSE MESSAGES
+                    ======================================== -->
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-chat-left-text"></i> Auto-Response Messages
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group mb-3">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" name="contact_auto_reply" id="contact_auto_reply" 
+                                           class="form-check-input" 
+                                           value="1" <?= ($settings['contact_auto_reply'] ?? '1') == '1' ? 'checked' : '' ?>>
+                                    <label class="form-check-label fw-bold" for="contact_auto_reply">
+                                        Aktifkan Balasan Otomatis
+                                    </label>
+                                </div>
+                                <small class="text-muted">Auto-reply akan dikirim ketika ada pesan masuk dari form kontak</small>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label class="form-label">Pesan Balasan Otomatis</label>
+                                <textarea name="contact_auto_reply_message" class="form-control" rows="3"><?= htmlspecialchars($settings['contact_auto_reply_message'] ?? 'Terima kasih atas pesan Anda. Kami akan merespon dalam 1x24 jam.') ?></textarea>
+                                <small class="text-muted">Pesan yang akan dikirim otomatis kepada pengirim</small>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" name="contact_working_hours_only" id="contact_working_hours_only" 
+                                           class="form-check-input" 
+                                           value="1" <?= ($settings['contact_working_hours_only'] ?? '1') == '1' ? 'checked' : '' ?>>
+                                    <label class="form-check-label" for="contact_working_hours_only">
+                                        Gunakan Pesan Berbeda di Luar Jam Kerja
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-0">
+                                <label class="form-label">Pesan di Luar Jam Kerja</label>
+                                <textarea name="contact_non_working_message" class="form-control" rows="3"><?= htmlspecialchars($settings['contact_non_working_message'] ?? 'Kantor sedang tutup. Pesan Anda akan dibalas pada hari kerja berikutnya.') ?></textarea>
+                                <small class="text-muted">Pesan yang ditampilkan jika di luar jam kerja</small>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ========================================
+                     KOLOM KANAN
+                ======================================== -->
+                <div class="col-lg-6">
+                    <!-- Contact Info -->
+                    <div class="card">
                         <div class="card-header">
                             <h5 class="card-title mb-0">
                                 <i class="bi bi-telephone"></i> Informasi Kontak
@@ -377,7 +519,8 @@ include '../../includes/header.php';
                         </div>
                     </div>
                     
-                    <div class="card">
+                    <!-- Social Media -->
+                    <div class="card mt-3">
                         <div class="card-header">
                             <h5 class="card-title mb-0">
                                 <i class="bi bi-share"></i> Social Media
@@ -449,6 +592,7 @@ include '../../includes/header.php';
                         </div>
                     </div>
                     
+                    <!-- Appearance (Background) -->
                     <div class="card mt-3">
                         <div class="card-header">
                             <h5 class="card-title mb-0">
@@ -536,6 +680,7 @@ include '../../includes/header.php';
                         </div>
                     </div>
 
+                    <!-- Theme Warna Halaman Public -->
                     <div class="card mt-3">
                         <div class="card-header">
                             <h5 class="card-title mb-0">
@@ -607,8 +752,116 @@ include '../../includes/header.php';
                         </div>
                     </div>
 
-                </div> </div>
+                    <!-- ========================================
+                         SECTION BARU: EMAIL & NOTIFICATION
+                    ======================================== -->
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-envelope"></i> Email & Notification Settings
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="fw-bold mb-3">Email Configuration</h6>
+
+                            <div class="form-group mb-3">
+                                <label class="form-label">From Name</label>
+                                <input type="text" name="email_from_name" class="form-control" 
+                                       value="<?= htmlspecialchars($settings['email_from_name'] ?? 'BTIKP Kalimantan Selatan') ?>">
+                                <small class="text-muted">Nama pengirim email</small>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label class="form-label">From Email Address</label>
+                                <input type="email" name="email_from_address" class="form-control" 
+                                       value="<?= htmlspecialchars($settings['email_from_address'] ?? 'noreply@btikpkalsel.id') ?>">
+                                <small class="text-muted">Alamat email pengirim</small>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" name="email_smtp_enable" id="email_smtp_enable" 
+                                           class="form-check-input" 
+                                           value="1" <?= ($settings['email_smtp_enable'] ?? '0') == '1' ? 'checked' : '' ?>>
+                                    <label class="form-check-label fw-bold" for="email_smtp_enable">
+                                        Enable SMTP
+                                    </label>
+                                </div>
+                                <small class="text-muted">Gunakan SMTP server untuk mengirim email (direkomendasikan)</small>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label class="form-label">SMTP Host</label>
+                                <input type="text" name="email_smtp_host" class="form-control" 
+                                       value="<?= htmlspecialchars($settings['email_smtp_host'] ?? '') ?>"
+                                       placeholder="smtp.gmail.com">
+                                <small class="text-muted">Contoh: smtp.gmail.com, smtp.office365.com</small>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">SMTP Port</label>
+                                        <input type="number" name="email_smtp_port" class="form-control" 
+                                               value="<?= htmlspecialchars($settings['email_smtp_port'] ?? '587') ?>">
+                                        <small class="text-muted">587 (TLS) atau 465 (SSL)</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Encryption</label>
+                                        <select name="email_smtp_encryption" class="form-select">
+                                            <option value="tls" <?= ($settings['email_smtp_encryption'] ?? 'tls') === 'tls' ? 'selected' : '' ?>>TLS</option>
+                                            <option value="ssl" <?= ($settings['email_smtp_encryption'] ?? 'tls') === 'ssl' ? 'selected' : '' ?>>SSL</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label class="form-label">SMTP Username</label>
+                                <input type="text" name="email_smtp_username" class="form-control" 
+                                       value="<?= htmlspecialchars($settings['email_smtp_username'] ?? '') ?>"
+                                       placeholder="your-email@gmail.com">
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label class="form-label">SMTP Password</label>
+                                <input type="password" name="email_smtp_password" class="form-control" 
+                                       value="<?= htmlspecialchars($settings['email_smtp_password'] ?? '') ?>"
+                                       placeholder="••••••••">
+                                <small class="text-muted">Gunakan App Password untuk Gmail</small>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <h6 class="fw-bold mb-3">Notification Settings</h6>
+
+                            <div class="form-group mb-3">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" name="notification_new_contact" id="notification_new_contact" 
+                                           class="form-check-input" 
+                                           value="1" <?= ($settings['notification_new_contact'] ?? '1') == '1' ? 'checked' : '' ?>>
+                                    <label class="form-check-label fw-bold" for="notification_new_contact">
+                                        Notifikasi Pesan Kontak Baru
+                                    </label>
+                                </div>
+                                <small class="text-muted">Kirim notifikasi email saat ada pesan kontak baru</small>
+                            </div>
+
+                            <div class="form-group mb-0">
+                                <label class="form-label">Email Admin (untuk notifikasi)</label>
+                                <input type="email" name="notification_email_admin" class="form-control" 
+                                       value="<?= htmlspecialchars($settings['notification_email_admin'] ?? 'admin@btikpkalsel.id') ?>">
+                                <small class="text-muted">Email yang akan menerima notifikasi</small>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
             
+            <!-- Save Button -->
             <div class="row mt-3">
                 <div class="col-12">
                     <div class="card">
@@ -633,7 +886,6 @@ include '../../includes/header.php';
 
 <script>
     // Mendefinisikan variabel URL dan Tema sebelum settings.js dimuat
-    // Ini MENCEGAH error "ADMIN_URL not defined"
     var ADMIN_URL = '<?= ADMIN_URL ?>';
     var CURRENT_THEME = '<?= $settings['notification_alert_theme'] ?? 'alecto-final-blow' ?>';
 </script>
@@ -691,13 +943,8 @@ function confirmBack() {
     });
 }
 
-
-// ==========================================================
-// == [PERUBAHAN JAVASCRIPT] ==
-// Mengubah fungsi previewTheme agar membaca dari <select>
-// ==========================================================
+// Preview theme function
 function previewTheme() {
-    // [PERUBAHAN] Mengambil data dari <select>
     const selectElement = document.getElementById('notification_alert_theme');
     
     if (!selectElement) {
@@ -705,13 +952,9 @@ function previewTheme() {
          return;
     }
 
-    // Ambil value (cth: 'an-eye-for-an-eye')
     const themeName = selectElement.value;
-    
-    // Ambil teks yang tampil (cth: 'An Eye for An Eye')
     const themeLabel = selectElement.options[selectElement.selectedIndex].text;
     
-    // Call BTIKPSettings preview function
     if (typeof BTIKPSettings !== 'undefined') {
         BTIKPSettings.previewTheme(themeName, themeLabel);
     } else {
@@ -719,14 +962,7 @@ function previewTheme() {
         notify.error('Settings script belum dimuat. Refresh halaman dan coba lagi.');
     }
 }
-// ==========================================================
-// == [AKHIR PERUBAHAN JAVASCRIPT] ==
-// ==========================================================
 
-
-// ==========================================================
-// == [SNIPPET JAVASCRIPT BARU]
-// ==========================================================
 // Checkbox maintenance mode handler
 function updateCheckboxValue(checkbox) {
     checkbox.value = checkbox.checked ? '1' : '0';
