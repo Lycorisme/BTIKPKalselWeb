@@ -12,11 +12,11 @@ require_once dirname(__DIR__, 2) . '/core/Database.php';
 require_once dirname(__DIR__, 2) . '/core/Helper.php';
 
 // Get settings
- $siteName = getSetting('site_name', 'BTIKP Kalimantan Selatan');
- $siteFavicon = getSetting('site_favicon');
+$siteName = getSetting('site_name', 'BTIKP Kalimantan Selatan');
+$siteFavicon = getSetting('site_favicon');
 
 // Get current user with photo
- $currentUser = getCurrentUser();
+$currentUser = getCurrentUser();
 
 // Get user photo from database if not in session
 if (!isset($currentUser['photo'])) {
@@ -62,10 +62,10 @@ try {
 // ===================================
 // DYNAMIC NOTIFICATION THEME LOADING
 // ===================================
- $notification_theme = getSetting('notification_alert_theme', 'alecto-final-blow');
+$notification_theme = getSetting('notification_alert_theme', 'alecto-final-blow');
 
 // Map theme names to CSS and JS file names
- $themeFiles = [
+$themeFiles = [
     'alecto-final-blow' => [
         'css' => 'notifications.css',
         'js' => 'notifications.js'
@@ -89,9 +89,9 @@ try {
 ];
 
 // Get current theme files or fallback to default
- $currentThemeFiles = $themeFiles[$notification_theme] ?? $themeFiles['alecto-final-blow'];
- $themeCssFile = $currentThemeFiles['css'];
- $themeJsFile = $currentThemeFiles['js'];
+$currentThemeFiles = $themeFiles[$notification_theme] ?? $themeFiles['alecto-final-blow'];
+$themeCssFile = $currentThemeFiles['css'];
+$themeJsFile = $currentThemeFiles['js'];
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -215,33 +215,11 @@ try {
             background-color: #2d3135;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .search-form-desktop {
-                display: none !important;
-            }
-
-            .search-toggle-mobile {
-                display: block;
-            }
-
-            .user-name {
-                display: none;
-            }
-
-            .navbar-nav {
-                gap: 0.5rem;
-            }
-        }
-
-        @media (min-width: 769px) {
-            .search-toggle-mobile {
-                display: none;
-            }
-
-            .search-form-mobile {
-                display: none !important;
-            }
+        /* Navbar alignment */
+        .navbar-right-items {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         /* Notification badge positioning */
@@ -263,23 +241,64 @@ try {
             position: relative;
         }
 
-        /* Navbar alignment */
-        .navbar-right-items {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        /* Notification dropdown styling */
+        /* Notification dropdown styling - IMPROVED */
         .notification-dropdown {
             min-width: 320px;
             max-width: 400px;
+            padding: 0;
+        }
+
+        .notification-dropdown .dropdown-header {
+            padding: 0.75rem 1rem;
+            margin: 0;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        [data-bs-theme="dark"] .notification-dropdown .dropdown-header {
+            background-color: #1a1d20;
+            border-bottom-color: #2d3135;
+        }
+
+        /* Scrollable notification list */
+        .notification-list {
+            max-height: 350px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Custom scrollbar for notification list */
+        .notification-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .notification-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        [data-bs-theme="dark"] .notification-list::-webkit-scrollbar-track {
+            background: #2d3135;
+        }
+
+        .notification-list::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+
+        .notification-list::-webkit-scrollbar-thumb:hover {
+            background: #555;
         }
 
         .notification-item {
             padding: 0.75rem 1rem;
             border-bottom: 1px solid #e9ecef;
             transition: background-color 0.2s;
+            display: block;
+            text-decoration: none;
+            color: inherit;
         }
 
         [data-bs-theme="dark"] .notification-item {
@@ -288,6 +307,7 @@ try {
 
         .notification-item:hover {
             background-color: #f8f9fa;
+            text-decoration: none;
         }
 
         [data-bs-theme="dark"] .notification-item:hover {
@@ -309,6 +329,9 @@ try {
             font-size: 0.9rem;
             color: #333;
             margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
         }
 
         [data-bs-theme="dark"] .notification-title {
@@ -328,6 +351,9 @@ try {
             font-size: 0.75rem;
             color: #999;
             margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
         }
 
         .notification-empty {
@@ -337,19 +363,96 @@ try {
         }
 
         .notification-footer {
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1rem;
             text-align: center;
             border-top: 1px solid #e9ecef;
+            background-color: #f8f9fa;
+            position: sticky;
+            bottom: 0;
+            z-index: 1;
         }
 
         [data-bs-theme="dark"] .notification-footer {
             border-top-color: #2d3135;
+            background-color: #1a1d20;
         }
 
         .notification-footer a {
             font-size: 0.85rem;
             font-weight: 600;
             text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .search-form-desktop {
+                display: none !important;
+            }
+
+            .search-toggle-mobile {
+                display: block;
+            }
+
+            .user-name {
+                display: none;
+            }
+
+            .navbar-nav {
+                gap: 0.5rem;
+            }
+
+            /* Make notification dropdown full width on mobile */
+            .notification-dropdown {
+                min-width: 280px;
+                max-width: calc(100vw - 2rem);
+                left: auto !important;
+                right: 0 !important;
+            }
+
+            /* Adjust notification list height for mobile */
+            .notification-list {
+                max-height: 300px;
+            }
+
+            /* Smaller font sizes for mobile */
+            .notification-title {
+                font-size: 0.85rem;
+            }
+
+            .notification-text {
+                font-size: 0.8rem;
+            }
+
+            .notification-time {
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .notification-dropdown {
+                min-width: 260px;
+            }
+
+            .notification-list {
+                max-height: 250px;
+            }
+
+            .notification-item {
+                padding: 0.6rem 0.75rem;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .search-toggle-mobile {
+                display: none;
+            }
+
+            .search-form-mobile {
+                display: none !important;
+            }
         }
     </style>
 
@@ -494,31 +597,33 @@ try {
                                             <p class="mb-0">Belum ada notifikasi baru</p>
                                         </li>
                                     <?php else: ?>
-                                        <?php foreach ($notifications as $notif): ?>
-                                            <li>
-                                                <a class="dropdown-item notification-item" 
-                                                   href="<?= ADMIN_URL ?>modules/contact/messages_view.php?id=<?= $notif['id'] ?>">
-                                                    <div class="notification-content">
-                                                        <p class="notification-title">
-                                                            <i class="bi bi-envelope me-1"></i>
-                                                            Pesan dari <?= htmlspecialchars($notif['name']) ?>
-                                                        </p>
-                                                        <p class="notification-text">
-                                                            <?= htmlspecialchars(truncateText($notif['subject'], 40)) ?>
-                                                        </p>
-                                                        <p class="notification-time">
-                                                            <i class="bi bi-clock me-1"></i>
-                                                            <?= formatTanggalRelatif($notif['created_at']) ?>
-                                                        </p>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                        <?php endforeach; ?>
+                                        <div class="notification-list">
+                                            <?php foreach ($notifications as $notif): ?>
+                                                <li>
+                                                    <a class="notification-item" 
+                                                       href="<?= ADMIN_URL ?>modules/contact/messages_view.php?id=<?= $notif['id'] ?>">
+                                                        <div class="notification-content">
+                                                            <p class="notification-title">
+                                                                <i class="bi bi-envelope"></i>
+                                                                <span>Pesan dari <?= htmlspecialchars($notif['name']) ?></span>
+                                                            </p>
+                                                            <p class="notification-text">
+                                                                <?= htmlspecialchars(truncateText($notif['subject'], 40)) ?>
+                                                            </p>
+                                                            <p class="notification-time">
+                                                                <i class="bi bi-clock"></i>
+                                                                <span><?= formatTanggalRelatif($notif['created_at']) ?></span>
+                                                            </p>
+                                                        </div>
+                                                    </a>
+                                                </li>
+                                            <?php endforeach; ?>
+                                        </div>
 
                                         <li class="notification-footer">
                                             <a href="<?= ADMIN_URL ?>modules/contact/messages_list.php?status=unread" class="text-primary">
                                                 Lihat Semua Notifikasi
-                                                <i class="bi bi-arrow-right ms-1"></i>
+                                                <i class="bi bi-arrow-right"></i>
                                             </a>
                                         </li>
                                     <?php endif; ?>
@@ -561,7 +666,6 @@ try {
                                             <i class="icon-mid bi bi-gear me-2"></i> Pengaturan
                                         </a>
                                     </li>
-                                    <!-- <li><hr class="dropdown-divider"></li> -->
                                     <li>
                                         <a class="dropdown-item theme-toggle-item" href="#" id="theme-toggle-item">
                                             <i id="theme-icon-light" class="icon-mid bi bi-sun-fill me-2 d-none"></i>
@@ -569,7 +673,6 @@ try {
                                             <span id="theme-text">Dark Mode</span>
                                         </a>
                                     </li>
-                                    <!-- <li><hr class="dropdown-divider"></li> -->
                                     <li>
                                         <a class="dropdown-item" 
                                            href="<?= ADMIN_URL ?>logout.php"

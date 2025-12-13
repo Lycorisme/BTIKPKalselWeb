@@ -316,8 +316,13 @@ $bgColor = getSetting('public_theme_background_color', '#ffffff');
                             <i class="fas fa-envelope mr-1"></i> Kontak
                         </a>
 
+                        <a href="<?= ADMIN_URL ?>login.php" class="nav-link hover:text-blue-200 transition font-medium text-white/90"
+                           data-aos="fade-down" data-aos-delay="800" data-aos-once="true" title="Login Admin">
+                            <i class="fas fa-lock mr-1"></i>
+                        </a>
+
                         <button onclick="window.BTIKPKalsel.openSearchModal()" class="hover:text-blue-200 transition transform hover:scale-110 bg-white/10 p-2 rounded-full w-10 h-10 flex items-center justify-center"
-                                data-aos="zoom-in" data-aos-delay="800" data-aos-once="true">
+                                data-aos="zoom-in" data-aos-delay="900" data-aos-once="true">
                             <i class="fas fa-search"></i>
                         </button>
                     </div>
@@ -394,6 +399,10 @@ $bgColor = getSetting('public_theme_background_color', '#ffffff');
             
             <a href="<?= BASE_URL ?>contact.php" class="block py-3 border-b border-white/10 hover:bg-white/10 px-2 rounded transition">
                 <i class="fas fa-envelope mr-3 w-5 text-center"></i> Kontak
+            </a>
+
+            <a href="<?= ADMIN_URL ?>login.php" class="block py-3 border-b border-white/10 hover:bg-white/10 px-2 rounded transition text-yellow-300 font-semibold">
+                <i class="fas fa-lock mr-3 w-5 text-center"></i> Login Admin
             </a>
             
             <div class="pt-6 pb-2 text-center">

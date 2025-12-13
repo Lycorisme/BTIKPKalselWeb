@@ -35,6 +35,8 @@ elseif (strpos($currentPath, '/reports/') !== false) {
     elseif (strpos($currentPath, 'report_engagement') !== false) $currentReportType = 'report_engagement';
     elseif (strpos($currentPath, 'report_downloads') !== false) $currentReportType = 'report_downloads';
     elseif (strpos($currentPath, 'report_contacts') !== false) $currentReportType = 'report_contacts';
+    // UPDATE: Deteksi Report Overview
+    elseif (strpos($currentPath, 'report_overview') !== false) $currentReportType = 'report_overview';
     elseif (strpos($currentPath, 'report_executive') !== false) $currentReportType = 'report_executive';
     elseif (strpos($currentPath, 'report_security') !== false) $currentReportType = 'report_security';
 }
@@ -290,16 +292,16 @@ body.sidebar-desktop #sidebar .sidebar-wrapper {
 
                 <li class="sidebar-title">Laporan & Analisis</li>
 
-                <li class="sidebar-item has-sub <?= in_array($currentReportType, ['report_executive', 'report_posts', 'report_engagement']) ? 'active' : '' ?>">
+                <li class="sidebar-item has-sub <?= in_array($currentReportType, ['report_overview', 'report_posts', 'report_engagement']) ? 'active' : '' ?>">
                     <a href="#" class="sidebar-link">
                         <i class="bi bi-bar-chart-fill"></i>
                         <span>Laporan Utama</span>
                     </a>
-                    <ul class="submenu <?= in_array($currentReportType, ['report_executive', 'report_posts', 'report_engagement']) ? 'active' : '' ?>">
-                        <li class="submenu-item <?= $currentReportType === 'report_executive' ? 'active' : '' ?>">
-                            <a href="<?= ADMIN_URL ?>modules/reports/report_executive.php" class="submenu-link">
-                                <i class="bi bi-speedometer2"></i>
-                                <span>Laporan harian</span>
+                    <ul class="submenu <?= in_array($currentReportType, ['report_overview', 'report_posts', 'report_engagement']) ? 'active' : '' ?>">
+                        <li class="submenu-item <?= $currentReportType === 'report_overview' ? 'active' : '' ?>">
+                            <a href="<?= ADMIN_URL ?>modules/reports/report_overview.php" class="submenu-link">
+                                <i class="bi bi-grid-1x2-fill"></i>
+                                <span>Overview</span>
                             </a>
                         </li>
                         <li class="submenu-item <?= $currentReportType === 'report_posts' ? 'active' : '' ?>">

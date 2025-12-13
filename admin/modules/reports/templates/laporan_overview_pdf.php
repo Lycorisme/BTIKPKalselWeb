@@ -1,12 +1,19 @@
 <?php
 /**
- * PDF Template: System Overview Report
- * Clean black & white design - Portrait
+ * PDF Template: Laporan Overview
+ * Sesuai standar laporan executive (A4 Portrait cukup untuk overview)
  */
 
-// Convert logo to base64
+// 1. Pastikan semua variabel data tersedia (Fallback ke getSetting jika belum didefinisikan di controller)
+$siteName       = $siteName ?? getSetting('site_name', 'BTIKP Kalimantan Selatan');
+$contactAddress = $contactAddress ?? getSetting('contact_address', '');
+$contactPhone   = $contactPhone ?? getSetting('contact_phone', '');
+$contactEmail   = $contactEmail ?? getSetting('contact_email', '');
+$siteLogo       = $siteLogo ?? getSetting('site_logo', '');
+
+// 2. Convert logo to base64 agar tampil di PDF
 $logoBase64 = '';
-if ($siteLogo && uploadExists($siteLogo)) {
+if ($siteLogo && function_exists('uploadExists') && uploadExists($siteLogo)) {
     $logoPath = uploadPath($siteLogo);
     if (file_exists($logoPath)) {
         $logoData = file_get_contents($logoPath);
@@ -28,375 +35,198 @@ if ($siteLogo && uploadExists($siteLogo)) {
             padding: 0;
         }
         
+        /* Header dengan Logo di Atas */
         .header {
             width: 100%;
-            border-bottom: 2px solid #000;
-            padding-bottom: 10px;
+            text-align: center;
+            border-bottom: 3px solid #000;
+            padding-bottom: 15px;
             margin-bottom: 20px;
         }
         
-        .header-table {
-            width: 100%;
-        }
-        
         .header-logo {
-            width: 80px;
-            vertical-align: middle;
+            margin-bottom: 10px;
         }
         
-        .header-info {
-            text-align: center;
-            vertical-align: middle;
+        .header-logo img {
+            height: 45px;
+            max-width: 110px;
         }
         
         .header-title {
-            font-size: 14pt;
+            font-size: 16pt;
             font-weight: bold;
             text-transform: uppercase;
-            margin-bottom: 3px;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
         }
         
         .header-contact {
             font-size: 9pt;
-            line-height: 1.4;
+            line-height: 1.5;
+            color: #333;
         }
         
+        /* Title */
         h1 {
             text-align: center;
-            font-size: 14pt;
+            font-size: 18pt;
             font-weight: bold;
             text-transform: uppercase;
             margin: 20px 0 5px 0;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
         }
         
+        .subtitle {
+            text-align: center;
+            font-size: 10pt;
+            color: #666;
+            margin-bottom: 25px;
+        }
+        
+        /* Main Table */
         h2 {
-            font-size: 11pt;
+            font-size: 12pt;
             font-weight: bold;
             margin-top: 20px;
             margin-bottom: 10px;
-            border-bottom: 1px solid #000;
-            padding-bottom: 3px;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 5px;
+            text-transform: uppercase;
         }
         
         table.data-table {
+            width: 100%;
+            border-collapse: collapse;
             border: 1px solid #000;
+            margin-top: 10px;
         }
         
         table.data-table th {
-            background-color: #f0f0f0;
-            padding: 8px 5px;
-            text-align: left;
+            background-color: #e0e0e0;
+            padding: 10px 5px;
+            text-align: center;
             border: 1px solid #000;
             font-weight: bold;
             font-size: 9pt;
+            text-transform: uppercase;
         }
         
         table.data-table td {
-            padding: 6px 5px;
+            padding: 8px 5px;
             border: 1px solid #000;
             font-size: 9pt;
+            vertical-align: middle;
         }
         
-        .stats-table {
-            width: 100%;
-            margin: 15px 0;
-        }
-        
-        .stats-table td {
-            padding: 10px;
-            text-align: center;
-            border: 1px solid #000;
+        /* Zebra Striping */
+        .bg-gray {
             background-color: #f9f9f9;
         }
         
-        .stats-label {
+        /* Utilities */
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .text-left { text-align: left; }
+        .fw-bold { font-weight: bold; }
+        
+        .badge {
+            padding: 2px 6px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
             font-size: 8pt;
-            font-weight: bold;
-            margin-bottom: 5px;
+            background-color: #eee;
         }
-        
-        .stats-value {
-            font-size: 16pt;
-            font-weight: bold;
-        }
-        
-        .section-box {
-            border: 1px solid #000;
-            padding: 10px;
-            margin: 10px 0;
-            background-color: #fafafa;
-        }
-        
-        .section-title {
-            font-size: 10pt;
-            font-weight: bold;
-            margin-bottom: 8px;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 3px;
-        }
-        
-        .text-center {
-            text-align: center;
-        }
-        
-        .text-right {
-            text-align: right;
-        }
-        
-        .mt-20 {
-            margin-top: 20px;
-        }
+
     </style>
 </head>
 <body>
-    <!-- Header -->
     <div class="header">
-        <table class="header-table">
+        <?php if ($logoBase64): ?>
+            <div class="header-logo">
+                <img 
+                    src="<?= $logoBase64 ?>" 
+                    alt="Logo"
+                    style="height:60px; max-width:110px;"
+                >
+            </div>
+        <?php endif; ?>
+        
+        <div class="header-title"><?= strtoupper($siteName) ?></div>
+        <div class="header-contact">
+            <?php if ($contactAddress): ?>
+                <?= htmlspecialchars($contactAddress) ?><br>
+            <?php endif; ?>
+            
+            <?php 
+            // Logic tampilan telepon dan email agar rapi
+            $contactInfo = [];
+            if ($contactPhone) {
+                $contactInfo[] = 'Telp: ' . htmlspecialchars($contactPhone);
+            }
+            if ($contactEmail) {
+                $contactInfo[] = 'Email: ' . htmlspecialchars($contactEmail);
+            }
+            
+            if (!empty($contactInfo)) {
+                echo implode(' | ', $contactInfo);
+            }
+            ?>
+        </div>
+    </div>
+    
+    <h1>Laporan Overview Sistem</h1>
+    <div class="subtitle">
+        Tanggal Cetak: <?= date('d F Y, H:i') ?> WIB
+    </div>
+    
+    <h2>Ringkasan Status Modul</h2>
+    <table class="data-table">
+        <thead>
             <tr>
-                <td class="header-logo">
-                    <?php if ($logoBase64): ?>
-                        <img src="<?= $logoBase64 ?>" style="height: 60px;">
+                <th style="width: 25%;">Modul Sistem</th>
+                <th style="width: 15%;">Total Data</th>
+                <th style="width: 15%;">Status Aktif</th>
+                <th style="width: 20%;">Status Pending</th>
+                <th style="width: 25%;">Metrik Lain</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($overviewData as $index => $row): ?>
+            <tr class="<?= $index % 2 != 0 ? 'bg-gray' : '' ?>">
+                <td class="text-left">
+                    <strong><?= htmlspecialchars($row['module']) ?></strong>
+                </td>
+                <td class="text-center">
+                    <strong><?= $row['total'] ?></strong>
+                </td>
+                <td class="text-center">
+                    <?php if ($row['active'] !== '-'): ?>
+                        <?= $row['active'] ?>
+                    <?php else: ?>
+                        -
                     <?php endif; ?>
                 </td>
-                <td class="header-info">
-                    <div class="header-title"><?= strtoupper($siteName) ?></div>
-                    <div class="header-contact">
-                        <?php if ($contactAddress): ?>
-                            <?= htmlspecialchars($contactAddress) ?><br>
-                        <?php endif; ?>
-                        <?php if ($contactPhone): ?>
-                            Telp: <?= htmlspecialchars($contactPhone) ?>
-                        <?php endif; ?>
-                        <?php if ($contactPhone && $contactEmail): ?>
-                            |
-                        <?php endif; ?>
-                        <?php if ($contactEmail): ?>
-                            Email: <?= htmlspecialchars($contactEmail) ?>
-                        <?php endif; ?>
-                    </div>
+                <td class="text-center">
+                    <?php if ($row['pending'] !== '-' && $row['pending'] != 0): ?>
+                        <?= $row['pending'] ?>
+                    <?php elseif ($row['pending'] === 0): ?>
+                        0
+                    <?php else: ?>
+                        -
+                    <?php endif; ?>
                 </td>
-                <td style="width: 80px;"></td>
-            </tr>
-        </table>
-    </div>
-    
-    <!-- Title -->
-    <h1>LAPORAN SYSTEM OVERVIEW</h1>
-    <div style="text-align: center; font-size: 9pt; color: #666; margin-bottom: 20px;">
-        Tanggal: <?= formatTanggal(date('Y-m-d'), 'd F Y') ?>
-    </div>
-    
-    <!-- POSTS STATISTICS -->
-    <h2>STATISTIK POSTS</h2>
-    <table class="stats-table">
-        <tr>
-            <td>
-                <div class="stats-label">TOTAL POSTS</div>
-                <div class="stats-value"><?= formatNumber($postsStats['total']) ?></div>
-            </td>
-            <td>
-                <div class="stats-label">PUBLISHED</div>
-                <div class="stats-value"><?= formatNumber($postsStats['published']) ?></div>
-            </td>
-            <td>
-                <div class="stats-label">DRAFT</div>
-                <div class="stats-value"><?= formatNumber($postsStats['draft']) ?></div>
-            </td>
-            <td>
-                <div class="stats-label">ARCHIVED</div>
-                <div class="stats-value"><?= formatNumber($postsStats['archived']) ?></div>
-            </td>
-            <td>
-                <div class="stats-label">FEATURED</div>
-                <div class="stats-value"><?= formatNumber($postsStats['featured']) ?></div>
-            </td>
-            <td>
-                <div class="stats-label">TOTAL VIEWS</div>
-                <div class="stats-value"><?= formatNumber($postsStats['total_views']) ?></div>
-            </td>
-        </tr>
-    </table>
-    
-    <!-- SERVICES & USERS SIDE BY SIDE -->
-    <table style="width: 100%; margin-top: 20px;">
-        <tr>
-            <td style="width: 50%; vertical-align: top; padding-right: 10px;">
-                <div class="section-box">
-                    <div class="section-title">STATISTIK LAYANAN</div>
-                    <table style="border: none; margin: 0;">
-                        <tr>
-                            <td style="border: none; width: 25%; text-align: center; padding: 5px;">
-                                <div style="font-size: 8pt; color: #666;">Total</div>
-                                <div style="font-size: 14pt; font-weight: bold;"><?= formatNumber($servicesStats['total']) ?></div>
-                            </td>
-                            <td style="border: none; width: 25%; text-align: center; padding: 5px;">
-                                <div style="font-size: 8pt; color: #666;">Published</div>
-                                <div style="font-size: 14pt; font-weight: bold;"><?= formatNumber($servicesStats['published']) ?></div>
-                            </td>
-                            <td style="border: none; width: 25%; text-align: center; padding: 5px;">
-                                <div style="font-size: 8pt; color: #666;">Draft</div>
-                                <div style="font-size: 14pt; font-weight: bold;"><?= formatNumber($servicesStats['draft']) ?></div>
-                            </td>
-                            <td style="border: none; width: 25%; text-align: center; padding: 5px;">
-                                <div style="font-size: 8pt; color: #666;">Archived</div>
-                                <div style="font-size: 14pt; font-weight: bold;"><?= formatNumber($servicesStats['archived']) ?></div>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </td>
-            
-            <td style="width: 50%; vertical-align: top; padding-left: 10px;">
-                <div class="section-box">
-                    <div class="section-title">STATISTIK USERS</div>
-                    <table style="border: none; margin: 0;">
-                        <tr>
-                            <td style="border: none; width: 20%; text-align: center; padding: 5px;">
-                                <div style="font-size: 8pt; color: #666;">Total</div>
-                                <div style="font-size: 14pt; font-weight: bold;"><?= formatNumber($usersStats['total']) ?></div>
-                            </td>
-                            <td style="border: none; width: 20%; text-align: center; padding: 5px;">
-                                <div style="font-size: 8pt; color: #666;">S.Admin</div>
-                                <div style="font-size: 14pt; font-weight: bold;"><?= formatNumber($usersStats['super_admin']) ?></div>
-                            </td>
-                            <td style="border: none; width: 20%; text-align: center; padding: 5px;">
-                                <div style="font-size: 8pt; color: #666;">Admin</div>
-                                <div style="font-size: 14pt; font-weight: bold;"><?= formatNumber($usersStats['admin']) ?></div>
-                            </td>
-                            <td style="border: none; width: 20%; text-align: center; padding: 5px;">
-                                <div style="font-size: 8pt; color: #666;">Editor</div>
-                                <div style="font-size: 14pt; font-weight: bold;"><?= formatNumber($usersStats['editor']) ?></div>
-                            </td>
-                            <td style="border: none; width: 20%; text-align: center; padding: 5px;">
-                                <div style="font-size: 8pt; color: #666;">Author</div>
-                                <div style="font-size: 14pt; font-weight: bold;"><?= formatNumber($usersStats['author']) ?></div>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </td>
-        </tr>
-    </table>
-    
-    <!-- CATEGORIES & TAGS -->
-    <table style="width: 100%; margin-top: 15px;">
-        <tr>
-            <td style="width: 35%; vertical-align: top; padding-right: 10px;">
-                <div class="section-box">
-                    <div class="section-title">KATEGORI & TAGS</div>
-                    <table style="border: none; margin: 0;">
-                        <tr>
-                            <td style="border: none; width: 50%; text-align: center; padding: 8px;">
-                                <div style="font-size: 8pt; color: #666;">Total Kategori</div>
-                                <div style="font-size: 16pt; font-weight: bold;"><?= formatNumber($totalCategories) ?></div>
-                            </td>
-                            <td style="border: none; width: 50%; text-align: center; padding: 8px;">
-                                <div style="font-size: 8pt; color: #666;">Total Tags</div>
-                                <div style="font-size: 16pt; font-weight: bold;"><?= formatNumber($totalTags) ?></div>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </td>
-            
-            <td style="width: 65%; vertical-align: top; padding-left: 10px;">
-                <div class="section-box">
-                    <div class="section-title">STATISTIK AKTIVITAS</div>
-                    <table style="border: none; margin: 0;">
-                        <tr>
-                            <td style="border: none; width: 20%; text-align: center; padding: 5px;">
-                                <div style="font-size: 8pt; color: #666;">Total</div>
-                                <div style="font-size: 14pt; font-weight: bold;"><?= formatNumber($activitiesStats['total']) ?></div>
-                            </td>
-                            <td style="border: none; width: 20%; text-align: center; padding: 5px;">
-                                <div style="font-size: 8pt; color: #666;">Create</div>
-                                <div style="font-size: 14pt; font-weight: bold;"><?= formatNumber($activitiesStats['creates']) ?></div>
-                            </td>
-                            <td style="border: none; width: 20%; text-align: center; padding: 5px;">
-                                <div style="font-size: 8pt; color: #666;">Update</div>
-                                <div style="font-size: 14pt; font-weight: bold;"><?= formatNumber($activitiesStats['updates']) ?></div>
-                            </td>
-                            <td style="border: none; width: 20%; text-align: center; padding: 5px;">
-                                <div style="font-size: 8pt; color: #666;">Delete</div>
-                                <div style="font-size: 14pt; font-weight: bold;"><?= formatNumber($activitiesStats['deletes']) ?></div>
-                            </td>
-                            <td style="border: none; width: 20%; text-align: center; padding: 5px;">
-                                <div style="font-size: 8pt; color: #666;">Login</div>
-                                <div style="font-size: 14pt; font-weight: bold;"><?= formatNumber($activitiesStats['logins']) ?></div>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </td>
-        </tr>
-    </table>
-    
-    <!-- RECENT POSTS & TOP CATEGORIES -->
-    <div class="mt-20">
-        <table style="width: 100%;">
-            <tr>
-                <td style="width: 50%; vertical-align: top; padding-right: 10px;">
-                    <h2>5 POSTS TERBARU</h2>
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Judul Post</th>
-                                <th style="width: 30%;">Penulis</th>
-                                <th style="width: 20%;">Tanggal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (empty($recentPosts)): ?>
-                                <tr>
-                                    <td colspan="3" class="text-center">Tidak ada posts</td>
-                                </tr>
-                            <?php else: ?>
-                                <?php foreach ($recentPosts as $post): ?>
-                                    <tr>
-                                        <td><?= htmlspecialchars(truncateText($post['title'], 35)) ?></td>
-                                        <td><?= htmlspecialchars($post['author_name']) ?></td>
-                                        <td class="text-center"><?= formatTanggal($post['created_at'], 'd/m/Y') ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </td>
-                
-                <td style="width: 50%; vertical-align: top; padding-left: 10px;">
-                    <h2>TOP 5 KATEGORI</h2>
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Nama Kategori</th>
-                                <th style="width: 30%;" class="text-center">Jumlah Posts</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (empty($topCategories)): ?>
-                                <tr>
-                                    <td colspan="2" class="text-center">Tidak ada kategori</td>
-                                </tr>
-                            <?php else: ?>
-                                <?php foreach ($topCategories as $cat): ?>
-                                    <tr>
-                                        <td><?= htmlspecialchars($cat['name']) ?></td>
-                                        <td class="text-center"><strong><?= formatNumber($cat['post_count']) ?></strong></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
+                <td class="text-right">
+                    <?php if ($row['metric_value'] !== '-'): ?>
+                        <span style="color: #555; font-size: 8pt;"><?= $row['metric_label'] ?>:</span> 
+                        <strong><?= $row['metric_value'] ?></strong>
+                    <?php else: ?>
+                        -
+                    <?php endif; ?>
                 </td>
             </tr>
-        </table>
-    </div>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
 </body>
 </html>

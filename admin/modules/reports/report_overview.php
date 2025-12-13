@@ -1,12 +1,14 @@
 <?php
 /**
- * Overview Report - Summary of All Modules
- * FIXED VERSION - Using post_categories instead of categories
+ * Report: Laporan Overview (Ringkasan Sistem)
+ * Menampilkan status kesehatan seluruh modul dalam satu tampilan.
+ * Desain: Mazer Dashboard (Konsisten dengan report_posts.php)
+ * * FIX: Menghapus 'view_count' dari query tabel 'pages' untuk mencegah error SQL.
  */
-
 require_once '../../includes/auth_check.php';
 require_once '../../../core/Database.php';
 require_once '../../../core/Helper.php';
+require_once '../../../vendor/autoload.php';
 
 if (!hasRole(['super_admin', 'admin'])) {
     setAlert('danger', 'Anda tidak memiliki akses ke halaman ini');
@@ -15,260 +17,215 @@ if (!hasRole(['super_admin', 'admin'])) {
 
 $pageTitle = 'Laporan Overview';
 $db = Database::getInstance()->getConnection();
-
-// Get export flag
 $exportPdf = $_GET['export_pdf'] ?? '';
 
-// =====================
-// POSTS STATISTICS
-// =====================
-$postsStats = [
-    'total' => 0,
-    'published' => 0,
-    'draft' => 0,
-    'archived' => 0,
-    'featured' => 0,
-    'total_views' => 0
-];
+// ==============================================================================================
+// 1. DATA GATHERING (Mengumpulkan Data Statistik)
+// ==============================================================================================
 
+// --- Posts (Berita) ---
+// Tabel posts biasanya memiliki kolom view_count
 $postsStmt = $db->query("
     SELECT 
         COUNT(*) as total,
-        SUM(CASE WHEN status = 'published' THEN 1 ELSE 0 END) as published,
-        SUM(CASE WHEN status = 'draft' THEN 1 ELSE 0 END) as draft,
-        SUM(CASE WHEN status = 'archived' THEN 1 ELSE 0 END) as archived,
-        SUM(CASE WHEN is_featured = 1 THEN 1 ELSE 0 END) as featured,
-        COALESCE(SUM(view_count), 0) as total_views
-    FROM posts 
-    WHERE deleted_at IS NULL
+        SUM(CASE WHEN status = 'published' THEN 1 ELSE 0 END) as active,
+        SUM(CASE WHEN status = 'draft' THEN 1 ELSE 0 END) as pending,
+        COALESCE(SUM(view_count), 0) as metric_val
+    FROM posts WHERE deleted_at IS NULL
 ");
 $postsData = $postsStmt->fetch();
 
-if ($postsData) {
-    $postsStats = [
-        'total' => (int)$postsData['total'],
-        'published' => (int)$postsData['published'],
-        'draft' => (int)$postsData['draft'],
-        'archived' => (int)$postsData['archived'],
-        'featured' => (int)$postsData['featured'],
-        'total_views' => (int)$postsData['total_views']
-    ];
-}
+// --- Pages (Halaman Statis) ---
+// FIX: view_count dihapus/diset 0 karena kolom tidak ada di tabel pages
+$pagesStmt = $db->query("
+    SELECT 
+        COUNT(*) as total,
+        SUM(CASE WHEN status = 'published' THEN 1 ELSE 0 END) as active,
+        SUM(CASE WHEN status = 'draft' THEN 1 ELSE 0 END) as pending,
+        0 as metric_val 
+    FROM pages WHERE deleted_at IS NULL
+");
+$pagesData = $pagesStmt->fetch();
 
-// =====================
-// SERVICES STATISTICS
-// =====================
-$servicesStmt = $db->query("SELECT COUNT(*) as total FROM services WHERE deleted_at IS NULL");
+// --- Services (Layanan) ---
+$servicesStmt = $db->query("
+    SELECT 
+        COUNT(*) as total,
+        SUM(CASE WHEN status = 'published' THEN 1 ELSE 0 END) as active,
+        0 as pending,
+        0 as metric_val
+    FROM services WHERE deleted_at IS NULL
+");
 $servicesData = $servicesStmt->fetch();
-$totalServices = (int)$servicesData['total'];
 
-// =====================
-// GALLERY STATISTICS
-// =====================
-$albumsStmt = $db->query("SELECT COUNT(*) as total FROM gallery_albums WHERE deleted_at IS NULL");
-$albumsData = $albumsStmt->fetch();
-$totalAlbums = (int)$albumsData['total'];
+// --- Gallery ---
+$albumStmt = $db->query("SELECT COUNT(*) as total FROM gallery_albums WHERE deleted_at IS NULL");
+$albumTotal = $albumStmt->fetchColumn();
+$photoStmt = $db->query("SELECT COUNT(*) as total FROM gallery_photos WHERE deleted_at IS NULL");
+$photoTotal = $photoStmt->fetchColumn();
 
-$photosStmt = $db->query("SELECT COUNT(*) as total FROM gallery_photos WHERE deleted_at IS NULL");
-$photosData = $photosStmt->fetch();
-$totalPhotos = (int)$photosData['total'];
-
-// =====================
-// FILES STATISTICS
-// =====================
+// --- Files ---
 $filesStmt = $db->query("
     SELECT 
         COUNT(*) as total,
-        COALESCE(SUM(download_count), 0) as total_downloads
-    FROM downloadable_files 
-    WHERE deleted_at IS NULL
+        COALESCE(SUM(download_count), 0) as metric_val
+    FROM downloadable_files WHERE deleted_at IS NULL
 ");
 $filesData = $filesStmt->fetch();
-$totalFiles = (int)$filesData['total'];
-$totalDownloads = (int)$filesData['total_downloads'];
 
-// =====================
-// BANNERS STATISTICS
-// =====================
-$bannersStmt = $db->query("
+// --- Users ---
+$usersStmt = $db->query("
     SELECT 
         COUNT(*) as total,
-        SUM(CASE WHEN is_active = 1 THEN 1 ELSE 0 END) as active
-    FROM banners
+        SUM(CASE WHEN is_active = 1 THEN 1 ELSE 0 END) as active,
+        SUM(CASE WHEN is_active = 0 THEN 1 ELSE 0 END) as pending
+    FROM users WHERE deleted_at IS NULL
 ");
-$bannersData = $bannersStmt->fetch();
-$totalBanners = (int)$bannersData['total'];
-$activeBanners = (int)$bannersData['active'];
-
-// =====================
-// CATEGORIES & TAGS - FIXED: Changed 'categories' to 'post_categories'
-// =====================
-$categoriesStmt = $db->query("SELECT COUNT(*) as total FROM post_categories");
-$categoriesData = $categoriesStmt->fetch();
-$totalCategories = (int)$categoriesData['total'];
-
-$tagsStmt = $db->query("SELECT COUNT(*) as total FROM tags");
-$tagsData = $tagsStmt->fetch();
-$totalTags = (int)$tagsData['total'];
-
-// =====================
-// USERS STATISTICS
-// =====================
-$usersStmt = $db->query("SELECT COUNT(*) as total FROM users WHERE deleted_at IS NULL");
 $usersData = $usersStmt->fetch();
-$totalUsers = (int)$usersData['total'];
 
-// =====================
-// CONTACT MESSAGES
-// =====================
-$messagesStmt = $db->query("
+// --- Messages ---
+$msgStmt = $db->query("
     SELECT 
         COUNT(*) as total,
-        SUM(CASE WHEN status = 'unread' THEN 1 ELSE 0 END) as unread
+        SUM(CASE WHEN status = 'unread' THEN 1 ELSE 0 END) as pending
     FROM contact_messages
 ");
-$messagesData = $messagesStmt->fetch();
-$totalMessages = (int)$messagesData['total'];
-$unreadMessages = (int)$messagesData['unread'];
+$msgData = $msgStmt->fetch();
 
-// =====================
-// TOP CATEGORIES - FIXED: Changed 'categories' to 'post_categories'
-// =====================
-$topCategoriesStmt = $db->query("
-    SELECT c.name, COUNT(p.id) as post_count
-    FROM post_categories c
-    LEFT JOIN posts p ON c.id = p.category_id AND p.deleted_at IS NULL
-    GROUP BY c.id, c.name
-    ORDER BY post_count DESC
-    LIMIT 5
-");
-$topCategories = $topCategoriesStmt->fetchAll();
+// --- Categories & Tags ---
+$catCount = $db->query("SELECT COUNT(*) FROM post_categories WHERE deleted_at IS NULL")->fetchColumn();
+$tagCount = $db->query("SELECT COUNT(*) FROM tags")->fetchColumn();
 
-// =====================
-// RECENT POSTS
-// =====================
-$recentPostsStmt = $db->query("
-    SELECT p.title, p.status, p.view_count, p.created_at, u.name as author_name
-    FROM posts p
-    LEFT JOIN users u ON p.author_id = u.id
-    WHERE p.deleted_at IS NULL
-    ORDER BY p.created_at DESC
-    LIMIT 5
-");
-$recentPosts = $recentPostsStmt->fetchAll();
+// ==============================================================================================
+// 2. SUMMARY CARDS CALCULATION
+// ==============================================================================================
+$summaryStats = [
+    'total_content' => (int)$postsData['total'] + (int)$pagesData['total'] + (int)$servicesData['total'],
+    'total_views'   => (int)$postsData['metric_val'], // Hanya view dari post
+    'total_media'   => (int)$albumTotal + (int)$photoTotal + (int)$filesData['total'],
+    'active_users'  => (int)$usersData['active']
+];
 
-// =====================
-// MOST VIEWED POSTS
-// =====================
-$popularPostsStmt = $db->query("
-    SELECT title, view_count, created_at
-    FROM posts
-    WHERE deleted_at IS NULL AND status = 'published'
-    ORDER BY view_count DESC
-    LIMIT 5
-");
-$popularPosts = $popularPostsStmt->fetchAll();
+// ==============================================================================================
+// 3. CONSTRUCT MAIN TABLE DATA
+// ==============================================================================================
+$overviewData = [
+    [
+        'module' => 'Berita & Artikel',
+        'icon' => 'bi bi-newspaper',
+        'total' => (int)$postsData['total'],
+        'active' => (int)$postsData['active'],
+        'pending' => (int)$postsData['pending'],
+        'metric_label' => 'Views',
+        'metric_value' => number_format((int)$postsData['metric_val'])
+    ],
+    [
+        'module' => 'Halaman Statis',
+        'icon' => 'bi bi-file-earmark-text',
+        'total' => (int)$pagesData['total'],
+        'active' => (int)$pagesData['active'],
+        'pending' => (int)$pagesData['pending'],
+        'metric_label' => '-', // Tidak ada metric views untuk pages
+        'metric_value' => '-'
+    ],
+    [
+        'module' => 'Layanan',
+        'icon' => 'bi bi-gear-fill',
+        'total' => (int)$servicesData['total'],
+        'active' => (int)$servicesData['active'],
+        'pending' => '-',
+        'metric_label' => '-',
+        'metric_value' => '-'
+    ],
+    [
+        'module' => 'Galeri Foto',
+        'icon' => 'bi bi-images',
+        'total' => $albumTotal . ' Album',
+        'active' => $photoTotal . ' Foto',
+        'pending' => '-',
+        'metric_label' => '-',
+        'metric_value' => '-'
+    ],
+    [
+        'module' => 'File Download',
+        'icon' => 'bi bi-cloud-download-fill',
+        'total' => (int)$filesData['total'],
+        'active' => '-',
+        'pending' => '-',
+        'metric_label' => 'Unduhan',
+        'metric_value' => number_format((int)$filesData['metric_val'])
+    ],
+    [
+        'module' => 'Pengguna',
+        'icon' => 'bi bi-people-fill',
+        'total' => (int)$usersData['total'],
+        'active' => (int)$usersData['active'],
+        'pending' => (int)$usersData['pending'],
+        'metric_label' => '-',
+        'metric_value' => '-'
+    ],
+    [
+        'module' => 'Pesan Kontak',
+        'icon' => 'bi bi-envelope-fill',
+        'total' => (int)$msgData['total'],
+        'active' => '-',
+        'pending' => (int)$msgData['pending'] . ' Baru',
+        'metric_label' => '-',
+        'metric_value' => '-'
+    ],
+    [
+        'module' => 'Kategori & Tags',
+        'icon' => 'bi bi-tags-fill',
+        'total' => $catCount . ' Kategori',
+        'active' => $tagCount . ' Tag',
+        'pending' => '-',
+        'metric_label' => '-',
+        'metric_value' => '-'
+    ],
+];
 
-// =====================
-// RECENT ACTIVITIES
-// =====================
-$activitiesStmt = $db->query("
-    SELECT a.*, u.name as user_name
-    FROM activity_logs a
-    LEFT JOIN users u ON a.user_id = u.id
-    ORDER BY a.created_at DESC
-    LIMIT 10
-");
-$recentActivities = $activitiesStmt->fetchAll();
+// ==============================================================================================
+// 4. EXPORT PDF LOGIC
+// ==============================================================================================
+if ($exportPdf === '1') {
+    $siteName = getSetting('site_name', 'BTIKP Kalimantan Selatan');
+    
+    // Initialize mPDF
+    $mpdf = new \Mpdf\Mpdf([
+        'mode' => 'utf-8',
+        'format' => 'A4',
+        'orientation' => 'P',
+        'margin_left' => 15,
+        'margin_right' => 15,
+        'margin_top' => 10,
+        'margin_bottom' => 15,
+    ]);
+    
+    $mpdf->SetDefaultFont('cambria');
+    $mpdf->SetTitle('Laporan Overview Sistem');
+    $mpdf->SetAuthor($siteName);
 
-// Export PDF
-if ($exportPdf) {
-    require_once '../../../vendor/tecnickcom/tcpdf/tcpdf.php';
-    
-    $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8');
-    $pdf->SetCreator('BTIKP Kalsel');
-    $pdf->SetAuthor('Admin BTIKP');
-    $pdf->SetTitle('Laporan Overview');
-    
-    $pdf->setPrintHeader(false);
-    $pdf->setPrintFooter(false);
-    $pdf->AddPage();
-    
-    $pdf->SetFont('helvetica', 'B', 18);
-    $pdf->Cell(0, 10, 'LAPORAN OVERVIEW', 0, 1, 'C');
-    $pdf->SetFont('helvetica', '', 10);
-    $pdf->Cell(0, 5, 'Portal BTIKP Kalimantan Selatan', 0, 1, 'C');
-    $pdf->Cell(0, 5, 'Tanggal: ' . date('d/m/Y H:i'), 0, 1, 'C');
-    $pdf->Ln(8);
-    
-    // Summary Statistics
-    $pdf->SetFont('helvetica', 'B', 14);
-    $pdf->Cell(0, 7, 'Ringkasan Statistik', 0, 1);
-    $pdf->Ln(2);
-    
-    $pdf->SetFont('helvetica', '', 10);
-    $html = '<table border="1" cellpadding="5">
-        <tr style="background-color:#f0f0f0;">
-            <th width="50%"><b>Module</b></th>
-            <th width="50%" align="center"><b>Total</b></th>
-        </tr>
-        <tr>
-            <td>Total Posts</td>
-            <td align="center">' . number_format($postsStats['total']) . '</td>
-        </tr>
-        <tr>
-            <td>Published Posts</td>
-            <td align="center">' . number_format($postsStats['published']) . '</td>
-        </tr>
-        <tr>
-            <td>Total Views</td>
-            <td align="center">' . number_format($postsStats['total_views']) . '</td>
-        </tr>
-        <tr>
-            <td>Categories</td>
-            <td align="center">' . number_format($totalCategories) . '</td>
-        </tr>
-        <tr>
-            <td>Tags</td>
-            <td align="center">' . number_format($totalTags) . '</td>
-        </tr>
-        <tr>
-            <td>Services</td>
-            <td align="center">' . number_format($totalServices) . '</td>
-        </tr>
-        <tr>
-            <td>Gallery Albums</td>
-            <td align="center">' . number_format($totalAlbums) . '</td>
-        </tr>
-        <tr>
-            <td>Gallery Photos</td>
-            <td align="center">' . number_format($totalPhotos) . '</td>
-        </tr>
-        <tr>
-            <td>Files</td>
-            <td align="center">' . number_format($totalFiles) . '</td>
-        </tr>
-        <tr>
-            <td>Total Downloads</td>
-            <td align="center">' . number_format($totalDownloads) . '</td>
-        </tr>
-        <tr>
-            <td>Banners</td>
-            <td align="center">' . number_format($totalBanners) . '</td>
-        </tr>
-        <tr>
-            <td>Users</td>
-            <td align="center">' . number_format($totalUsers) . '</td>
-        </tr>
-        <tr>
-            <td>Contact Messages</td>
-            <td align="center">' . number_format($totalMessages) . '</td>
-        </tr>
-    </table>';
-    
-    $pdf->writeHTML($html, true, false, true, false, '');
-    
-    $pdf->Output('laporan_overview_' . date('YmdHis') . '.pdf', 'D');
+    // Footer
+    $footer = '
+        <table width="100%" style="border-top: 1px solid #000; padding-top: 5px; font-size: 9pt;">
+            <tr>
+                <td width="70%" style="text-align: left;">
+                    ' . htmlspecialchars($siteName) . ' - Laporan Overview
+                </td>
+                <td width="30%" style="text-align: right;">
+                    Halaman {PAGENO} dari {nbpg}
+                </td>
+            </tr>
+        </table>';
+    $mpdf->SetHTMLFooter($footer);
+
+    // Load Template
+    ob_start();
+    include dirname(__FILE__) . '/templates/laporan_overview_pdf.php';
+    $html = ob_get_clean();
+
+    $mpdf->WriteHTML($html);
+    $mpdf->Output('Laporan_Overview_' . date('Ymd_His') . '.pdf', 'I');
     exit;
 }
 
@@ -280,12 +237,14 @@ include '../../includes/header.php';
         <div class="row">
             <div class="col-12 col-md-6">
                 <h3><?= $pageTitle ?></h3>
+                <p class="text-subtitle text-muted">Ringkasan kesehatan dan status seluruh modul sistem.</p>
             </div>
             <div class="col-12 col-md-6">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="<?= ADMIN_URL ?>">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Laporan Overview</li>
+                        <li class="breadcrumb-item">Laporan</li>
+                        <li class="breadcrumb-item active"><?= $pageTitle ?></li>
                     </ol>
                 </nav>
             </div>
@@ -293,289 +252,116 @@ include '../../includes/header.php';
     </div>
 
     <section class="section">
-        <!-- Action Buttons -->
-        <div class="mb-3">
-            <a href="?export_pdf=1" class="btn btn-danger">
-                <i class="bi bi-file-pdf"></i> Export PDF
-            </a>
-        </div>
-
-        <!-- Main Statistics Cards -->
-        <div class="row">
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="text-muted mb-1">Total Posts</h6>
-                                <h3 class="mb-0"><?= number_format($postsStats['total']) ?></h3>
-                                <small class="text-success"><?= $postsStats['published'] ?> published</small>
-                            </div>
-                            <div class="text-primary">
-                                <i class="bi bi-newspaper" style="font-size: 2rem;"></i>
-                            </div>
-                        </div>
+        <div class="row mb-3">
+            <div class="col-6 col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body text-center">
+                        <h6 class="text-white mb-2"><i class="bi bi-collection-fill"></i> Total Konten</h6>
+                        <h2 class="mb-0"><?= formatNumber($summaryStats['total_content']) ?></h2>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="text-muted mb-1">Total Views</h6>
-                                <h3 class="mb-0"><?= number_format($postsStats['total_views']) ?></h3>
-                                <small class="text-muted">All posts</small>
-                            </div>
-                            <div class="text-info">
-                                <i class="bi bi-eye" style="font-size: 2rem;"></i>
-                            </div>
-                        </div>
+            <div class="col-6 col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body text-center">
+                        <h6 class="text-white mb-2"><i class="bi bi-eye-fill"></i> Total Views</h6>
+                        <h2 class="mb-0"><?= formatNumber($summaryStats['total_views']) ?></h2>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="text-muted mb-1">Services</h6>
-                                <h3 class="mb-0"><?= number_format($totalServices) ?></h3>
-                                <small class="text-muted">Active services</small>
-                            </div>
-                            <div class="text-success">
-                                <i class="bi bi-gear-fill" style="font-size: 2rem;"></i>
-                            </div>
-                        </div>
+            <div class="col-6 col-md-3">
+                <div class="card bg-danger text-white">
+                    <div class="card-body text-center">
+                        <h6 class="text-white mb-2"><i class="bi bi-images"></i> Total Media</h6>
+                        <h2 class="mb-0"><?= formatNumber($summaryStats['total_media']) ?></h2>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="text-muted mb-1">Users</h6>
-                                <h3 class="mb-0"><?= number_format($totalUsers) ?></h3>
-                                <small class="text-muted">Registered</small>
-                            </div>
-                            <div class="text-warning">
-                                <i class="bi bi-people-fill" style="font-size: 2rem;"></i>
-                            </div>
-                        </div>
+            <div class="col-6 col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body text-center">
+                        <h6 class="text-white mb-2"><i class="bi bi-person-check-fill"></i> User Aktif</h6>
+                        <h2 class="mb-0"><?= formatNumber($summaryStats['active_users']) ?></h2>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Additional Statistics -->
-        <div class="row">
-            <div class="col-md-2">
-                <div class="card">
-                    <div class="card-body text-center">
-                        <h6 class="text-muted">Categories</h6>
-                        <h4 class="mb-0"><?= number_format($totalCategories) ?></h4>
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center flex-column flex-md-row gap-2">
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">Data Overview Sistem</h6>
+                        <small class="text-muted">Tanggal Generate: <?= date('d F Y, H:i') ?> WIB</small>
                     </div>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="card">
-                    <div class="card-body text-center">
-                        <h6 class="text-muted">Tags</h6>
-                        <h4 class="mb-0"><?= number_format($totalTags) ?></h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="card">
-                    <div class="card-body text-center">
-                        <h6 class="text-muted">Albums</h6>
-                        <h4 class="mb-0"><?= number_format($totalAlbums) ?></h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="card">
-                    <div class="card-body text-center">
-                        <h6 class="text-muted">Photos</h6>
-                        <h4 class="mb-0"><?= number_format($totalPhotos) ?></h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="card">
-                    <div class="card-body text-center">
-                        <h6 class="text-muted">Files</h6>
-                        <h4 class="mb-0"><?= number_format($totalFiles) ?></h4>
-                        <small><?= number_format($totalDownloads) ?> DL</small>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="card">
-                    <div class="card-body text-center">
-                        <h6 class="text-muted">Messages</h6>
-                        <h4 class="mb-0"><?= number_format($totalMessages) ?></h4>
-                        <small><?= $unreadMessages ?> unread</small>
-                    </div>
+
+                    <a href="?export_pdf=1" class="btn btn-danger flex-shrink-0" target="_blank">
+                        <i class="bi bi-file-pdf"></i> Export PDF
+                    </a>
                 </div>
             </div>
         </div>
 
-        <!-- Content Tables -->
-        <div class="row">
-            <!-- Top Categories -->
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Top 5 Kategori</h5>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Kategori</th>
-                                    <th class="text-end">Posts</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (empty($topCategories)): ?>
-                                    <tr><td colspan="2" class="text-center">Tidak ada data</td></tr>
-                                <?php else: ?>
-                                    <?php foreach ($topCategories as $cat): ?>
-                                        <tr>
-                                            <td><?= htmlspecialchars($cat['name']) ?></td>
-                                            <td class="text-end">
-                                                <span class="badge bg-primary"><?= $cat['post_count'] ?></span>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Most Viewed Posts -->
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Post Terpopuler</h5>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Judul</th>
-                                    <th class="text-end">Views</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (empty($popularPosts)): ?>
-                                    <tr><td colspan="2" class="text-center">Tidak ada data</td></tr>
-                                <?php else: ?>
-                                    <?php foreach ($popularPosts as $post): ?>
-                                        <tr>
-                                            <td><?= htmlspecialchars(substr($post['title'], 0, 40)) ?><?= strlen($post['title']) > 40 ? '...' : '' ?></td>
-                                            <td class="text-end">
-                                                <span class="badge bg-info"><?= number_format($post['view_count']) ?></span>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Posts -->
         <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Post Terbaru</h5>
+            <div class="card-header border-bottom-0">
+                <h5 class="card-title mb-0">
+                    Ringkasan Modul Sistem
+                </h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-striped table-hover">
                         <thead>
                             <tr>
-                                <th>Judul</th>
-                                <th>Penulis</th>
-                                <th>Status</th>
-                                <th>Views</th>
-                                <th>Tanggal</th>
+                                <th>Modul</th>
+                                <th class="text-center">Total Data</th>
+                                <th class="text-center">Status Aktif</th>
+                                <th class="text-center">Status Pending/Draft</th>
+                                <th class="text-end">Metrik Lain</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if (empty($recentPosts)): ?>
-                                <tr><td colspan="5" class="text-center">Tidak ada data</td></tr>
-                            <?php else: ?>
-                                <?php foreach ($recentPosts as $post): ?>
-                                    <tr>
-                                        <td><?= htmlspecialchars($post['title']) ?></td>
-                                        <td><?= htmlspecialchars($post['author_name'] ?? '-') ?></td>
-                                        <td>
-                                            <?php if ($post['status'] === 'published'): ?>
-                                                <span class="badge bg-success">Published</span>
-                                            <?php elseif ($post['status'] === 'draft'): ?>
-                                                <span class="badge bg-warning">Draft</span>
-                                            <?php else: ?>
-                                                <span class="badge bg-secondary">Archived</span>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td><?= number_format($post['view_count']) ?></td>
-                                        <td><?= date('d/m/Y H:i', strtotime($post['created_at'])) ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Activities -->
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Aktivitas Terbaru</h5>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-sm">
-                        <thead>
+                            <?php foreach ($overviewData as $row): ?>
                             <tr>
-                                <th>User</th>
-                                <th>Aksi</th>
-                                <th>Deskripsi</th>
-                                <th>Waktu</th>
+                                <td class="fw-bold">
+                                    <i class="<?= $row['icon'] ?> text-primary me-2 fs-5" style="vertical-align: middle;"></i>
+                                    <?= htmlspecialchars($row['module']) ?>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-light-primary text-primary font-bold fs-6">
+                                        <?= $row['total'] ?>
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <?php if ($row['active'] !== '-'): ?>
+                                        <span class="badge bg-success">
+                                            <?= $row['active'] ?>
+                                        </span>
+                                    <?php else: ?>
+                                        <span class="text-muted">-</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="text-center">
+                                    <?php if ($row['pending'] !== '-' && (int)$row['pending'] > 0): ?>
+                                        <span class="badge bg-warning text-dark">
+                                            <?= $row['pending'] ?>
+                                        </span>
+                                    <?php elseif ($row['pending'] === 0 || $row['pending'] === '0 (Unread)'): ?>
+                                        <span class="text-muted">0</span>
+                                    <?php else: ?>
+                                        <span class="text-muted">-</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="text-end">
+                                    <?php if ($row['metric_value'] !== '-'): ?>
+                                        <small class="text-muted d-block" style="font-size: 0.75rem;"><?= $row['metric_label'] ?></small>
+                                        <span class="fw-bold text-dark"><?= $row['metric_value'] ?></span>
+                                    <?php else: ?>
+                                        <span class="text-muted">-</span>
+                                    <?php endif; ?>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (empty($recentActivities)): ?>
-                                <tr><td colspan="4" class="text-center">Tidak ada data</td></tr>
-                            <?php else: ?>
-                                <?php foreach ($recentActivities as $activity): ?>
-                                    <tr>
-                                        <td><?= htmlspecialchars($activity['user_name'] ?? 'System') ?></td>
-                                        <td>
-                                            <?php
-                                            $actionBadge = [
-                                                'CREATE' => 'success',
-                                                'UPDATE' => 'info',
-                                                'DELETE' => 'danger',
-                                                'LOGIN' => 'primary'
-                                            ];
-                                            $badgeClass = $actionBadge[$activity['action']] ?? 'secondary';
-                                            ?>
-                                            <span class="badge bg-<?= $badgeClass ?>"><?= $activity['action'] ?></span>
-                                        </td>
-                                        <td><?= htmlspecialchars($activity['description']) ?></td>
-                                        <td><?= date('d/m/Y H:i', strtotime($activity['created_at'])) ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
