@@ -54,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'contact_auto_reply',
                 'contact_working_hours_only',
                 'email_smtp_enable',
+                'email_verification_enabled',
                 'notification_new_contact'
             ];
             foreach ($checkboxFields as $field) {
@@ -830,7 +831,58 @@ include '../../includes/header.php';
                                 <input type="password" name="email_smtp_password" class="form-control" 
                                        value="<?= htmlspecialchars($settings['email_smtp_password'] ?? '') ?>"
                                        placeholder="••••••••">
-                                <small class="text-muted">Gunakan App Password untuk Gmail</small>
+                                <small class="text-muted">Gunakan App Password untuk Gmail (16 karakter)</small>
+                            </div>
+
+                            <div class="mt-3 pt-3 border-top">
+                                <button type="button" class="btn btn-outline-success" onclick="showTestEmailModal()">
+                                    <i class="bi bi-envelope-check"></i> Test Kirim Email
+                                </button>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <h6 class="fw-bold mb-3"><i class="bi bi-shield-check"></i> Email Verification Settings</h6>
+
+                            <div class="form-group mb-3">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" name="email_verification_enabled" id="email_verification_enabled" 
+                                           class="form-check-input" 
+                                           value="1" <?= ($settings['email_verification_enabled'] ?? '1') == '1' ? 'checked' : '' ?>>
+                                    <label class="form-check-label fw-bold" for="email_verification_enabled">
+                                        Aktifkan Verifikasi Email
+                                    </label>
+                                </div>
+                                <small class="text-muted">Wajibkan verifikasi email saat pendaftaran akun baru</small>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Panjang Kode Verifikasi</label>
+                                        <input type="number" name="email_verification_code_length" class="form-control" 
+                                               value="<?= htmlspecialchars($settings['email_verification_code_length'] ?? '6') ?>"
+                                               min="4" max="10">
+                                        <small class="text-muted">4-10 digit</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Masa Berlaku Kode (menit)</label>
+                                        <input type="number" name="email_verification_expiry_minutes" class="form-control" 
+                                               value="<?= htmlspecialchars($settings['email_verification_expiry_minutes'] ?? '15') ?>"
+                                               min="5" max="60">
+                                        <small class="text-muted">5-60 menit</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label class="form-label">Cooldown Kirim Ulang (detik)</label>
+                                <input type="number" name="email_verification_resend_cooldown" class="form-control" 
+                                       value="<?= htmlspecialchars($settings['email_verification_resend_cooldown'] ?? '60') ?>"
+                                       min="30" max="300">
+                                <small class="text-muted">Waktu tunggu sebelum dapat mengirim ulang kode (30-300 detik)</small>
                             </div>
 
                             <hr class="my-4">
@@ -987,6 +1039,117 @@ function resetThemeColors() {
         }
     });
 }
+
+// Test email - Show Modal
+function showTestEmailModal() {
+    var defaultEmail = document.querySelector('input[name="notification_email_admin"]').value || '';
+    document.getElementById('testEmailAddress').value = defaultEmail;
+    var testEmailModal = new bootstrap.Modal(document.getElementById('testEmailModal'));
+    testEmailModal.show();
+}
+
+// Test email - Send
+function sendTestEmail() {
+    var testEmail = document.getElementById('testEmailAddress').value.trim();
+    
+    if (!testEmail || !testEmail.includes('@')) {
+        notify.warning('Alamat email tidak valid.');
+        return;
+    }
+    
+    // Close modal
+    var modalEl = document.getElementById('testEmailModal');
+    var modalInstance = bootstrap.Modal.getInstance(modalEl);
+    if (modalInstance) modalInstance.hide();
+    
+    // Show loading
+    var loadingOverlay = document.createElement('div');
+    loadingOverlay.id = 'emailLoadingOverlay';
+    loadingOverlay.innerHTML = `
+        <div style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); display:flex; align-items:center; justify-content:center; z-index:9999;">
+            <div style="background:#2d3748; padding:30px 50px; border-radius:12px; text-align:center; color:white;">
+                <div class="spinner-border text-primary mb-3" style="width:3rem; height:3rem;"></div>
+                <p class="mb-0">Mengirim test email...</p>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(loadingOverlay);
+    
+    // Get current form values
+    var formData = new FormData();
+    formData.append('action', 'test_email');
+    formData.append('test_email', testEmail);
+    formData.append('smtp_host', document.querySelector('input[name="email_smtp_host"]').value);
+    formData.append('smtp_port', document.querySelector('input[name="email_smtp_port"]').value);
+    formData.append('smtp_username', document.querySelector('input[name="email_smtp_username"]').value);
+    formData.append('smtp_password', document.querySelector('input[name="email_smtp_password"]').value);
+    formData.append('smtp_encryption', document.querySelector('select[name="email_smtp_encryption"]').value);
+    formData.append('smtp_enable', document.querySelector('input[name="email_smtp_enable"]').checked ? '1' : '0');
+    formData.append('from_name', document.querySelector('input[name="email_from_name"]').value);
+    formData.append('from_address', document.querySelector('input[name="email_from_address"]').value);
+    formData.append('csrf_token', document.querySelector('input[name="csrf_token"]').value);
+    
+    fetch(ADMIN_URL + 'ajax/test_email.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Server error: ' + response.status);
+        return response.json();
+    })
+    .then(data => {
+        // Remove loading overlay
+        var overlay = document.getElementById('emailLoadingOverlay');
+        if (overlay) overlay.remove();
+        
+        if (data.success) {
+            notify.success(data.message, 5000);
+        } else {
+            notify.error(data.message || 'Gagal mengirim email', 8000);
+        }
+    })
+    .catch(error => {
+        // Remove loading overlay
+        var overlay = document.getElementById('emailLoadingOverlay');
+        if (overlay) overlay.remove();
+        
+        notify.error('Gagal mengirim test email: ' + error.message, 5000);
+    });
+}
 </script>
+
+<!-- Test Email Modal -->
+<div class="modal fade" id="testEmailModal" tabindex="-1" aria-labelledby="testEmailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="testEmailModalLabel">
+                    <i class="bi bi-envelope-check me-2"></i>Test Kirim Email
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted mb-3">Masukkan alamat email tujuan untuk menerima test email.</p>
+                <div class="form-group">
+                    <label for="testEmailAddress" class="form-label">Alamat Email Tujuan</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                        <input type="email" class="form-control form-control-lg" id="testEmailAddress" 
+                               placeholder="contoh@email.com" autofocus>
+                    </div>
+                    <small class="text-muted">Email test akan dikirim menggunakan konfigurasi SMTP saat ini.</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i> Batal
+                </button>
+                <button type="button" class="btn btn-success" onclick="sendTestEmail()">
+                    <i class="bi bi-send"></i> Kirim Test Email
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <?php include '../../includes/footer.php'; ?>

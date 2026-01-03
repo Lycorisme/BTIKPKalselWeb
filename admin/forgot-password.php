@@ -5,8 +5,9 @@ require_once '../config/config.php';
 require_once '../core/Database.php';
 require_once '../core/Helper.php';
 require_once '../core/Validator.php';
-// Tambahkan RateLimiter
 require_once '../core/RateLimiter.php';
+require_once '../vendor/autoload.php';
+require_once '../core/Email.php';
 
 $siteName     = getSetting('site_name', 'BTIKP Kalimantan Selatan');
 $siteLogo     = getSetting('site_logo');
@@ -84,22 +85,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $user = $stmt->fetch();
 
                 if ($user) {
-                    // Generate token reset (36 char random)
-                    $token = bin2hex(random_bytes(18));
+                    // Initialize email handler
+                    $emailHandler = new Email();
+                    
+                    // Generate verification code (6 digit)
+                    $code = $emailHandler->generateVerificationCode();
+                    $expiryMinutes = $emailHandler->getVerificationExpiry();
+                    $expiresAt = date('Y-m-d H:i:s', strtotime("+{$expiryMinutes} minutes"));
 
-                    // Insert token ke tabel password_resets, hapus token lama jika ada
-                    $del = $db->prepare("DELETE FROM password_resets WHERE email = ?");
+                    // Delete old verification codes for this email
+                    $del = $db->prepare("DELETE FROM verification_codes WHERE email = ? AND type = 'password_reset'");
                     $del->execute([$email]);
 
-                    $stmt = $db->prepare("INSERT INTO password_resets (email, token, created_at) VALUES (?, ?, NOW())");
-                    $stmt->execute([$email, $token]);
+                    // Insert new verification code
+                    $stmt = $db->prepare("INSERT INTO verification_codes (email, code, type, user_id, expires_at, created_at) VALUES (?, ?, 'password_reset', ?, ?, NOW())");
+                    $stmt->execute([$email, $code, $user['id'], $expiresAt]);
 
-                    // Kirim email reset (gunakan function helper Anda, email template dsb)
-                    // sendPasswordResetEmail($email, $token); 
-
-                    // Notifikasi sukses
-                    $alertJS .= "notify.success('Email reset password telah dikirim. Periksa inbox Anda.', 5000);";
-                    $alertJS .= "notify.alert({ type: 'info', title: 'Permintaan Reset Terkirim', message: 'Silakan cek email Anda untuk instruksi reset password.', confirmText: 'Tutup' });";
+                    // Send verification code via email
+                    if ($emailHandler->sendPasswordResetCode($email, $user['name'], $code)) {
+                        // Store email in session for reset page
+                        $_SESSION['password_reset_email'] = $email;
+                        
+                        // Notifikasi sukses
+                        $alertJS .= "
+                        notify.success('Kode verifikasi telah dikirim ke email Anda!', 5000);
+                        setTimeout(function() {
+                            notify.alert({ 
+                                type: 'info', 
+                                title: 'Kode Reset Password Terkirim', 
+                                message: 'Kami telah mengirim kode verifikasi ke <b>" . addslashes($email) . "</b>.<br>Silakan cek inbox atau folder spam Anda.',
+                                confirmText: 'Masukkan Kode',
+                                onConfirm: function() { window.location.href = '" . ADMIN_URL . "reset-password.php?email=" . urlencode($email) . "'; }
+                            });
+                        }, 600);
+                        ";
+                    } else {
+                        $alertJS .= "notify.error('Gagal mengirim email. Silakan coba lagi.', 5000);";
+                    }
 
                 } else {
                     // User not found - Record failed attempt

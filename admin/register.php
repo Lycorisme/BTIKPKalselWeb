@@ -5,8 +5,9 @@ require_once '../config/config.php';
 require_once '../core/Database.php';
 require_once '../core/Helper.php';
 require_once '../core/Validator.php';
-// Tambahkan RateLimiter
 require_once '../core/RateLimiter.php';
+require_once '../vendor/autoload.php';
+require_once '../core/Email.php';
 
 if (isLoggedIn()) {
     redirect(ADMIN_URL);
@@ -86,6 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($validator->passes()) {
             try {
                 $db = Database::getInstance()->getConnection();
+                
+                // Check if email already exists in users table
                 $stmt = $db->prepare("SELECT id FROM users WHERE email = ? AND deleted_at IS NULL LIMIT 1");
                 $stmt->execute([$email]);
                 
@@ -94,26 +97,74 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $rateLimiter->record($ipAddress, 'register', 60);
                     $alertJS .= "notify.error('Email sudah terdaftar.');";
                 } else {
-                    $password_hash = password_hash($password, PASSWORD_DEFAULT);
-                    // is_active=3 = akun baru menunggu approval
-                    $stmt = $db->prepare("INSERT INTO users (name, email, password, role, is_active, created_at) VALUES (?, ?, ?, 'editor', 3, NOW())");
-                    $stmt->execute([$name, $email, $password_hash]);
+                    // Check if email verification is enabled
+                    $emailHandler = new Email();
+                    $emailVerificationEnabled = $emailHandler->isVerificationEnabled();
                     
-                    // Successful registration doesn't necessarily need to be recorded as a "failure" count, 
-                    // unless you want to limit successful registrations too.
-                    
-                    $alertJS .= "
-                    notify.success('Pendaftaran berhasil! Tunggu persetujuan admin.', 5000);
-                    setTimeout(function() {
-                        notify.alert({
-                            type: 'info',
-                            title: 'Registrasi Berhasil',
-                            message: 'Akun Anda telah didaftarkan dengan status <b>menunggu persetujuan admin</b>.<br>Silakan login jika sudah di-ACC.',
-                            confirmText: 'Ke Login',
-                            onConfirm: function() { window.location.href = '".ADMIN_URL."login.php'; }
-                        });
-                    }, 600);
-                    ";
+                    if ($emailVerificationEnabled) {
+                        // ===== EMAIL VERIFICATION FLOW =====
+                        
+                        // Check if already pending
+                        $stmt = $db->prepare("SELECT id FROM pending_registrations WHERE email = ?");
+                        $stmt->execute([$email]);
+                        $existingPending = $stmt->fetch();
+                        
+                        // Generate verification code
+                        $code = $emailHandler->generateVerificationCode();
+                        $expiryMinutes = $emailHandler->getVerificationExpiry();
+                        $expiresAt = date('Y-m-d H:i:s', strtotime("+{$expiryMinutes} minutes"));
+                        $password_hash = password_hash($password, PASSWORD_DEFAULT);
+                        
+                        if ($existingPending) {
+                            // Update existing pending registration
+                            $stmt = $db->prepare("UPDATE pending_registrations SET name = ?, password = ?, verification_code = ?, expires_at = ? WHERE email = ?");
+                            $stmt->execute([$name, $password_hash, $code, $expiresAt, $email]);
+                        } else {
+                            // Insert new pending registration
+                            $stmt = $db->prepare("INSERT INTO pending_registrations (name, email, password, verification_code, expires_at, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
+                            $stmt->execute([$name, $email, $password_hash, $code, $expiresAt]);
+                        }
+                        
+                        // Send verification email
+                        if ($emailHandler->sendRegistrationVerification($email, $name, $code)) {
+                            // Store email in session for verification page
+                            $_SESSION['pending_verification_email'] = $email;
+                            
+                            $alertJS .= "
+                            notify.success('Kode verifikasi telah dikirim ke email Anda!', 5000);
+                            setTimeout(function() {
+                                notify.alert({
+                                    type: 'info',
+                                    title: 'Verifikasi Email Diperlukan',
+                                    message: 'Kami telah mengirim kode verifikasi ke <b>" . addslashes($email) . "</b>.<br>Silakan cek inbox atau folder spam Anda.',
+                                    confirmText: 'Masukkan Kode',
+                                    onConfirm: function() { window.location.href = '" . ADMIN_URL . "verify-email.php?email=" . urlencode($email) . "'; }
+                                });
+                            }, 600);
+                            ";
+                        } else {
+                            $alertJS .= "notify.error('Gagal mengirim email verifikasi. Silakan coba lagi.', 5000);";
+                        }
+                    } else {
+                        // ===== DIRECT REGISTRATION (NO EMAIL VERIFICATION) =====
+                        $password_hash = password_hash($password, PASSWORD_DEFAULT);
+                        // is_active=3 = akun baru menunggu approval
+                        $stmt = $db->prepare("INSERT INTO users (name, email, password, role, is_active, created_at) VALUES (?, ?, ?, 'editor', 3, NOW())");
+                        $stmt->execute([$name, $email, $password_hash]);
+                        
+                        $alertJS .= "
+                        notify.success('Pendaftaran berhasil! Tunggu persetujuan admin.', 5000);
+                        setTimeout(function() {
+                            notify.alert({
+                                type: 'info',
+                                title: 'Registrasi Berhasil',
+                                message: 'Akun Anda telah didaftarkan dengan status <b>menunggu persetujuan admin</b>.<br>Silakan login jika sudah di-ACC.',
+                                confirmText: 'Ke Login',
+                                onConfirm: function() { window.location.href = '" . ADMIN_URL . "login.php'; }
+                            });
+                        }, 600);
+                        ";
+                    }
                 }
             } catch (PDOException $e) {
                 error_log($e->getMessage());
