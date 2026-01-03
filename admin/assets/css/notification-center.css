@@ -1,0 +1,832 @@
+/* =========================================
+   NOTIFICATION CENTER - MINIMAL ELEGANCE v4.0
+   FIXED: Perfect symmetry for icon & modal
+   ========================================= */
+
+/* ===== CSS VARIABLES FOR THEMING ===== */
+:root {
+    --nc-primary: #435ebe;
+    --nc-primary-hover: #364d98;
+    --nc-accent: #7c8db5;
+    --nc-surface: #ffffff;
+    --nc-surface-hover: #f8f9fc;
+    --nc-text-primary: #25396f;
+    --nc-text-secondary: #6b7280;
+    --nc-text-muted: #9ca3af;
+    --nc-border: #e5e7eb;
+    --nc-border-light: #f3f4f6;
+    --nc-danger: #dc3545;
+    --nc-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --nc-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1);
+    --nc-shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.15);
+    --nc-radius-sm: 8px;
+    --nc-radius-md: 12px;
+    --nc-radius-lg: 20px;
+    --nc-transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-bs-theme="dark"] {
+    --nc-primary: #6366f1;
+    --nc-primary-hover: #818cf8;
+    --nc-accent: #8b92a8;
+    --nc-surface: #1e1e2d;
+    --nc-surface-hover: #262636;
+    --nc-text-primary: #f3f4f6;
+    --nc-text-secondary: #9ca3af;
+    --nc-text-muted: #6b7280;
+    --nc-border: #2d2d3d;
+    --nc-border-light: #353545;
+    --nc-danger: #ef4444;
+    --nc-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+    --nc-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
+    --nc-shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* =========================================
+   1. NOTIFICATION BELL BUTTON
+   FIXED: Perfect centering with flexbox
+   ========================================= */
+
+.btikp-notification-trigger {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: var(--nc-radius-md);
+    background: var(--nc-surface);
+    border: 1px solid var(--nc-border);
+    color: var(--nc-text-secondary);
+    text-decoration: none;
+    cursor: pointer;
+    transition: var(--nc-transition);
+    box-shadow: var(--nc-shadow-sm);
+    padding: 0;
+    margin: 0;
+    line-height: 1;
+    vertical-align: middle;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.btikp-notification-trigger:hover {
+    background: var(--nc-surface-hover);
+    border-color: var(--nc-primary);
+    color: var(--nc-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--nc-shadow-md);
+}
+
+.btikp-notification-trigger:active {
+    transform: translateY(0);
+    box-shadow: var(--nc-shadow-sm);
+}
+
+.btikp-notification-trigger:focus {
+    outline: 2px solid var(--nc-primary);
+    outline-offset: 2px;
+}
+
+/* Icon Container - FIXED: Absolutely Centered */
+.trigger-icon-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    line-height: 1;
+}
+
+.trigger-icon-wrapper i,
+.trigger-icon-wrapper .bi {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    line-height: 1;
+    width: 1.25rem;
+    height: 1.25rem;
+    text-align: center;
+    transition: var(--nc-transition);
+    margin: 0;
+    padding: 0;
+}
+
+/* Alternative: Direct icon in button without wrapper */
+.btikp-notification-trigger>i,
+.btikp-notification-trigger>.bi {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+}
+
+/* Subtle bell animation on hover */
+.btikp-notification-trigger:hover .trigger-icon-wrapper i,
+.btikp-notification-trigger:hover>i,
+.btikp-notification-trigger:hover .bi-bell {
+    animation: bellRing 0.6s ease-in-out;
+}
+
+@keyframes bellRing {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    20% {
+        transform: rotate(12deg);
+    }
+
+    40% {
+        transform: rotate(-12deg);
+    }
+
+    60% {
+        transform: rotate(8deg);
+    }
+
+    80% {
+        transform: rotate(-8deg);
+    }
+}
+
+/* Badge Counter - FIXED: Clean Circular Design with Perfect Position */
+.btikp-badge-count {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 10px;
+    background: var(--nc-danger);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 20px;
+    text-align: center;
+    border: 2px solid var(--nc-surface);
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.4);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+/* Pulse Animation Ring - FIXED: Centered */
+.btikp-badge-pulse {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--nc-danger);
+    z-index: 5;
+    animation: pulseFade 2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes pulseFade {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.4;
+    }
+
+    50% {
+        transform: scale(1.6);
+        opacity: 0;
+    }
+}
+
+/* =========================================
+   2. NOTIFICATION MODAL OVERLAY
+   FIXED: Perfect centering
+   ========================================= */
+
+.btikp-notification-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--nc-transition);
+}
+
+/* Clean Dark Backdrop */
+.btikp-notification-modal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+[data-bs-theme="dark"] .btikp-notification-modal::before {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.btikp-notification-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* =========================================
+   3. NOTIFICATION MODAL BOX
+   FIXED: Symmetric, centered design
+   ========================================= */
+
+.btikp-notification-box {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    background: var(--nc-surface);
+    border-radius: var(--nc-radius-lg);
+    border: 1px solid var(--nc-border);
+    box-shadow: var(--nc-shadow-lg);
+    overflow: hidden;
+    transform: scale(0.95) translateY(20px);
+    opacity: 0;
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    flex-direction: column;
+    max-height: 75vh;
+    margin: 0 auto;
+}
+
+.btikp-notification-modal.show .btikp-notification-box {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+/* =========================================
+   4. MODAL HEADER
+   FIXED: Perfectly symmetric layout
+   ========================================= */
+
+.btikp-notification-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--nc-border);
+    flex-shrink: 0;
+    gap: 16px;
+}
+
+.btikp-notification-header h5 {
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--nc-text-primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    flex: 1;
+}
+
+/* FIXED: Header icon perfectly centered */
+.btikp-notification-header h5 i,
+.btikp-notification-header h5 .bi {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    border-radius: var(--nc-radius-sm);
+    background: var(--nc-primary);
+    color: white;
+    font-size: 1rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+/* Close Button - FIXED: Clean Square Style with Perfect Centering */
+.btikp-notification-close {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    border-radius: var(--nc-radius-sm);
+    background: transparent;
+    border: 1px solid var(--nc-border);
+    color: var(--nc-text-secondary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--nc-transition);
+    font-size: 1.25rem;
+    line-height: 1;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.btikp-notification-close i,
+.btikp-notification-close .bi {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+}
+
+.btikp-notification-close:hover {
+    background: var(--nc-danger);
+    border-color: var(--nc-danger);
+    color: white;
+    transform: rotate(90deg);
+}
+
+.btikp-notification-close:focus {
+    outline: 2px solid var(--nc-primary);
+    outline-offset: 2px;
+}
+
+/* =========================================
+   5. NOTIFICATION LIST
+   Clean scrollable area
+   ========================================= */
+
+.btikp-notification-list {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--nc-border) transparent;
+}
+
+.btikp-notification-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.btikp-notification-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.btikp-notification-list::-webkit-scrollbar-thumb {
+    background: var(--nc-border);
+    border-radius: 4px;
+}
+
+.btikp-notification-list::-webkit-scrollbar-thumb:hover {
+    background: var(--nc-accent);
+}
+
+/* =========================================
+   6. EMPTY STATE
+   FIXED: Perfectly centered and symmetric
+   ========================================= */
+
+.btikp-notification-empty {
+    padding: 48px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* FIXED: Empty icon perfectly centered */
+.btikp-empty-icon {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--nc-surface-hover);
+    border: 2px solid var(--nc-border);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    flex-shrink: 0;
+}
+
+/* Subtle rotating ring */
+.btikp-empty-icon::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border-radius: 50%;
+    border: 2px dashed var(--nc-border);
+    animation: rotateRing 30s linear infinite;
+}
+
+@keyframes rotateRing {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.btikp-empty-icon i,
+.btikp-empty-icon .bi {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: var(--nc-primary);
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+}
+
+.btikp-notification-empty h6 {
+    color: var(--nc-text-primary);
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    line-height: 1.4;
+}
+
+.btikp-notification-empty p {
+    color: var(--nc-text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    max-width: 280px;
+    margin: 0;
+}
+
+/* =========================================
+   7. NOTIFICATION ITEMS
+   FIXED: Clean, consistent card design
+   ========================================= */
+
+.btikp-notification-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 24px;
+    text-decoration: none;
+    transition: var(--nc-transition);
+    border-bottom: 1px solid var(--nc-border-light);
+    background: transparent;
+}
+
+.btikp-notification-item:last-child {
+    border-bottom: none;
+}
+
+.btikp-notification-item:hover {
+    background: var(--nc-surface-hover);
+}
+
+/* Unread Indicator */
+.btikp-notification-item.unread {
+    background: rgba(67, 94, 190, 0.05);
+    position: relative;
+}
+
+[data-bs-theme="dark"] .btikp-notification-item.unread {
+    background: rgba(99, 102, 241, 0.08);
+}
+
+.btikp-notification-item.unread::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--nc-primary);
+}
+
+/* Item Icon - FIXED: Perfectly centered */
+.btikp-notification-item-icon {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: var(--nc-radius-sm);
+    background: var(--nc-surface-hover);
+    border: 1px solid var(--nc-border);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.125rem;
+    flex-shrink: 0;
+    color: var(--nc-primary);
+    line-height: 1;
+}
+
+.btikp-notification-item-icon i,
+.btikp-notification-item-icon .bi {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+}
+
+.btikp-notification-item:hover .btikp-notification-item-icon {
+    background: var(--nc-primary);
+    border-color: var(--nc-primary);
+    color: white;
+}
+
+/* Item Content */
+.btikp-notification-item-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.btikp-notification-item-title {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--nc-text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+}
+
+.btikp-notification-item-text {
+    display: -webkit-box;
+    font-size: 0.8125rem;
+    color: var(--nc-text-secondary);
+    line-height: 1.5;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.btikp-notification-item-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: var(--nc-text-muted);
+    margin-top: 2px;
+}
+
+.btikp-notification-item-time i,
+.btikp-notification-item-time .bi {
+    font-size: 0.7rem;
+    line-height: 1;
+}
+
+/* =========================================
+   8. MODAL FOOTER
+   FIXED: Clean button design with centering
+   ========================================= */
+
+.btikp-notification-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--nc-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.btikp-btn-view-all {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 28px;
+    border-radius: var(--nc-radius-sm);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: white;
+    background: var(--nc-primary);
+    text-decoration: none;
+    transition: var(--nc-transition);
+    border: none;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.btikp-btn-view-all:hover {
+    background: var(--nc-primary-hover);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(67, 94, 190, 0.3);
+}
+
+[data-bs-theme="dark"] .btikp-btn-view-all:hover {
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.btikp-btn-view-all i,
+.btikp-btn-view-all .bi {
+    transition: transform 0.2s ease;
+    line-height: 1;
+}
+
+.btikp-btn-view-all:hover i,
+.btikp-btn-view-all:hover .bi {
+    transform: translateX(3px);
+}
+
+/* =========================================
+   9. RESPONSIVE DESIGN
+   ========================================= */
+
+@media (max-width: 576px) {
+    .btikp-notification-trigger {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        min-height: 40px;
+    }
+
+    .trigger-icon-wrapper i,
+    .btikp-notification-trigger>i {
+        font-size: 1.125rem;
+    }
+
+    .btikp-notification-modal {
+        padding: 0;
+        align-items: flex-end;
+    }
+
+    .btikp-notification-box {
+        max-width: 100%;
+        max-height: 85vh;
+        border-radius: var(--nc-radius-lg) var(--nc-radius-lg) 0 0;
+        transform: translateY(100%);
+    }
+
+    .btikp-notification-modal.show .btikp-notification-box {
+        transform: translateY(0);
+    }
+
+    .btikp-notification-header {
+        padding: 16px 20px;
+    }
+
+    .btikp-notification-header h5 i,
+    .btikp-notification-header h5 .bi {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        min-height: 32px;
+        font-size: 0.9rem;
+    }
+
+    .btikp-notification-close {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        min-height: 32px;
+        font-size: 1.125rem;
+    }
+
+    .btikp-notification-item {
+        padding: 14px 20px;
+        gap: 12px;
+    }
+
+    .btikp-notification-item-icon {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        min-height: 40px;
+        font-size: 1rem;
+    }
+
+    .btikp-notification-footer {
+        padding: 14px 20px;
+    }
+
+    .btikp-notification-empty {
+        padding: 40px 24px;
+    }
+
+    .btikp-empty-icon {
+        width: 72px;
+        height: 72px;
+    }
+
+    .btikp-empty-icon i,
+    .btikp-empty-icon .bi {
+        font-size: 1.75rem;
+    }
+}
+
+/* =========================================
+   10. UTILITY CLASSES
+   ========================================= */
+
+/* Hide scrollbar but keep functionality on some elements */
+.nc-hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.nc-hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Ensure all icons are centered */
+.btikp-notification-trigger *,
+.btikp-notification-header *,
+.btikp-notification-item-icon *,
+.btikp-empty-icon * {
+    box-sizing: border-box;
+}
+
+/* Fix Bootstrap Icons alignment issues */
+.bi::before {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* =========================================
+   11. ACCESSIBILITY
+   ========================================= */
+
+/* Focus visible styles */
+.btikp-notification-trigger:focus-visible,
+.btikp-notification-close:focus-visible,
+.btikp-notification-item:focus-visible,
+.btikp-btn-view-all:focus-visible {
+    outline: 2px solid var(--nc-primary);
+    outline-offset: 2px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+
+    .btikp-notification-trigger,
+    .btikp-notification-box,
+    .btikp-notification-modal,
+    .btikp-notification-close,
+    .btikp-notification-item,
+    .btikp-btn-view-all {
+        transition: none;
+    }
+
+    .btikp-notification-trigger:hover .trigger-icon-wrapper i,
+    .btikp-notification-trigger:hover>i {
+        animation: none;
+    }
+
+    .btikp-badge-pulse {
+        animation: none;
+    }
+
+    .btikp-empty-icon::before {
+        animation: none;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .btikp-notification-trigger {
+        border-width: 2px;
+    }
+
+    .btikp-notification-box {
+        border-width: 2px;
+    }
+
+    .btikp-notification-item.unread::before {
+        width: 4px;
+    }
+}

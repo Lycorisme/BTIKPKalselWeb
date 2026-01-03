@@ -114,7 +114,10 @@ $themeJsFile = $currentThemeFiles['js'];
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
 
-    <!-- DYNAMIC NOTIFICATION THEME CSS -->
+    <!-- CORE NOTIFICATION CENTER CSS (ALWAYS LOADED) -->
+    <link rel="stylesheet" href="<?= ADMIN_URL ?>assets/css/notification-center.css?v=<?= time() ?>" />
+
+    <!-- DYNAMIC NOTIFICATION THEME CSS (TOASTS) -->
     <link rel="stylesheet" href="<?= ADMIN_URL ?>assets/css/<?= $themeCssFile ?>?v=<?= time() ?>" 
           data-notification-theme="<?= $notification_theme ?>" />
 
@@ -222,170 +225,6 @@ $themeJsFile = $currentThemeFiles['js'];
             gap: 0.5rem;
         }
 
-        /* Notification badge positioning */
-        .badge-notification {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            font-size: 0.65rem;
-            padding: 0.25em 0.5em;
-            min-width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .nav-link {
-            position: relative;
-        }
-
-        /* Notification dropdown styling - IMPROVED */
-        .notification-dropdown {
-            min-width: 320px;
-            max-width: 400px;
-            padding: 0;
-        }
-
-        .notification-dropdown .dropdown-header {
-            padding: 0.75rem 1rem;
-            margin: 0;
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #e9ecef;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
-
-        [data-bs-theme="dark"] .notification-dropdown .dropdown-header {
-            background-color: #1a1d20;
-            border-bottom-color: #2d3135;
-        }
-
-        /* Scrollable notification list */
-        .notification-list {
-            max-height: 350px;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
-
-        /* Custom scrollbar for notification list */
-        .notification-list::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .notification-list::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        [data-bs-theme="dark"] .notification-list::-webkit-scrollbar-track {
-            background: #2d3135;
-        }
-
-        .notification-list::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 3px;
-        }
-
-        .notification-list::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-
-        .notification-item {
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid #e9ecef;
-            transition: background-color 0.2s;
-            display: block;
-            text-decoration: none;
-            color: inherit;
-        }
-
-        [data-bs-theme="dark"] .notification-item {
-            border-bottom-color: #2d3135;
-        }
-
-        .notification-item:hover {
-            background-color: #f8f9fa;
-            text-decoration: none;
-        }
-
-        [data-bs-theme="dark"] .notification-item:hover {
-            background-color: #2d3135;
-        }
-
-        .notification-item:last-child {
-            border-bottom: none;
-        }
-
-        .notification-content {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-        }
-
-        .notification-title {
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: #333;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-
-        [data-bs-theme="dark"] .notification-title {
-            color: #e9ecef;
-        }
-
-        .notification-text {
-            font-size: 0.85rem;
-            color: #6c757d;
-            margin: 0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .notification-time {
-            font-size: 0.75rem;
-            color: #999;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-
-        .notification-empty {
-            padding: 2rem 1rem;
-            text-align: center;
-            color: #6c757d;
-        }
-
-        .notification-footer {
-            padding: 0.75rem 1rem;
-            text-align: center;
-            border-top: 1px solid #e9ecef;
-            background-color: #f8f9fa;
-            position: sticky;
-            bottom: 0;
-            z-index: 1;
-        }
-
-        [data-bs-theme="dark"] .notification-footer {
-            border-top-color: #2d3135;
-            background-color: #1a1d20;
-        }
-
-        .notification-footer a {
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-
         /* Responsive styles */
         @media (max-width: 768px) {
             .search-form-desktop {
@@ -402,46 +241,6 @@ $themeJsFile = $currentThemeFiles['js'];
 
             .navbar-nav {
                 gap: 0.5rem;
-            }
-
-            /* Make notification dropdown full width on mobile */
-            .notification-dropdown {
-                min-width: 280px;
-                max-width: calc(100vw - 2rem);
-                left: auto !important;
-                right: 0 !important;
-            }
-
-            /* Adjust notification list height for mobile */
-            .notification-list {
-                max-height: 300px;
-            }
-
-            /* Smaller font sizes for mobile */
-            .notification-title {
-                font-size: 0.85rem;
-            }
-
-            .notification-text {
-                font-size: 0.8rem;
-            }
-
-            .notification-time {
-                font-size: 0.7rem;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .notification-dropdown {
-                min-width: 260px;
-            }
-
-            .notification-list {
-                max-height: 250px;
-            }
-
-            .notification-item {
-                padding: 0.6rem 0.75rem;
             }
         }
 
@@ -572,77 +371,34 @@ $themeJsFile = $currentThemeFiles['js'];
                                 <i class="bi bi-search"></i>
                             </button>
 
-                            <!-- Notifications -->
-                            <div class="dropdown animate-on-scroll fade-in" data-delay="400">
-                                <a class="nav-link active dropdown-toggle text-gray-600" href="#" 
-                                   data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class='bi bi-bell bi-sub fs-4'></i>
+                            <!-- Notifications (Modal System) -->
+                            <div class="animate-on-scroll fade-in" data-delay="400">
+                                <button type="button" class="btikp-notification-trigger" onclick="openNotificationModal()" aria-label="Buka Notifikasi" title="Notifikasi">
+                                    <span class="trigger-icon-wrapper">
+                                        <i class="bi bi-bell"></i>
+                                    </span>
                                     <?php if ($unreadCount > 0): ?>
-                                        <span class="badge badge-notification bg-danger"><?= $unreadCount ?></span>
+                                        <span class="btikp-badge-pulse" aria-hidden="true"></span>
+                                        <span class="btikp-badge-count"><?= $unreadCount > 9 ? '9+' : $unreadCount ?></span>
                                     <?php endif; ?>
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end notification-dropdown" aria-labelledby="dropdownMenuButton">
-                                    <li>
-                                        <h6 class="dropdown-header d-flex justify-content-between align-items-center">
-                                            <span>Notifikasi</span>
-                                            <?php if ($unreadCount > 0): ?>
-                                                <span class="badge bg-primary"><?= $unreadCount ?></span>
-                                            <?php endif; ?>
-                                        </h6>
-                                    </li>
-
-                                    <?php if (empty($notifications)): ?>
-                                        <li class="notification-empty">
-                                            <i class="bi bi-inbox fs-3 text-muted mb-2"></i>
-                                            <p class="mb-0">Belum ada notifikasi baru</p>
-                                        </li>
-                                    <?php else: ?>
-                                        <div class="notification-list">
-                                            <?php foreach ($notifications as $notif): ?>
-                                                <li>
-                                                    <a class="notification-item" 
-                                                       href="<?= ADMIN_URL ?>modules/contact/messages_view.php?id=<?= $notif['id'] ?>">
-                                                        <div class="notification-content">
-                                                            <p class="notification-title">
-                                                                <i class="bi bi-envelope"></i>
-                                                                <span>Pesan dari <?= htmlspecialchars($notif['name']) ?></span>
-                                                            </p>
-                                                            <p class="notification-text">
-                                                                <?= htmlspecialchars(truncateText($notif['subject'], 40)) ?>
-                                                            </p>
-                                                            <p class="notification-time">
-                                                                <i class="bi bi-clock"></i>
-                                                                <span><?= formatTanggalRelatif($notif['created_at']) ?></span>
-                                                            </p>
-                                                        </div>
-                                                    </a>
-                                                </li>
-                                            <?php endforeach; ?>
-                                        </div>
-
-                                        <li class="notification-footer">
-                                            <a href="<?= ADMIN_URL ?>modules/contact/messages_list.php?status=unread" class="text-primary">
-                                                Lihat Semua Notifikasi
-                                                <i class="bi bi-arrow-right"></i>
-                                            </a>
-                                        </li>
-                                    <?php endif; ?>
-                                </ul>
+                                </button>
                             </div>
+
+
 
                             <!-- User Profile Dropdown -->
                             <div class="dropdown animate-on-scroll fade-in" data-delay="500">
                                 <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
                                     <div class="user-menu d-flex align-items-center">
                                         <div class="user-name text-end me-3">
-                                            <h6 class="mb-0 text-gray-600"><?= htmlspecialchars($currentUser['name']) ?></h6>
+                                            <h6 class="mb-0 text-gray-600"><?= htmlspecialchars($currentUser['name'] ?? '') ?></h6>
                                             <p class="mb-0 text-sm text-gray-600"><?= getRoleName($currentUser['role']) ?></p>
                                         </div>
                                         <div class="user-img d-flex align-items-center">
                                             <div class="avatar avatar-md">
                                                 <?php if (!empty($currentUser['photo'])): ?>
                                                     <img src="<?= uploadUrl($currentUser['photo']) ?>" 
-                                                         alt="<?= htmlspecialchars($currentUser['name']) ?>">
+                                                         alt="<?= htmlspecialchars($currentUser['name'] ?? '') ?>">
                                                 <?php else: ?>
                                                     <img src="<?= ADMIN_URL ?>assets/static/images/faces/1.jpg" 
                                                          alt="Avatar">
@@ -654,7 +410,7 @@ $themeJsFile = $currentThemeFiles['js'];
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton" 
                                     style="min-width: 11rem;">
                                     <li>
-                                        <h6 class="dropdown-header">Hello, <?= htmlspecialchars($currentUser['name']) ?>!</h6>
+                                        <h6 class="dropdown-header">Hello, <?= htmlspecialchars($currentUser['name'] ?? '') ?>!</h6>
                                     </li>
                                     <li>
                                         <a class="dropdown-item" href="<?= ADMIN_URL ?>profile.php">

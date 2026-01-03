@@ -29,10 +29,10 @@ class BTIKPNotification {
     toast(type, message, duration = 3000) {
         const toast = document.createElement('div');
         toast.className = `btikp-toast btikp-toast-${type}`;
-        
+
         const icon = this.getIcon(type);
         const title = this.getTitle(type);
-        
+
         toast.innerHTML = `
             <div class="btikp-toast-icon">
                 <i class="${icon}"></i>
@@ -45,12 +45,12 @@ class BTIKPNotification {
                 <i class="bi bi-x-lg"></i>
             </button>
         `;
-        
+
         this.container.appendChild(toast);
-        
+
         // Animate in
         setTimeout(() => toast.classList.add('show'), 10);
-        
+
         // Auto remove
         setTimeout(() => {
             toast.classList.remove('show');
@@ -70,9 +70,9 @@ class BTIKPNotification {
             confirmText: 'OK',
             onConfirm: null
         };
-        
+
         const config = { ...defaults, ...options };
-        
+
         const modal = document.createElement('div');
         modal.className = 'btikp-alert-overlay';
         modal.innerHTML = `
@@ -89,10 +89,10 @@ class BTIKPNotification {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(modal);
         setTimeout(() => modal.classList.add('show'), 10);
-        
+
         const confirmBtn = modal.querySelector('#btikp-alert-confirm');
         confirmBtn.onclick = () => {
             modal.classList.remove('show');
@@ -115,9 +115,9 @@ class BTIKPNotification {
             onConfirm: null,
             onCancel: null
         };
-        
+
         const config = { ...defaults, ...options };
-        
+
         const modal = document.createElement('div');
         modal.className = 'btikp-alert-overlay';
         modal.innerHTML = `
@@ -137,28 +137,28 @@ class BTIKPNotification {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(modal);
         setTimeout(() => modal.classList.add('show'), 10);
-        
+
         const confirmBtn = modal.querySelector('#btikp-alert-confirm');
         const cancelBtn = modal.querySelector('#btikp-alert-cancel');
-        
+
         const closeModal = () => {
             modal.classList.remove('show');
             setTimeout(() => modal.remove(), 300);
         };
-        
+
         confirmBtn.onclick = () => {
             closeModal();
             if (config.onConfirm) config.onConfirm();
         };
-        
+
         cancelBtn.onclick = () => {
             closeModal();
             if (config.onCancel) config.onCancel();
         };
-        
+
         // Close on overlay click
         modal.onclick = (e) => {
             if (e.target === modal) {
@@ -182,7 +182,7 @@ class BTIKPNotification {
                 <div class="btikp-loading-message">${message}</div>
             </div>
         `;
-        
+
         document.body.appendChild(loading);
         setTimeout(() => loading.classList.add('show'), 10);
     }
@@ -195,6 +195,27 @@ class BTIKPNotification {
         if (loading) {
             loading.classList.remove('show');
             setTimeout(() => loading.remove(), 300);
+        }
+    }
+
+    /**
+     * Notification Center Modal
+     */
+    openNotificationModal() {
+        const modal = document.getElementById('notification-modal');
+        if (modal) {
+            modal.classList.add('show');
+            // Prevent body scrolling
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    closeNotificationModal() {
+        const modal = document.getElementById('notification-modal');
+        if (modal) {
+            modal.classList.remove('show');
+            // Restore body scrolling
+            document.body.style.overflow = '';
         }
     }
 
@@ -229,17 +250,17 @@ class BTIKPNotification {
         document.querySelectorAll('[data-confirm-delete]').forEach((btn) => {
             // Remove existing onclick to avoid conflicts
             btn.removeAttribute('onclick');
-            
+
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
-                
+
                 const url = btn.getAttribute('href') || btn.getAttribute('data-url');
                 const title = btn.getAttribute('data-title') || 'item ini';
                 const message = btn.getAttribute('data-message') || `"${title}" akan dihapus permanen. Lanjutkan?`;
                 const confirmText = btn.getAttribute('data-confirm-text') || 'Ya, Hapus';
                 const cancelText = btn.getAttribute('data-cancel-text') || 'Batal';
                 const loadingText = btn.getAttribute('data-loading-text') || 'Menghapus...';
-                
+
                 this.confirm({
                     type: 'danger',
                     title: 'Hapus Data?',
@@ -262,12 +283,12 @@ class BTIKPNotification {
         const logoutBtn = document.querySelector('[data-confirm-logout]');
         if (logoutBtn) {
             logoutBtn.removeAttribute('onclick');
-            
+
             logoutBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                
+
                 const url = logoutBtn.getAttribute('href') || logoutBtn.getAttribute('data-url');
-                
+
                 this.confirm({
                     type: 'warning',
                     title: 'Logout',
@@ -296,6 +317,7 @@ class BTIKPNotification {
 window.BTIKPNotify = new BTIKPNotification();
 
 // Shorthand functions
+// Shorthand functions
 window.notify = {
     success: (msg, duration) => window.BTIKPNotify.toast('success', msg, duration),
     error: (msg, duration) => window.BTIKPNotify.toast('error', msg, duration),
@@ -304,10 +326,16 @@ window.notify = {
     alert: (options) => window.BTIKPNotify.alert(options),
     confirm: (options) => window.BTIKPNotify.confirm(options),
     loading: (msg) => window.BTIKPNotify.loading(msg),
-    hideLoading: () => window.BTIKPNotify.hideLoading()
+    hideLoading: () => window.BTIKPNotify.hideLoading(),
+    openModal: () => window.BTIKPNotify.openNotificationModal(),
+    closeModal: () => window.BTIKPNotify.closeNotificationModal()
 };
 
+// Global handlers for inline events
+window.openNotificationModal = () => window.BTIKPNotify.openNotificationModal();
+window.closeNotificationModal = () => window.BTIKPNotify.closeNotificationModal();
+
 // Auto-initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     window.BTIKPNotify.initAutoBindings();
 });

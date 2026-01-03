@@ -60,6 +60,25 @@
     <!-- PAGE ANIMATIONS JAVASCRIPT -->
     <script src="<?= ADMIN_URL ?>assets/js/page-animations.js?v=<?= time() ?>"></script>
     
+    <!-- CORE NOTIFICATION MODAL LOGIC -->
+    <script>
+    function openNotificationModal() {
+        const modal = document.getElementById('notification-modal');
+        if (modal) {
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+    }
+    
+    function closeNotificationModal() {
+        const modal = document.getElementById('notification-modal');
+        if (modal) {
+            modal.classList.remove('show');
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+    }
+    </script>
+    
     <!-- Auto show alert from PHP session (using custom toast) -->
     <?php if ($alert = getAlert()): ?>
     <script>
@@ -79,6 +98,69 @@
     <?php if (isset($additionalScripts)): ?>
         <?= $additionalScripts ?>
     <?php endif; ?>
+
+
+    <!-- Notification Center Modal (Minimal Elegance Design) -->
+    <div id="notification-modal" class="btikp-notification-modal" onclick="if(event.target === this) closeNotificationModal()" role="dialog" aria-modal="true" aria-labelledby="notification-title">
+        <div class="btikp-notification-box">
+            <!-- Header -->
+            <div class="btikp-notification-header">
+                <h5 id="notification-title">
+                    <i class="bi bi-bell"></i>
+                    <span>Notifikasi</span>
+                </h5>
+                <button type="button" class="btikp-notification-close" onclick="closeNotificationModal()" aria-label="Tutup">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+            
+            <!-- Notification List -->
+            <div class="btikp-notification-list">
+                <?php if (empty($notifications)): ?>
+                    <!-- Empty State -->
+                    <div class="btikp-notification-empty">
+                        <div class="btikp-empty-icon">
+                            <i class="bi bi-bell-slash"></i>
+                        </div>
+                        <h6>Tidak ada notifikasi</h6>
+                        <p>Semua beres! Anda telah melihat semua notifikasi yang masuk.</p>
+                    </div>
+                <?php else: ?>
+                    <!-- Notification Items -->
+                    <?php foreach ($notifications as $notif): ?>
+                        <a href="<?= ADMIN_URL ?>modules/contact/messages_view.php?id=<?= $notif['id'] ?>" 
+                           class="btikp-notification-item unread">
+                            <div class="btikp-notification-item-icon">
+                                <i class="bi bi-envelope"></i>
+                            </div>
+                            <div class="btikp-notification-item-content">
+                                <span class="btikp-notification-item-title">
+                                    Pesan dari <?= htmlspecialchars($notif['name'] ?? '') ?>
+                                </span>
+                                <span class="btikp-notification-item-text">
+                                    <?= htmlspecialchars(truncateText($notif['subject'], 50)) ?>
+                                </span>
+                                <div class="btikp-notification-item-time">
+                                    <i class="bi bi-clock"></i>
+                                    <span><?= formatTanggalRelatif($notif['created_at']) ?></span>
+                                </div>
+                            </div>
+                        </a>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+            
+            <!-- Footer (only show if there are notifications) -->
+            <?php if (!empty($notifications)): ?>
+                <div class="btikp-notification-footer">
+                    <a href="<?= ADMIN_URL ?>modules/contact/messages_list.php?status=unread" class="btikp-btn-view-all">
+                        <span>Lihat Semua</span>
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
 
 </body>
 </html>

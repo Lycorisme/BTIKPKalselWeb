@@ -7,6 +7,7 @@
 require_once __DIR__ . '/Database.php';
 
 function clean($data) {
+    if ($data === null) return '';
     return htmlspecialchars(strip_tags(trim($data)), ENT_QUOTES, 'UTF-8');
 }
 
@@ -114,6 +115,9 @@ function formatFileSize($bytes) {
 }
 
 function truncateText($text, $length = 100, $suffix = '...') {
+    if ($text === null) {
+        return '';
+    }
     $text = strip_tags($text);
     if (mb_strlen($text) <= $length) {
         return $text;
@@ -136,9 +140,9 @@ function getCurrentUser() {
     
     return [
         'id' => $_SESSION['user_id'],
-        'name' => $_SESSION['user_name'],
-        'email' => $_SESSION['user_email'],
-        'role' => $_SESSION['user_role'],
+        'name' => $_SESSION['user_name'] ?? 'Unknown',
+        'email' => $_SESSION['user_email'] ?? '',
+        'role' => $_SESSION['user_role'] ?? 'guest',
         'photo' => $_SESSION['user_photo'] ?? null
     ];
 }
@@ -373,6 +377,9 @@ function getRoleName($role) {
         'author' => 'Author'
     ];
     
+    if ($role === null) {
+        return 'Unknown';
+    }
     return $names[$role] ?? 'Unknown';
 }
 

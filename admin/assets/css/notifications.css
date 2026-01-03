@@ -1,80 +1,112 @@
 /**
- * BTIKP Notification System Styles
+ * BTIKP Notification System Styles - Revamped Modern Centered
  */
 
-/* Notification Container */
+/* =========================================
+   1. GLOBAL CONTAINER & TOASTS
+   ========================================= */
+
+/* Notification Container - Centered */
 .btikp-notification-container {
     position: fixed;
-    top: 80px;
-    right: 20px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     z-index: 10000;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    max-width: 400px;
+    gap: 15px;
+    align-items: center;
+    width: auto;
+    max-width: 90vw;
+    pointer-events: none;
+    /* Allow clicks to pass through empty space */
 }
 
-/* Toast Notifications */
+/* Toast Notifications - Glassmorphism & Centered */
 .btikp-toast {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    padding: 16px;
+    pointer-events: auto;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 16px;
+    box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06),
+        0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    padding: 20px 24px;
     display: flex;
-    align-items: flex-start;
-    gap: 12px;
+    align-items: center;
+    gap: 16px;
     opacity: 0;
-    transform: translateX(100%);
-    transition: all 0.3s ease;
+    transform: scale(0.9) translateY(20px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
-    min-width: 320px;
-    border-left: 4px solid;
+    min-width: 380px;
+    max-width: 500px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-left: none;
 }
 
 .btikp-toast.show {
     opacity: 1;
-    transform: translateX(0);
+    transform: scale(1) translateY(0);
 }
 
+/* Color Accents via Icons and Background Tint */
 .btikp-toast-success {
-    border-left-color: #198754;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.98), rgba(236, 253, 245, 0.95));
+    border-left: 6px solid #10b981;
 }
 
 .btikp-toast-error,
 .btikp-toast-danger {
-    border-left-color: #dc3545;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.98), rgba(254, 242, 242, 0.95));
+    border-left: 6px solid #ef4444;
 }
 
 .btikp-toast-warning {
-    border-left-color: #ffc107;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.98), rgba(255, 251, 235, 0.95));
+    border-left: 6px solid #f59e0b;
 }
 
 .btikp-toast-info {
-    border-left-color: #0dcaf0;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.98), rgba(239, 246, 255, 0.95));
+    border-left: 6px solid #3b82f6;
 }
 
+/* Icons */
 .btikp-toast-icon {
-    font-size: 24px;
+    font-size: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .btikp-toast-success .btikp-toast-icon {
-    color: #198754;
+    color: #10b981;
+    background: #ecfdf5;
 }
 
 .btikp-toast-error .btikp-toast-icon,
 .btikp-toast-danger .btikp-toast-icon {
-    color: #dc3545;
+    color: #ef4444;
+    background: #fef2f2;
 }
 
 .btikp-toast-warning .btikp-toast-icon {
-    color: #ffc107;
+    color: #f59e0b;
+    background: #fffbeb;
 }
 
 .btikp-toast-info .btikp-toast-icon {
-    color: #0dcaf0;
+    color: #3b82f6;
+    background: #eff6ff;
 }
 
 .btikp-toast-content {
@@ -82,45 +114,50 @@
 }
 
 .btikp-toast-title {
-    font-weight: 600;
-    font-size: 14px;
+    font-weight: 700;
+    font-size: 16px;
     margin-bottom: 4px;
-    color: #333;
+    color: #1f2937;
+    letter-spacing: -0.025em;
 }
 
 .btikp-toast-message {
-    font-size: 13px;
-    color: #666;
-    line-height: 1.4;
+    font-size: 14px;
+    color: #4b5563;
+    line-height: 1.5;
 }
 
 .btikp-toast-close {
-    background: none;
+    background: transparent;
     border: none;
-    color: #999;
+    color: #9ca3af;
     cursor: pointer;
-    padding: 0;
-    font-size: 14px;
-    width: 20px;
-    height: 20px;
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: color 0.2s;
+    transition: all 0.2s;
+    margin-left: 8px;
 }
 
 .btikp-toast-close:hover {
-    color: #333;
+    color: #1f2937;
+    background: rgba(0, 0, 0, 0.05);
 }
 
-/* Alert Modal */
+/* =========================================
+   2. ALERT MODAL
+   ========================================= */
 .btikp-alert-overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(4px);
     z-index: 10001;
     display: flex;
     align-items: center;
@@ -135,14 +172,15 @@
 
 .btikp-alert {
     background: white;
-    border-radius: 12px;
-    padding: 32px;
-    max-width: 450px;
+    border-radius: 24px;
+    padding: 40px;
+    max-width: 480px;
     width: 90%;
     text-align: center;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    transform: scale(0.9);
-    transition: transform 0.3s ease;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transform: scale(0.95);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .btikp-alert-overlay.show .btikp-alert {
@@ -150,137 +188,160 @@
 }
 
 .btikp-alert-icon {
-    font-size: 64px;
-    margin-bottom: 20px;
+    font-size: 56px;
+    margin-bottom: 24px;
+    display: inline-flex;
+    padding: 20px;
+    border-radius: 50%;
+    background: #f3f4f6;
 }
 
 .btikp-alert-success .btikp-alert-icon {
-    color: #198754;
+    color: #10b981;
+    background: #ecfdf5;
 }
 
 .btikp-alert-error .btikp-alert-icon,
 .btikp-alert-danger .btikp-alert-icon {
-    color: #dc3545;
+    color: #ef4444;
+    background: #fef2f2;
 }
 
 .btikp-alert-warning .btikp-alert-icon {
-    color: #ffc107;
+    color: #f59e0b;
+    background: #fffbeb;
 }
 
 .btikp-alert-info .btikp-alert-icon {
-    color: #0dcaf0;
+    color: #3b82f6;
+    background: #eff6ff;
 }
 
 .btikp-alert-title {
     font-size: 24px;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 12px;
-    color: #333;
+    color: #111827;
+    letter-spacing: -0.025em;
 }
 
 .btikp-alert-message {
     font-size: 16px;
-    color: #666;
-    margin-bottom: 24px;
-    line-height: 1.5;
+    color: #6b7280;
+    margin-bottom: 32px;
+    line-height: 1.6;
 }
 
 .btikp-alert-actions {
     display: flex;
-    gap: 12px;
+    gap: 16px;
     justify-content: center;
 }
 
 .btikp-btn {
-    padding: 10px 24px;
+    padding: 12px 28px;
     border: none;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
-    min-width: 100px;
+    min-width: 120px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.btikp-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .btikp-btn-success {
-    background: #198754;
+    background: #10b981;
     color: white;
 }
 
 .btikp-btn-success:hover {
-    background: #157347;
+    background: #059669;
 }
 
 .btikp-btn-error,
 .btikp-btn-danger {
-    background: #dc3545;
+    background: #ef4444;
     color: white;
 }
 
 .btikp-btn-error:hover,
 .btikp-btn-danger:hover {
-    background: #bb2d3b;
+    background: #dc2626;
 }
 
 .btikp-btn-warning {
-    background: #ffc107;
-    color: #000;
+    background: #f59e0b;
+    color: white;
 }
 
 .btikp-btn-warning:hover {
-    background: #ffca2c;
+    background: #d97706;
 }
 
 .btikp-btn-info {
-    background: #0dcaf0;
-    color: #000;
+    background: #3b82f6;
+    color: white;
 }
 
 .btikp-btn-info:hover {
-    background: #31d2f2;
+    background: #2563eb;
 }
 
 .btikp-btn-secondary {
-    background: #6c757d;
+    background: #9ca3af;
     color: white;
 }
 
 .btikp-btn-secondary:hover {
-    background: #5c636a;
+    background: #6b7280;
 }
 
-/* Loading Overlay */
+/* =========================================
+   3. NOTIFICATION CENTER MODAL
+   (Handled by notification-center.css)
+   ========================================= */
+
+
+/* =========================================
+   4. LOADING
+   ========================================= */
+
 .btikp-loading-overlay {
+    background: rgba(17, 24, 39, 0.8);
+    backdrop-filter: blur(8px);
+    z-index: 10002;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 10002;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    visibility: hidden;
+    transition: opacity 0.3s;
 }
 
 .btikp-loading-overlay.show {
     opacity: 1;
-}
-
-.btikp-loading {
-    text-align: center;
+    visibility: visible;
 }
 
 .btikp-loading-spinner {
-    width: 50px;
-    height: 50px;
-    border: 4px solid rgba(255, 255, 255, 0.3);
-    border-top-color: white;
+    width: 60px;
+    height: 60px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top-color: #3b82f6;
     border-radius: 50%;
     animation: btikp-spin 1s linear infinite;
-    margin: 0 auto 16px;
+    margin-bottom: 24px;
 }
 
 @keyframes btikp-spin {
@@ -291,88 +352,92 @@
 
 .btikp-loading-message {
     color: white;
-    font-size: 16px;
-    font-weight: 500;
-}
-
-/* Overlay Background Text (.overlay-text) */
-#auth-right .overlay-text {
-    position: absolute;
-    top: 20%;
-    left: 50%;
-    transform: translateX(-50%);
-    color: rgba(255, 255, 255, 0.9);
-    text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
-    font-size: 1.75rem;
-    max-width: 80%;
-    text-align: center;
+    font-size: 18px;
     font-weight: 600;
-    user-select: none;
-    pointer-events: none;
-    white-space: pre-wrap;
-    line-height: 1.4;
-    z-index: 10;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
 }
 
-#auth-right {
-    position: relative;
-    overflow: hidden;
+.btikp-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-/* Dark Mode Support */
+/* =========================================
+   5. DARK MODE
+   ========================================= */
 [data-bs-theme="dark"] .btikp-toast {
-    background: #2d3135;
+    background: rgba(31, 41, 55, 0.95);
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
 [data-bs-theme="dark"] .btikp-toast-title {
-    color: #e9ecef;
+    color: #f3f4f6;
 }
 
 [data-bs-theme="dark"] .btikp-toast-message {
-    color: #adb5bd;
+    color: #9ca3af;
 }
 
-[data-bs-theme="dark"] .btikp-alert {
-    background: #2d3135;
+/* ... (Include previous dark mode styles) ... */
+
+[data-bs-theme="dark"] .btikp-notification-box {
+    background: #1f2937;
 }
 
-[data-bs-theme="dark"] .btikp-alert-title {
-    color: #e9ecef;
+[data-bs-theme="dark"] .btikp-notification-header {
+    background: #1f2937;
+    border-bottom-color: #374151;
 }
 
-[data-bs-theme="dark"] .btikp-alert-message {
-    color: #adb5bd;
+[data-bs-theme="dark"] .btikp-notification-header h5 {
+    color: #f3f4f6;
 }
 
-[data-bs-theme="dark"] .btikp-toast-close {
-    color: #adb5bd;
+[data-bs-theme="dark"] .btikp-notification-close {
+    background: #374151;
+    color: #9ca3af;
 }
 
-[data-bs-theme="dark"] .btikp-toast-close:hover {
-    color: #e9ecef;
+[data-bs-theme="dark"] .btikp-notification-close:hover {
+    background: #4b5563;
+    color: #f3f4f6;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .btikp-notification-container {
-        right: 10px;
-        left: 10px;
-        max-width: none;
-    }
+[data-bs-theme="dark"] .btikp-notification-item {
+    border-bottom-color: #374151;
+}
+
+[data-bs-theme="dark"] .btikp-notification-item:hover {
+    background: #374151;
+}
+
+[data-bs-theme="dark"] .btikp-notification-item-title {
+    color: #e5e7eb;
+}
+
+[data-bs-theme="dark"] .btikp-notification-item-text {
+    color: #9ca3af;
+}
+
+[data-bs-theme="dark"] .btikp-notification-footer {
+    background: #1f2937;
+    border-top-color: #374151;
+}
+
+[data-bs-theme="dark"] .btikp-notification-item-icon {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
     .btikp-toast {
-        min-width: auto;
+        min-width: 90vw;
+        padding: 16px;
     }
+
     .btikp-alert {
-        padding: 24px;
-    }
-    .btikp-alert-icon {
-        font-size: 48px;
-    }
-    .btikp-alert-title {
-        font-size: 20px;
-    }
-    .btikp-alert-message {
-        font-size: 14px;
+        padding: 32px 24px;
     }
 }
